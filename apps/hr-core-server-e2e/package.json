@@ -1,0 +1,25 @@
+{
+  "name": "@kafaat-systems/hr-core-server-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@kafaat-systems/hr-core-server"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/hr-core-server-e2e/jest.config.ts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@kafaat-systems/hr-core-server:build"
+        ]
+      }
+    }
+  }
+}

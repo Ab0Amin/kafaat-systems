@@ -2,5 +2,30 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./apps/Fe-hr-core-e2e"
+    },
+    {
+      "path": "./apps/Fe-hr-core"
+    },
+    {
+      "path": "./apps/Be-hr-core-e2e"
+    },
+    {
+      "path": "./apps/Be-hr-core"
+    },
+    {
+      "path": "./apps/hr-core-server-e2e"
+    },
+    {
+      "path": "./apps/hr-core-server"
+    },
+    {
+      "path": "./apps/hr-core-client-e2e"
+    },
+    {
+      "path": "./apps/hr-core-client"
+    }
+  ]
 }
