@@ -4,7 +4,11 @@
     "outDir": "out-tsc/@kafaat-systems/hr-core-server-e2e",
     "esModuleInterop": true,
     "noUnusedLocals": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "NodeNext"
   },
   "include": ["jest.config.ts", "src/**/*.ts"],
   "references": []

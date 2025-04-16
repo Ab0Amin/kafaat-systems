@@ -4,7 +4,10 @@
     "outDir": "out-tsc/cypress",
     "allowJs": true,
     "types": ["cypress", "node"],
-    "sourceMap": false
+    "sourceMap": false,
+    "module": "esnext",
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler"
   },
   "include": [
     "**/*.ts",

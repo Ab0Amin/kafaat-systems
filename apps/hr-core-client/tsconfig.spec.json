@@ -5,6 +5,7 @@
     "jsx": "preserve",
     "types": ["jest", "node"],
     "module": "esnext",
+    "forceConsistentCasingInFileNames": true,
     "moduleResolution": "bundler"
   },
   "include": [
