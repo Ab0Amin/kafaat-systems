@@ -16,7 +16,9 @@
     "format:frontend": "nx format:write --projects=@kafaat-systems/hr-core-client",
     "format:backend": "nx format:write --projects=@kafaat-systems/hr-core-server",
     "check:all": "npm run format:frontend && npm run format:backend && npm run lint:backend && npm run lint:frontend",
-    "dev:docker": "docker-compose up --build",
+    "docker:build:server": "docker buildx build -t ahmedabdalla95/hr-core-server -f ./apps/hr-core-server/Dockerfile .",
+    "docker:build:client": "docker buildx build -t ahmedabdalla95/hr-core-client -f ./apps/hr-core-client/Dockerfile .",
+    "dev:docker": "rimraf apps/hr-core-client/.next apps/hr-core-server/dist && docker-compose up --build",
     "stop:docker": "docker-compose down"
   },
   "private": true,
@@ -73,6 +75,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "nx": "20.8.0",
     "prettier": "^2.6.2",
+    "rimraf": "^6.0.1",
     "sass": "1.62.1",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",

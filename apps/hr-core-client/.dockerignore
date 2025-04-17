@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+Dockerfile*
+.dockerignore
+apps/hr-core-server
+apps/*e2e*
+*.log
+*.tsbuildinfo
+coverage
+.vscode

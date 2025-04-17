@@ -2,6 +2,11 @@
   "name": "@kafaat-systems/hr-core-server",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "db:migrate": "npx prisma migrate dev --schema=prisma/schema.prisma",
+    "db:studio": "npx prisma studio --schema=prisma/schema.prisma",
+    "db:generate": "npx prisma generate --schema=prisma/schema.prisma"
+  },
   "nx": {
     "targets": {
       "build": {
@@ -35,7 +40,8 @@
             "buildTarget": "@kafaat-systems/hr-core-server:build:development"
           },
           "production": {
-            "buildTarget": "@kafaat-systems/hr-core-server:build:production"
+            "buildTarget": "@kafaat-systems/hr-core-server:build:production",
+            "standalone": true
           }
         }
       },
@@ -45,5 +51,11 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "prisma": "^6.6.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.6.0"
   }
 }

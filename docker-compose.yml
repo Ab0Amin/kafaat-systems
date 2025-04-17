@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    container_name: kafaat_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kafaat_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/hr-core-server/Dockerfile
+    container_name: kafaat_backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/kafaat_db
+    ports:
+      - '4000:4000'
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/hr-core-client/Dockerfile
+    container_name: kafaat_frontend
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

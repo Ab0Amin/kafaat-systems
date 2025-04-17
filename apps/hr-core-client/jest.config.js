@@ -1,4 +1,4 @@
-const jestConfig = {
+module.exports = {
   displayName: '@kafaat-systems/hr-core-client',
   preset: '../../jest.preset.js',
   transform: {
@@ -8,4 +8,3 @@ const jestConfig = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: 'test-output/jest/coverage',
 };
-export default jestConfig;
