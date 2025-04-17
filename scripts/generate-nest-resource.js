@@ -8,12 +8,12 @@ if (!name) {
 }
 
 // full path to the Nest app directory inside NX workspace
-const nestAppPath = path.resolve(__dirname, '../apps/backend-hr-core');
+const nestAppPath = path.resolve(__dirname, '../apps/hr-core-server');
 
 // NOTE: remove --type and --crud for compatibility with older Nest CLI
 const command = `nest g resource modules/${name}`;
 
-console.log(`🚀 Generating resource: ${name} inside backend-hr-core`);
+console.log(`🚀 Generating resource: ${name} inside hr-core-server`);
 execSync(command, {
   stdio: 'inherit',
   cwd: nestAppPath,

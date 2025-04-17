@@ -7,7 +7,7 @@ if (args.length === 0) {
 }
 
 const componentName = args[0];
-const command = `npx nx g @nx/next:component apps/frontend-hr-core/src/components/${componentName}/${componentName}  --style=scss `;
+const command = `npx nx g @nx/next:component apps/hr-core-client/src/components/${componentName}/${componentName}  --style=scss `;
 
 console.log(`🚀 Generating component: ${componentName}`);
 execSync(command, { stdio: 'inherit' });

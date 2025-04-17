@@ -9,7 +9,7 @@ if (args.length === 0) {
 const pageName = args[0];
 
 // استخدم اسم المشروع بالظبط زي ما ظهر
-const command = `npx nx g @nx/next:page  apps/frontend-hr-core/src/app/${pageName} --style=scss `;
+const command = `npx nx g @nx/next:page  apps/hr-core-client/src/app/${pageName} --style=scss `;
 
 console.log(`🚀 Generating page: ${pageName}`);
 execSync(command, { stdio: 'inherit' });

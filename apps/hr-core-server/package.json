@@ -56,6 +56,7 @@
     "prisma": "^6.6.0"
   },
   "dependencies": {
+    "@nestjs/mapped-types": "*",
     "@prisma/client": "^6.6.0"
   }
 }
