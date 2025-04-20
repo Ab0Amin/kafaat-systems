@@ -19,7 +19,11 @@
     "docker:build:server": "docker buildx build -t ahmedabdalla95/hr-core-server -f ./apps/hr-core-server/Dockerfile .",
     "docker:build:client": "docker buildx build -t ahmedabdalla95/hr-core-client -f ./apps/hr-core-client/Dockerfile .",
     "dev:docker": "rimraf apps/hr-core-client/.next apps/hr-core-server/dist && docker-compose up --build",
-    "stop:docker": "docker-compose down"
+    "stop:docker": "docker-compose down",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "npm run typeorm -- migration:generate -d libs/shared/src/lib/config/typeorm.config.ts",
+    "migration:run": "npm run typeorm -- migration:run -d libs/shared/src/lib/config/typeorm.config.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d libs/shared/src/lib/config/typeorm.config.ts"
   },
   "private": true,
   "dependencies": {
@@ -30,8 +34,9 @@
     "next": "~15.2.4",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.0"
+    "reflect-metadata": "^0.1.14",
+    "rxjs": "^7.8.0",
+    "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.1.1",
@@ -89,6 +94,7 @@
     "webpack-cli": "^5.1.4"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ]
 }
