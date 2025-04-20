@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+      "module": "NodeNext",
+      "target": "ES2021",
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "forceConsistentCasingInFileNames": true
+    },
+    "include": ["libs/**/*.ts"]
+  }
+  
