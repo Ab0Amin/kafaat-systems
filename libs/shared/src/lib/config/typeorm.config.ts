@@ -2,6 +2,7 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
+import { entities_name } from '@kafaat-systems/database';
 dotenv.config();
 
 export const getDataSourceOptions = (schema?: string): DataSourceOptions => {
@@ -15,7 +16,9 @@ export const getDataSourceOptions = (schema?: string): DataSourceOptions => {
     schema: schema || process.env.DB_SCHEMA,
     synchronize: false,
     logging: false,
-    entities: ['libs/shared/src/lib/entities/**/*.ts'],
+
+    entities: entities_name,
+
     migrations: ['libs/shared/src/lib/migrations/*.ts'],
     migrationsTableName: 'migrations',
   };

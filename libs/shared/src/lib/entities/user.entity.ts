@@ -1,4 +1,3 @@
-// libs/shared/src/lib/entities/user.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,

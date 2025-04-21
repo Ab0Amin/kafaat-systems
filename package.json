@@ -23,7 +23,8 @@
     "typeorm": "cross-env TS_NODE_PROJECT=tsconfig.typeorm.json typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm -- migration:generate libs/shared/src/lib/migrations/InitialMigration -d libs/shared/src/lib/config/typeorm.config.ts",
     "migration:run": "npm run typeorm -- migration:run    -d libs/shared/src/lib/config/typeorm.config.ts",
-    "migration:revert": "npm run typeorm -- migration:revert -d libs/shared/src/lib/config/typeorm.config.ts"
+    "migration:revert": "npm run typeorm -- migration:revert -d libs/shared/src/lib/config/typeorm.config.ts",
+    "db:owner": "psql -U postgres -d hr-core  -f libs/shared/src/sql/owner.sql"
   },
   "private": true,
   "dependencies": {
