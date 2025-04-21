@@ -13,8 +13,7 @@ const dataSource = new DataSource({
   database: process.env.DB_DATABASE || 'hr-core',
   // Explicitly list all entities for now
   entities: [join(__dirname, '../entities/**/*.entity{.ts,.js}')],
-  //   entities: [User],
-  // For migrations
+
   migrations: [join(__dirname, '../migrations/**/*{.ts,.js}')],
   migrationsTableName: 'migrations',
   synchronize: false, // Always false for migrations
