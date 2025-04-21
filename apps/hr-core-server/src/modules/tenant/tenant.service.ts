@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 // import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { DataSource } from 'typeorm';
-
+import { createTenantDataSource } from '@kafaat-systems/database';
 @Injectable()
 export class TenantService {
   constructor(private dataSource: DataSource) {}
@@ -12,9 +12,15 @@ export class TenantService {
 
     await this.dataSource.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
 
-    // هنا لاحقًا هنضيف الخطوات: migration + seeding
+    const tenantDS = createTenantDataSource(schemaName);
+    await tenantDS.initialize();
 
-    return { message: `Schema ${schemaName} created.` };
+    // await tenantDS.query(`SET search_path TO "${schemaName}"`);
+    await tenantDS.runMigrations();
+
+    await tenantDS.destroy();
+
+    return { message: `Schema ${schemaName} created and migrated.` };
   }
 
   private slugify(name: string) {
