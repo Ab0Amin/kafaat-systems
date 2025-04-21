@@ -5,15 +5,11 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
-    "forceConsistentCasingInFileNames": true,
-
+    "forceConsistentCasingInFileNames": true
   },
   "files": [],
   "include": [],
   "references": [
-    {
-      "path": "../../libs/shared"
-    },
     {
       "path": "./tsconfig.app.json"
     },
