@@ -5,9 +5,8 @@ import {
   createTenantDataSource,
   getDataSourceOptions,
 } from '@kafaat-systems/database';
-import { Tenant } from '@kafaat-systems/database';
+import { Tenant, User } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
-import { User } from '@kafaat-systems/database';
 
 @Injectable()
 export class TenantService {
