@@ -38,11 +38,13 @@ The system uses a schema-based multi-tenancy approach with PostgreSQL:
 ### Common Issues
 
 1. **EntityMetadataNotFoundError**: This usually happens when the entity is not properly imported or registered. Make sure:
+
    - Entities are imported from `@kafaat-systems/entities`
    - Entities are included in the `entities_name` array
    - The schema exists in the database
 
 2. **Tenant Not Found**: During development, you can:
+
    - Set `DEFAULT_TENANT` in your `.env` file
    - Use the `x-tenant-id` header in your requests
    - Check that the tenant exists in the owner schema

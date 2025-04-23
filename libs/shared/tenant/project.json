@@ -19,17 +19,13 @@
     "targets": {
       "build": {
         "executor": "@nx/js:tsc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
+        "outputs": ["{options.outputPath}"],
         "options": {
           "outputPath": "dist/libs/shared/tenant",
           "tsConfig": "libs/shared/tenant/tsconfig.lib.json",
           "packageJson": "libs/shared/tenant/package.json",
           "main": "libs/shared/tenant/src/index.ts",
-          "assets": [
-            "libs/shared/tenant/*.md"
-          ]
+          "assets": ["libs/shared/tenant/*.md"]
         }
       }
     }

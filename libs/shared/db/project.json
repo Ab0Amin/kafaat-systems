@@ -19,17 +19,13 @@
     "targets": {
       "build": {
         "executor": "@nx/js:tsc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
+        "outputs": ["{options.outputPath}"],
         "options": {
           "outputPath": "dist/libs/shared/db",
           "tsConfig": "libs/shared/db/tsconfig.lib.json",
           "packageJson": "libs/shared/db/package.json",
           "main": "libs/shared/db/src/index.ts",
-          "assets": [
-            "libs/shared/db/*.md"
-          ]
+          "assets": ["libs/shared/db/*.md"]
         }
       }
     }

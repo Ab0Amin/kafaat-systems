@@ -38,12 +38,14 @@ When a new tenant is registered:
 
 ### Common Issues
 
-1. **Migration Fails to Run**: 
+1. **Migration Fails to Run**:
+
    - Check that the database connection parameters are correct in `.env`
    - Ensure the database user has permission to create schemas and tables
    - Verify that the migration files are properly formatted
 
 2. **No Changes Detected When Generating Migrations**:
+
    - This happens when the database schema matches the entity definitions
    - If you've made changes to entities but no migration is generated, try:
      - Dropping the database and recreating it
@@ -58,10 +60,12 @@ When a new tenant is registered:
 ## Best Practices
 
 1. **Always Run Migrations on Development First**:
+
    - Test migrations in development before applying to production
    - Create a backup before running migrations in production
 
 2. **Keep Migrations Idempotent**:
+
    - Use `IF NOT EXISTS` in your SQL statements
    - Check for existing objects before creating them
 
