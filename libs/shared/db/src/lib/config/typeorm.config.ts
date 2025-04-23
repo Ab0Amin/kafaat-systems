@@ -2,7 +2,7 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { entities_name } from '@kafaat-systems/database';
+import { entities_name } from '@kafaat-systems/libs';
 dotenv.config();
 
 export const getDataSourceOptions = (schema?: string): DataSourceOptions => {

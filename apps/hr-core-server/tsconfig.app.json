@@ -12,7 +12,12 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "bundler"
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "../../libs/tenant/tenant.module.ts",
+    "../../libs/tenant/tenant.service.ts",
+    "../../libs/tenant/tenant.service.spec.ts"
+  ],
   "exclude": [
     "out-tsc",
     "dist",
@@ -24,6 +29,9 @@
     "eslint.config.mjs"
   ],
   "references": [
+    {
+      "path": "../../libs/tenant/tsconfig.lib.json"
+    },
     {
       "path": "../../libs/shared/tsconfig.lib.json"
     }

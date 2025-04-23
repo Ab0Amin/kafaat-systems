@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { databaseConfig } from '../config/database.config';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import { entities_name } from '@kafaat-systems/database';
+import { entities_name } from '@kafaat-systems/libs';
 
 export const createTenantDataSource = (schema: string) => {
   const config = databaseConfig as PostgresConnectionOptions;

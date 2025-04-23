@@ -1,13 +1,26 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from '@kafaat-systems/database'; // Adjust the import path as necessary
+import { DatabaseModule } from '@kafaat-systems/libs';
 import { UserModule } from '../modules/user/user.module';
-import { TenantModule } from '../modules/tenant/tenant.module';
+import { TenantModule } from '@kafaat-systems/tenant';
+import { AdminModule } from '../modules/admin/admin.module';
+import { TenantMiddleware } from '@kafaat-systems/libs';
 
 @Module({
-  imports: [DatabaseModule, UserModule, TenantModule], // Import the DatabaseModule and UserModule here
-  controllers: [AppController], // Add UserController to the controllers array
+  imports: [DatabaseModule.forRoot(), UserModule, TenantModule, AdminModule],
+  controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    // Apply tenant middleware to all routes except tenant registration and admin routes
+    consumer
+      .apply(TenantMiddleware)
+      .exclude(
+        { path: 'tenant/register', method: RequestMethod.POST },
+        { path: 'admin/(.*)', method: RequestMethod.ALL }
+      )
+      .forRoutes('*');
+  }
+}

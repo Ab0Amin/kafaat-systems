@@ -2,8 +2,17 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "NodeNext",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "target": "es2017",
+    "declaration": true,
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "moduleResolution": "node16"
   },
   "files": [],
   "references": [
@@ -21,6 +30,15 @@
     },
     {
       "path": "./libs/shared"
+    },
+ 
+   
+    {
+      "path": "./libs/shared/db"
+    },
+  
+    {
+      "path": "./libs/shared/tenant"
     }
   ]
 }

@@ -16,6 +16,12 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["development"]
+    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "customConditions": ["development"],
+    "paths": {
+      "@kafaat-systems/database": ["libs/shared/db/src/index.ts"],
+      "@kafaat-systems/tenant": ["libs/shared/tenant/src/index.ts"]
+    }
   }
 }

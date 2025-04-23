@@ -1,8 +1,7 @@
 {
-  "name": "@kafaat-systems/libs",
+  "name": "@kafaat-systems/tenant",
   "version": "0.0.1",
   "private": true,
-  "type": "commonjs",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,13 +15,21 @@
     }
   },
   "nx": {
-    "name": "database",
+    "name": "tenant",
     "targets": {
-      "migrations": {
-        "executor": "nx:run-commands",
-        "outputs": [],
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
         "options": {
-          "command": "typeorm migration:run"
+          "outputPath": "dist/libs/shared/tenant",
+          "tsConfig": "libs/shared/tenant/tsconfig.lib.json",
+          "packageJson": "libs/shared/tenant/package.json",
+          "main": "libs/shared/tenant/src/index.ts",
+          "assets": [
+            "libs/shared/tenant/*.md"
+          ]
         }
       }
     }

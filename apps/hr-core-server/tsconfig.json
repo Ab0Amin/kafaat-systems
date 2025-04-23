@@ -11,6 +11,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/tenant"
+    },
+    {
       "path": "../../libs/shared"
     },
     {

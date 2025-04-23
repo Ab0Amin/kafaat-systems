@@ -13,7 +13,7 @@
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
-  ],
+, "../../libs/tenant/tenant.service.spec.ts"  ],
   "references": [
     {
       "path": "./tsconfig.app.json"
