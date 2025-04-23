@@ -11,10 +11,11 @@ import {
 import { TenantService } from '@kafaat-systems/tenant';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 // This would be your actual auth guard
 // import { AdminGuard } from '../../guards/admin.guard';
-
+@ApiTags('Tenant')
 @Controller('tenant')
 export class TenantController {
   constructor(private readonly tenantService: TenantService) {}

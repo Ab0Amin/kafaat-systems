@@ -1,9 +1,10 @@
 import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
+import { ApiTags } from '@nestjs/swagger';
 
 // This would be your actual auth guard
 // import { AdminGuard } from '../../guards/admin.guard';
-
+@ApiTags('Admin')
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}

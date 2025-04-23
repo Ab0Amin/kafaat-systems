@@ -5,6 +5,9 @@ import compression from 'compression';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import { UserModule } from './modules/user/user.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { TenantModule } from './modules/tenant/tenant.module';
 
 // Load environment variables
 dotenv.config();
@@ -43,7 +46,9 @@ async function bootstrap() {
       .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
       .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {
+      include: [UserModule, AdminModule, TenantModule],
+    });
     SwaggerModule.setup('docs', app, document);
   }
 
