@@ -6,9 +6,16 @@ import { UserModule } from '../modules/user/user.module';
 import { TenantModule } from '@kafaat-systems/tenant';
 import { AdminModule } from '../modules/admin/admin.module';
 import { TenantMiddleware } from '@kafaat-systems/tenant';
+import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
 
 @Module({
-  imports: [DatabaseModule.forRoot(), UserModule, TenantModule, AdminModule],
+  imports: [
+    SchemaConfigModule,
+    DatabaseModule.forRoot(), 
+    UserModule, 
+    TenantModule, 
+    AdminModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

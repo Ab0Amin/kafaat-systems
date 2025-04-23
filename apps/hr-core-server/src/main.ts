@@ -1,9 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import compression from 'compression';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -43,10 +47,18 @@ async function bootstrap() {
     SwaggerModule.setup('docs', app, document);
   }
 
+  // Set global prefix
+  app.setGlobalPrefix('api');
+
   // Start server
-  const port = process.env.BE_PORT || 3000;
-  await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
+  
+  Logger.log(`Environment: ${process.env.NODE_ENV}`);
+  Logger.log(`Database: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+  Logger.log(`Default schema: ${process.env.DEFAULT_SCHEMA}`);
+  Logger.log(`Application is running on: http://localhost:${port}/api`);
+  Logger.log(`Swagger documentation: http://localhost:${port}/docs`);
 }
 
 bootstrap();
