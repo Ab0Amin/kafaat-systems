@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { TenantContextService } from './tenant-context.service';
-import { Tenant } from '../entities/tenant.entity';
+import { Tenant } from '@kafaat-systems/entities';
 
 @Injectable()
 export class TenantConfigService {

@@ -1,12 +1,11 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { databaseConfig } from './config/database.config';
-import { entities_name } from '../../src/index';
-import { TenantContextService } from './services/tenant-context.service';
-import { TenantService } from '@kafaat-systems/tenant';
 
-import { TenantConfigService } from './services/tenant-config.service';
+import { TenantContextService } from '@kafaat-systems/schemaConfig';
 import { DataSourceOptions } from 'typeorm';
+import { entities_name } from '@kafaat-systems/entities';
+import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
 
 type CustomTypeOrmOptions = DataSourceOptions & {
   schema?: string;
@@ -19,7 +18,9 @@ export class DatabaseModule {
     return {
       module: DatabaseModule,
       imports: [
+        SchemaConfigModule,
         TypeOrmModule.forRootAsync({
+          imports: [SchemaConfigModule],
           useFactory: (
             tenantContext: TenantContextService
           ): CustomTypeOrmOptions => ({
@@ -41,8 +42,6 @@ export class DatabaseModule {
           inject: [TenantContextService],
         }),
       ],
-      providers: [TenantContextService, TenantService, TenantConfigService],
-      exports: [TenantContextService, TenantService, TenantConfigService],
     };
   }
 }

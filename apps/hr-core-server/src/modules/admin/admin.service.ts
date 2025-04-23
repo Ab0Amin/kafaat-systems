@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Tenant } from '@kafaat-systems/libs';
+import { Tenant } from '@kafaat-systems/database';
 import {
   getDataSourceOptions,
   createTenantDataSource,
-} from '@kafaat-systems/libs';
+} from '@kafaat-systems/database';
 
 @Injectable()
 export class AdminService {

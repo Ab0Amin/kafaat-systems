@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { TenantService } from '@kafaat-systems/tenant';
+import { TenantService } from '../tenant.service';
 
 export interface TenantRequest extends Request {
   tenantId?: number;

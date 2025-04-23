@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start:frontend": "nx dev hr-core-client",
-    "start:backend": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only --project apps/hr-core-server/tsconfig.json apps/hr-core-server/src/main.ts",
+    "start:backend": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only --project apps/hr-core-server/tsconfig.json -r tsconfig-paths/register apps/hr-core-server/src/main.ts",
     "build:frontend": "nx build hr-core-client",
     "build:backend": "nx build hr-core-server",
     "page": "node scripts/generate-page.js",
@@ -21,10 +21,10 @@
     "dev:docker": "rimraf apps/hr-core-client/.next apps/hr-core-server/dist && docker-compose up --build",
     "stop:docker": "docker-compose down",
     "typeorm": "cross-env TS_NODE_PROJECT=tsconfig.typeorm.json typeorm-ts-node-commonjs",
-    "migration:generate": "npm run typeorm -- migration:generate libs/shared/src/lib/migrations/InitialMigration -d libs/shared/src/lib/config/typeorm.config.ts",
-    "migration:run": "npm run typeorm -- migration:run    -d libs/shared/src/lib/config/typeorm.config.ts",
-    "migration:revert": "npm run typeorm -- migration:revert -d libs/shared/src/lib/config/typeorm.config.ts",
-    "db:owner": "psql -U postgres -d hr-core  -f libs/shared/src/sql/owner.sql"
+    "migration:generate": "npm run typeorm -- migration:generate libs/shared/db/src/lib/migrations/InitialMigration -d libs/shared/db/src/lib/config/typeorm.config.ts",
+    "migration:run": "npm run typeorm -- migration:run    -d libs/shared/db/src/lib/config/typeorm.config.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d libs/shared/db/src/lib/config/typeorm.config.ts",
+    "db:owner": "psql -U postgres -d hr-core  -f libs/shared/db/src/sql/owner.sql"
   },
   "private": true,
   "dependencies": {
@@ -34,6 +34,8 @@
     "@types/helmet": "^4.0.0",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "helmet": "^8.1.0",
     "next": "~15.2.4",
     "react": "19.0.0",
@@ -47,7 +49,7 @@
     "@eslint/eslintrc": "^2.1.1",
     "@eslint/js": "^9.8.0",
     "@nestjs/schematics": "^10.0.1",
-    "@nestjs/swagger": "^11.1.4",
+    "@nestjs/swagger": "^7.3.1",
     "@nestjs/testing": "^10.0.2",
     "@nestjs/typeorm": "^11.0.0",
     "@next/eslint-plugin-next": "^15.2.4",

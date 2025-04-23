@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "../../dist/out-tsc",
+    "rootDir": ".",                  
     "types": ["node"],
-    "rootDir": "src",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -14,9 +14,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "../../libs/tenant/tenant.module.ts",
-    "../../libs/tenant/tenant.service.ts",
-    "../../libs/tenant/tenant.service.spec.ts"
+    "../../libs/**/*"
   ],
   "exclude": [
     "out-tsc",
@@ -29,11 +27,6 @@
     "eslint.config.mjs"
   ],
   "references": [
-    {
-      "path": "../../libs/tenant/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/shared/tsconfig.lib.json"
-    }
+  
   ]
 }

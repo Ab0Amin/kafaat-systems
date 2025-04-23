@@ -1,11 +1,11 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from '@kafaat-systems/libs';
+import { DatabaseModule } from '@kafaat-systems/database';
 import { UserModule } from '../modules/user/user.module';
 import { TenantModule } from '@kafaat-systems/tenant';
 import { AdminModule } from '../modules/admin/admin.module';
-import { TenantMiddleware } from '@kafaat-systems/libs';
+import { TenantMiddleware } from '@kafaat-systems/tenant';
 
 @Module({
   imports: [DatabaseModule.forRoot(), UserModule, TenantModule, AdminModule],

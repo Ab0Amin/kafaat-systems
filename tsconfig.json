@@ -29,16 +29,16 @@
       "path": "./apps/hr-core-client"
     },
     {
-      "path": "./libs/shared"
-    },
- 
-   
-    {
       "path": "./libs/shared/db"
     },
-  
     {
       "path": "./libs/shared/tenant"
+    },
+    {
+      "path": "./libs/shared/schemaConfig"
+    },
+    {
+      "path": "./libs/shared/entities"
     }
   ]
 }

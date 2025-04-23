@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { TenantService } from '../../../../../libs/tenant/tenant.service';
+import { TenantService } from '@kafaat-systems/tenant';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 

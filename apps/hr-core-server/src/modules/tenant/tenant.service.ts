@@ -4,10 +4,10 @@ import { DataSource } from 'typeorm';
 import {
   createTenantDataSource,
   getDataSourceOptions,
-} from '@kafaat-systems/libs';
-import { Tenant } from '@kafaat-systems/libs';
+} from '@kafaat-systems/database';
+import { Tenant } from '@kafaat-systems/database';
 import * as bcrypt from 'bcrypt';
-import { User } from '@kafaat-systems/libs';
+import { User } from '@kafaat-systems/database';
 
 @Injectable()
 export class TenantService {

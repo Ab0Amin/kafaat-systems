@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '@kafaat-systems/libs';
+import { User } from '@kafaat-systems/entities';
 
 @Controller('users')
 export class UserController {
