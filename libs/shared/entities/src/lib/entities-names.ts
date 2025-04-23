@@ -1,5 +1,5 @@
-import { User } from './entities/user.entity';
-import { Tenant } from './entities/tenant.entity';
-import { Admin } from './entities/admin.entity';
+import { UserEntity } from './entities/user.entity';
+import { TenantEntity } from './entities/tenant.entity';
+import { AdminEntity } from './entities/admin.entity';
 
-export const entities_name = [User, Tenant, Admin];
+export const entities_name = [UserEntity, TenantEntity, AdminEntity];

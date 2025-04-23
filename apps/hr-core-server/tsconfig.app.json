@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "rootDir": ".",                  
+    "rootDir": ".",
     "types": ["node"],
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
@@ -12,10 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "bundler"
   },
-  "include": [
-    "src/**/*.ts",
-    "../../libs/**/*"
-  ],
+  "include": ["src/**/*.ts", "../../libs/**/*"],
   "exclude": [
     "out-tsc",
     "dist",
@@ -26,7 +23,5 @@
     "eslint.config.cjs",
     "eslint.config.mjs"
   ],
-  "references": [
-  
-  ]
+  "references": []
 }

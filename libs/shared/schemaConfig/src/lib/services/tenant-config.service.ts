@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { TenantContextService } from './tenant-context.service';
-import { Tenant } from '@kafaat-systems/entities';
+import { TenantEntity } from '@kafaat-systems/entities';
 
 @Injectable()
 export class TenantConfigService {
-  private tenantRepo: Repository<Tenant>;
+  private tenantRepo: Repository<TenantEntity>;
 
   constructor(
     private dataSource: DataSource,
     private tenantContext: TenantContextService
   ) {
     // Create a repository for the owner schema
-    this.tenantRepo = this.dataSource.getRepository(Tenant);
+    this.tenantRepo = this.dataSource.getRepository(TenantEntity);
   }
 
   async getTenantConfig(): Promise<Record<string, any>> {

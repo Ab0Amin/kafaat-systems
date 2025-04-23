@@ -5,7 +5,7 @@ import {
   createTenantDataSource,
   getDataSourceOptions,
 } from '@kafaat-systems/database';
-import { Admin, Tenant } from '@kafaat-systems/entities';
+import { AdminEntity, TenantEntity } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
 
 interface TableRow {
@@ -18,12 +18,12 @@ const copyFromTemplate = 'public';
 export class TenantService {
   constructor(private dataSource: DataSource) {}
 
-  async getTenantByDomain(domain: string): Promise<Tenant | null> {
+  async getTenantByDomain(domain: string): Promise<TenantEntity | null> {
     const ownerDS = new DataSource(getDataSourceOptions('owner'));
     await ownerDS.initialize();
 
     try {
-      const tenant = await ownerDS.getRepository(Tenant).findOne({
+      const tenant = await ownerDS.getRepository(TenantEntity).findOne({
         where: { domain, isActive: true },
       });
       return tenant;
@@ -54,8 +54,7 @@ export class TenantService {
 
     try {
       // Run migrations for the new schema
-      Logger.log(`Running migrations for schema: ${schemaName}`);
-
+      Logger.log(`Running migrations for schema: `);
       try {
         // Instead of running migrations, copy tables from public schema
         // This is more reliable than running migrations on each tenant schema
@@ -75,8 +74,6 @@ export class TenantService {
           );
 
           if (!tableExists[0].exists) {
-            Logger.log(`Creating table ${table} in schema ${schemaName}`);
-
             // Create the table in the new schema
             await this.dataSource.query(`
               CREATE TABLE IF NOT EXISTS "${schemaName}"."${table}" 
@@ -85,18 +82,16 @@ export class TenantService {
           }
         }
 
-        Logger.log(`Schema ${schemaName} initialized successfully`);
+        Logger.log(`Schema  initialized successfully`);
       } catch (error) {
-        Logger.error(
-          `Error initializing schema ${schemaName}: ${error.message}`
-        );
+        Logger.error(`Error initializing schema : ${error.message}`);
         throw error;
       }
 
       // Create admin user for the tenant
       const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
-      await tenantDS.getRepository(Admin).save({
+      await tenantDS.getRepository(AdminEntity).save({
         firstName: dto.admin.fullName.split(' ')[0],
         lastName: dto.admin.fullName.split(' ').slice(1).join(' '),
         email: dto.admin.email,
@@ -109,7 +104,7 @@ export class TenantService {
       await ownerDS.initialize();
 
       try {
-        await ownerDS.getRepository(Tenant).save({
+        await ownerDS.getRepository(TenantEntity).save({
           name: dto.name,
           domain: dto.domain,
           schema_name: schemaName,
@@ -165,7 +160,7 @@ export class TenantService {
       );
 
       if (!result || result.length === 0) {
-        Logger.warn(`No tables found in template schema: ${copyFromTemplate}`);
+        Logger.warn(`No tables found in template schema: `);
         // Return default tables if none found
         return ['users'];
       }
@@ -183,7 +178,7 @@ export class TenantService {
     await ownerDS.initialize();
 
     try {
-      return await ownerDS.getRepository(Tenant).find();
+      return await ownerDS.getRepository(TenantEntity).find();
     } finally {
       await ownerDS.destroy();
     }
@@ -194,7 +189,7 @@ export class TenantService {
     await ownerDS.initialize();
 
     try {
-      await ownerDS.getRepository(Tenant).update(id, { isActive: false });
+      await ownerDS.getRepository(TenantEntity).update(id, { isActive: false });
       return { success: true, message: 'Tenant deactivated successfully' };
     } finally {
       await ownerDS.destroy();

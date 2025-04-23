@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'admins', schema: 'owner' })
-export class Admin {
+export class AdminEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
