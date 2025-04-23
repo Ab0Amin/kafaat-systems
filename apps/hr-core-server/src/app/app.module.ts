@@ -3,21 +3,21 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from '@kafaat-systems/database';
 import { UserModule } from '../modules/user/user.module';
-import { TenantModule } from '@kafaat-systems/tenant';
+import { TenantModule } from './../modules/tenant/tenant.module';
 import { AdminModule } from '../modules/admin/admin.module';
-import { TenantMiddleware } from '@kafaat-systems/tenant';
+import { TenantMiddleware, TenantService } from '@kafaat-systems/tenant';
 import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
 
 @Module({
   imports: [
     SchemaConfigModule,
-    DatabaseModule.forRoot(), 
-    UserModule, 
-    TenantModule, 
-    AdminModule
+    DatabaseModule.forRoot(),
+    UserModule,
+    TenantModule,
+    AdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TenantService, TenantMiddleware],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

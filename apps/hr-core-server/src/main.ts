@@ -51,11 +51,13 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   // Start server
-  const port = process.env.PORT || 3000;
+  const port = process.env.BE_PORT || 3000;
   await app.listen(port, '0.0.0.0');
-  
+
   Logger.log(`Environment: ${process.env.NODE_ENV}`);
-  Logger.log(`Database: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+  Logger.log(
+    `Database: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
+  );
   Logger.log(`Default schema: ${process.env.DEFAULT_SCHEMA}`);
   Logger.log(`Application is running on: http://localhost:${port}/api`);
   Logger.log(`Swagger documentation: http://localhost:${port}/docs`);

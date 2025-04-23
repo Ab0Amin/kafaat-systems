@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/entities/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "outputPath": "dist/libs/shared/entities",
+        "tsConfig": "libs/shared/entities/tsconfig.lib.json",
+        "main": "libs/shared/entities/src/index.ts"
+      }
+    }
+  },
+  "tags": [],
+  "name": "@kafaat-systems/entities"
+}

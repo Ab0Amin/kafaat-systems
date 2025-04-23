@@ -1,9 +1,17 @@
+import { IsString, IsNotEmpty, ValidateNested, IsEmail } from 'class-validator';
+import { Type } from 'class-transformer';
+import AdminDto from '../../admin/dto/create-admin.dto';
+
 export class CreateTenantDto {
-  name: string;
-  domain: string;
-  admin: {
-    fullName: string;
-    email: string;
-    password: string;
-  };
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  domain!: string;
+
+  @ValidateNested()
+  @Type(() => AdminDto)
+  admin!: AdminDto;
 }

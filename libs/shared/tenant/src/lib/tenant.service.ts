@@ -1,11 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { DataSource } from 'typeorm';
 import {
   createTenantDataSource,
   getDataSourceOptions,
 } from '@kafaat-systems/database';
-import { Tenant, User } from '@kafaat-systems/entities';
+import { Admin, Tenant, User } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -48,18 +48,19 @@ export class TenantService {
 
     try {
       // Run migrations for the new schema
+      Logger.log('migra');
       await tenantDS.runMigrations();
+      Logger.log('done');
 
       // Create admin user for the tenant
       const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
-      await tenantDS.getRepository(User).save({
+      await tenantDS.getRepository(Admin).save({
         firstName: dto.admin.fullName.split(' ')[0],
         lastName: dto.admin.fullName.split(' ').slice(1).join(' '),
         email: dto.admin.email,
         passwordHash,
         isActive: true,
-        roles: ['admin'],
       });
 
       // Save tenant info in owner schema
@@ -73,6 +74,7 @@ export class TenantService {
           schema_name: schemaName,
           isActive: true,
           createdAt: new Date(),
+          updatedAt: new Date(),
         });
       } finally {
         await ownerDS.destroy();
