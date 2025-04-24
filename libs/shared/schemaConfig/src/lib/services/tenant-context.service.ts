@@ -3,7 +3,6 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { RoleType } from '@kafaat-systems/entities';
-import { env } from 'process';
 
 interface TenantContext {
   tenantId?: string;
@@ -96,7 +95,7 @@ export class TenantContextService {
     return this.getRole() === RoleType.ADMIN || this.isOwner();
   }
 
-  run(context: TenantContext, callback: () => any) {
+  run(context: TenantContext, callback: () => unknown) {
     return this.als.run(context, callback);
   }
 

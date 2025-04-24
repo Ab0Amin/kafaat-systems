@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { TenantContextService } from './tenant-context.service';
-import { TenantEntity } from '@kafaat-systems/entities';
+import { TenantEntity, TenantSettings } from '@kafaat-systems/entities';
 
 @Injectable()
 export class TenantConfigService {
@@ -15,7 +15,7 @@ export class TenantConfigService {
     this.tenantRepo = this.dataSource.getRepository(TenantEntity);
   }
 
-  async getTenantConfig(): Promise<Record<string, any>> {
+  async getTenantConfig(): Promise<TenantSettings> {
     const tenantId = this.tenantContext.getTenantId();
     if (!tenantId) {
       return {};
@@ -28,7 +28,7 @@ export class TenantConfigService {
     return tenant?.settings || {};
   }
 
-  async updateTenantConfig(config: Record<string, any>): Promise<void> {
+  async updateTenantConfig(config: TenantSettings): Promise<void> {
     const tenantId = this.tenantContext.getTenantId();
     if (!tenantId) {
       throw new Error('No tenant context found');

@@ -5,7 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+export interface TenantSettings {
+  theme?: string;
+  notificationsEnabled?: boolean;
+  maxUsers?: number;
+  [key: string]: string | number | boolean | unknown;
+}
 @Entity({ name: 'tenants', schema: 'owner' })
 export class TenantEntity {
   @PrimaryGeneratedColumn()
@@ -30,7 +35,7 @@ export class TenantEntity {
   maxUsers!: number;
 
   @Column({ type: 'jsonb', nullable: true })
-  settings!: Record<string, any>;
+  settings!: Settings;
 
   @Column({ nullable: true })
   contactEmail!: string;
