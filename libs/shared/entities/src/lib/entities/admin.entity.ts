@@ -1,5 +1,3 @@
-// libs/shared/entities/src/lib/admin.entity.ts
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,9 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { RoleType } from './role.entity';
 
 @Entity({ name: 'admins', schema: 'owner' })
-export class AdminEntity {
+export class Admin {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -27,6 +26,16 @@ export class AdminEntity {
 
   @Column({ default: true })
   isActive!: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: RoleType,
+    default: RoleType.ADMIN,
+  })
+  role!: RoleType;
+
+  @Column({ nullable: true })
+  schemaName!: string;
 
   @CreateDateColumn()
   createdAt!: Date;
