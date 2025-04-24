@@ -9,10 +9,6 @@ import { Admin, Tenant, RoleType } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
 import { TemplateSchemaService } from './services/template-schema.service';
 
-interface TableRow {
-  tablename: string;
-}
-
 @Injectable()
 export class TenantService {
   private readonly logger = new Logger(TenantService.name);
@@ -130,35 +126,6 @@ export class TenantService {
 
   private slugify(name: string) {
     return name.toLowerCase().replace(/\s+/g, '_');
-  }
-
-  async getTablesFromTemplate(): Promise<string[]> {
-    try {
-      const result = await this.dataSource.query(
-        `
-        SELECT tablename
-        FROM pg_tables
-        WHERE schemaname = $1
-        AND tablename NOT LIKE 'pg_%'
-        AND tablename NOT LIKE 'sql_%'
-        AND tablename NOT LIKE 'migrations'
-        AND tablename NOT LIKE '\\_%' ESCAPE '\\'
-      `,
-        [copyFromTemplate]
-      );
-
-      if (!result || result.length === 0) {
-        Logger.warn(`No tables found in template schema: `);
-        // Return default tables if none found
-        return ['users'];
-      }
-
-      return result.map((row: TableRow) => row.tablename);
-    } catch (error) {
-      Logger.error(`Error getting tables from template: ${error.message}`);
-      // Return default tables on error
-      return ['users'];
-    }
   }
 
   async findAll() {

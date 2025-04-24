@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { TenantEntity } from '@kafaat-systems/entities';
+import { Tenant } from '@kafaat-systems/entities';
 import {
   getDataSourceOptions,
   createTenantDataSource,
@@ -8,16 +8,19 @@ import {
 
 @Injectable()
 export class AdminService {
+  private readonly logger = new Logger(AdminService.name);
+
   constructor(private dataSource: DataSource) {}
 
   async runMigrationForAllTenants() {
     // Get all active tenants
+    this.logger.log('Running migrations for all tenants');
 
     const ownerDS = new DataSource(getDataSourceOptions('owner'));
     await ownerDS.initialize();
 
     try {
-      const tenants = await ownerDS.getRepository(TenantEntity).find({
+      const tenants = await ownerDS.getRepository(Tenant).find({
         where: { isActive: true },
       });
 
@@ -71,10 +74,11 @@ export class AdminService {
   }
 
   async getTenantStats() {
+    this.logger.log('Getting tenant statistics');
     const ownerDS = new DataSource(getDataSourceOptions('owner'));
     await ownerDS.initialize();
     try {
-      const tenants = await ownerDS.getRepository(TenantEntity).find();
+      const tenants = await ownerDS.getRepository(Tenant).find();
 
       const stats = {
         totalTenants: tenants.length,
