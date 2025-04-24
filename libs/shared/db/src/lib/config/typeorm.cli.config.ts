@@ -1,4 +1,4 @@
-// libs/shared/db/src/lib/config/typeorm.config.ts
+/* eslint-disable */
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
