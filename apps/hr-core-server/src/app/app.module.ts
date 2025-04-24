@@ -5,7 +5,12 @@ import { DatabaseModule } from '@kafaat-systems/database';
 import { UserModule } from '../modules/user/user.module';
 import { TenantModule } from './../modules/tenant/tenant.module';
 import { AdminModule } from '../modules/admin/admin.module';
-import { TenantMiddleware, TenantService } from '@kafaat-systems/tenant';
+import {
+  TenantMiddleware,
+  TenantService,
+  SubdomainMiddleware,
+  TemplateSchemaService,
+} from '@kafaat-systems/tenant';
 import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
 
 @Module({
@@ -17,11 +22,20 @@ import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
     AdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TenantService, TenantMiddleware],
+  providers: [
+    AppService,
+    TenantService,
+    TenantMiddleware,
+    SubdomainMiddleware,
+    TemplateSchemaService,
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    // Apply tenant middleware to all routes except tenant registration and admin routes
+    // Apply subdomain middleware first to extract schema from subdomain
+    consumer.apply(SubdomainMiddleware).forRoutes('*');
+
+    // Then apply tenant middleware to all routes except tenant registration and admin routes
     consumer
       .apply(TenantMiddleware)
       .exclude(

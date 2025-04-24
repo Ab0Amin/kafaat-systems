@@ -3,3 +3,5 @@ export * from './lib/entities-names';
 export * from './lib/entities/user.entity';
 export * from './lib/entities/tenant.entity';
 export * from './lib/entities/admin.entity';
+export * from './lib/entities/role.entity';
+export * from './lib/entities/template-config.entity';

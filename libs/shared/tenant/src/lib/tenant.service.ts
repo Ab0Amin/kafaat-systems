@@ -5,18 +5,22 @@ import {
   createTenantDataSource,
   getDataSourceOptions,
 } from '@kafaat-systems/database';
-import { AdminEntity, TenantEntity } from '@kafaat-systems/entities';
+import { AdminEntity, TenantEntity, RoleType } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
+import { TemplateSchemaService } from './services/template-schema.service';
 
 interface TableRow {
   tablename: string;
 }
 
-const copyFromTemplate = 'public';
-
 @Injectable()
 export class TenantService {
-  constructor(private dataSource: DataSource) {}
+  private readonly logger = new Logger(TenantService.name);
+
+  constructor(
+    private dataSource: DataSource,
+    private templateSchemaService: TemplateSchemaService
+  ) {}
 
   async getTenantByDomain(domain: string): Promise<TenantEntity | null> {
     const ownerDS = new DataSource(getDataSourceOptions('owner'));
@@ -27,6 +31,11 @@ export class TenantService {
         where: { domain, isActive: true },
       });
       return tenant;
+    } catch (error) {
+      this.logger.error(
+        `Error getting tenant by domain ${domain}: ${error.message}`
+      );
+      return null;
     } finally {
       await ownerDS.destroy();
     }
@@ -34,6 +43,9 @@ export class TenantService {
 
   async registerTenant(dto: CreateTenantDto) {
     const schemaName = this.slugify(dto.name);
+    this.logger.log(
+      `Registering new tenant: ${dto.name} with schema: ${schemaName}`
+    );
 
     // Check if schema already exists
     const existing = await this.dataSource.query(
@@ -45,7 +57,16 @@ export class TenantService {
       throw new BadRequestException(`Schema "${schemaName}" already exists.`);
     }
 
+    // Check if domain is already in use
+    const existingTenant = await this.getTenantByDomain(dto.domain);
+    if (existingTenant) {
+      throw new BadRequestException(
+        `Domain "${dto.domain}" is already in use.`
+      );
+    }
+
     // Create schema
+    this.logger.log(`Creating schema: ${schemaName}`);
     await this.dataSource.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
 
     // Initialize tenant data source
@@ -53,42 +74,12 @@ export class TenantService {
     await tenantDS.initialize();
 
     try {
-      // Run migrations for the new schema
-      Logger.log(`Running migrations for schema: `);
-      try {
-        // Instead of running migrations, copy tables from public schema
-        // This is more reliable than running migrations on each tenant schema
-        const tables = await this.getTablesFromTemplate();
-
-        for (const table of tables) {
-          // Check if table exists in the new schema
-          const tableExists = await this.dataSource.query(
-            `
-            SELECT EXISTS (
-              SELECT FROM information_schema.tables 
-              WHERE table_schema = $1 
-              AND table_name = $2
-            )
-          `,
-            [schemaName, table]
-          );
-
-          if (!tableExists[0].exists) {
-            // Create the table in the new schema
-            await this.dataSource.query(`
-              CREATE TABLE IF NOT EXISTS "${schemaName}"."${table}" 
-              (LIKE public."${table}" INCLUDING ALL)
-            `);
-          }
-        }
-
-        Logger.log(`Schema  initialized successfully`);
-      } catch (error) {
-        Logger.error(`Error initializing schema : ${error.message}`);
-        throw error;
-      }
+      // Clone template schema tables to the new schema
+      this.logger.log(`Cloning template schema to: ${schemaName}`);
+      await this.templateSchemaService.cloneTemplateToSchema(schemaName);
 
       // Create admin user for the tenant
+      this.logger.log(`Creating admin user for tenant: ${dto.name}`);
       const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
       await tenantDS.getRepository(AdminEntity).save({
@@ -97,6 +88,8 @@ export class TenantService {
         email: dto.admin.email,
         passwordHash,
         isActive: true,
+        role: RoleType.ADMIN,
+        schemaName: schemaName,
       });
 
       // Save tenant info in owner schema
@@ -109,6 +102,7 @@ export class TenantService {
           domain: dto.domain,
           schema_name: schemaName,
           isActive: true,
+          contactEmail: dto.admin.email,
           createdAt: new Date(),
           updatedAt: new Date(),
         });
@@ -179,6 +173,9 @@ export class TenantService {
 
     try {
       return await ownerDS.getRepository(TenantEntity).find();
+    } catch (error) {
+      this.logger.error(`Error finding all tenants: ${error.message}`);
+      return [];
     } finally {
       await ownerDS.destroy();
     }
@@ -189,8 +186,65 @@ export class TenantService {
     await ownerDS.initialize();
 
     try {
-      await ownerDS.getRepository(TenantEntity).update(id, { isActive: false });
-      return { success: true, message: 'Tenant deactivated successfully' };
+      const tenant = await ownerDS
+        .getRepository(Tenant)
+        .findOne({ where: { id } });
+
+      if (!tenant) {
+        throw new BadRequestException(`Tenant with ID ${id} not found`);
+      }
+
+      this.logger.log(
+        `Deactivating tenant: ${tenant.name} (${tenant.schema_name})`
+      );
+      await ownerDS.getRepository(TenantEntity).update(id, {
+        isActive: false,
+        updatedAt: new Date(),
+      });
+
+      return {
+        success: true,
+        message: `Tenant ${tenant.name} deactivated successfully`,
+      };
+    } catch (error) {
+      this.logger.error(`Error deactivating tenant ${id}: ${error.message}`);
+      throw error;
+    } finally {
+      await ownerDS.destroy();
+    }
+  }
+
+  async getTenantById(id: number): Promise<TenantEntity | null> {
+    const ownerDS = new DataSource(getDataSourceOptions('owner'));
+    await ownerDS.initialize();
+
+    try {
+      const tenant = await ownerDS.getRepository(TenantEntity).findOne({
+        where: { id },
+      });
+      return tenant;
+    } catch (error) {
+      this.logger.error(`Error getting tenant by ID ${id}: ${error.message}`);
+      return null;
+    } finally {
+      await ownerDS.destroy();
+    }
+  }
+
+  async getTenantBySchema(schema: string): Promise<TenantEntity | null> {
+    const ownerDS = new DataSource(getDataSourceOptions('owner'));
+    await ownerDS.initialize();
+
+    try {
+      const tenant = await ownerDS.getRepository(TenantEntity).findOne({
+        where: { schema_name: schema },
+      });
+      return tenant;
+    } catch (error) {
+      this.logger.error(
+        `Error getting tenant by schema ${schema}: ${error.message}`
+      );
+      return null;
     } finally {
       await ownerDS.destroy();
     }

@@ -6,7 +6,7 @@
     "build": {
       "executor": "@nx/js:tsc",
       "options": {
-        "outputPath": "dist/libs/shared/entities",
+        "outputPath": "libs/shared/entities/dist",
         "tsConfig": "libs/shared/entities/tsconfig.lib.json",
         "main": "libs/shared/entities/src/index.ts"
       }

@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { RoleType } from './role.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -16,8 +17,6 @@ export class UserEntity {
 
   @Column({ nullable: false })
   lastName!: string;
-  @Column({ nullable: false, default: 'new' })
-  lastName23!: string;
 
   @Column({ unique: true, nullable: false })
   email!: string;
@@ -29,7 +28,14 @@ export class UserEntity {
   isActive!: boolean;
 
   @Column({ nullable: true })
-  tenantId!: string;
+  schemaName!: string;
+
+  @Column({
+    type: 'enum',
+    enum: RoleType,
+    default: RoleType.USER,
+  })
+  role!: RoleType;
 
   @CreateDateColumn()
   createdAt!: Date;
