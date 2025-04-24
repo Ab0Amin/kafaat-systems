@@ -1,6 +1,6 @@
 # Multi-Tenant Architecture Implementation
 
-I've implemented a comprehensive multi-tenant architecture for the Kafaat HR Core system. 
+I've implemented a comprehensive multi-tenant architecture for the Kafaat HR Core system.
 
 ## Architecture Overview
 
@@ -96,4 +96,3 @@ For development and testing, the system supports:
 
 - **multi-tenant-architecture.md**: Explains the multi-tenant architecture
 - **database-migrations.md**: Explains database migration process
-
