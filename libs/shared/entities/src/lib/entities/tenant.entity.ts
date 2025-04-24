@@ -35,7 +35,7 @@ export class TenantEntity {
   maxUsers!: number;
 
   @Column({ type: 'jsonb', nullable: true })
-  settings!: Settings;
+  settings!: TenantSettings;
 
   @Column({ nullable: true })
   contactEmail!: string;
