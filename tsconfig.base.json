@@ -22,8 +22,7 @@
     "paths": {
       "@kafaat-systems/database": ["libs/shared/db/src/index.ts"],
       "@kafaat-systems/entities": ["libs/shared/entities/src/index.ts"],
-      "@kafaat-systems/schemaConfig": ["libs/shared/schemaConfig/src/index.ts"],
-      "@kafaat-systems/tenant": ["libs/shared/tenant/src/index.ts"]
+      "@kafaat-systems/schemaConfig": ["libs/shared/schemaConfig/src/index.ts"]
     }
   }
 }

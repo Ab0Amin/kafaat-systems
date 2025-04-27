@@ -1,6 +1,6 @@
-import { TenantMiddleware } from '@kafaat-systems/tenant';
 import { SubdomainMiddleware } from './subdomain.middleware';
 import { RequestMethod } from '@nestjs/common';
+import { TenantMiddleware } from './tenant.middlewar';
 
 export const MIDDLEWARES = [
   {

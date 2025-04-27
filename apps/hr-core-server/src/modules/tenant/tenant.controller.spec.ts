@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TenantController } from './tenant.controller';
-import { TenantService } from '@kafaat-systems/tenant';
+import { TenantService } from './tenant.service';
 
 describe('TenantController', () => {
   let controller: TenantController;

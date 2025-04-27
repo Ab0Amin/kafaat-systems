@@ -8,10 +8,10 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { TenantService } from '@kafaat-systems/tenant';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 // import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { TenantService } from './tenant.service';
 
 // This would be your actual auth guard
 // import { AdminGuard } from '../../guards/admin.guard';

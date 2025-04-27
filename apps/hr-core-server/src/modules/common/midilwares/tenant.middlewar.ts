@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { TenantService } from '../tenant.service';
+import { SubdomainService } from '../services/subdomain.service';
 
 export interface TenantRequest extends Request {
   tenantId?: number;
@@ -12,7 +12,7 @@ export interface TenantRequest extends Request {
 }
 @Injectable()
 export class TenantMiddleware implements NestMiddleware {
-  constructor(private tenantService: TenantService) {}
+  constructor(private subdomainServics: SubdomainService) {}
 
   async use(
     req: TenantRequest,
@@ -49,7 +49,7 @@ export class TenantMiddleware implements NestMiddleware {
       }
 
       // Get tenant info and set in request
-      const tenant = await this.tenantService.getTenantByDomain(
+      const tenant = await this.subdomainServics.getTenantByDomain(
         tenantIdentifier
       );
 

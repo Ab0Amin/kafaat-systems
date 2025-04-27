@@ -18,25 +18,6 @@ export class TenantService {
     private templateSchemaService: TemplateSchemaService
   ) {}
 
-  async getTenantByDomain(domain: string): Promise<TenantEntity | null> {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
-    await ownerDS.initialize();
-
-    try {
-      const tenant = await ownerDS.getRepository(TenantEntity).findOne({
-        where: { domain, isActive: true },
-      });
-      return tenant;
-    } catch (error) {
-      this.logger.error(
-        `Error getting tenant by domain ${domain}: ${error.message}`
-      );
-      return null;
-    } finally {
-      await ownerDS.destroy();
-    }
-  }
-
   async registerTenant(dto: CreateTenantDto) {
     const schemaName = this.slugify(dto.name);
     this.logger.log(
