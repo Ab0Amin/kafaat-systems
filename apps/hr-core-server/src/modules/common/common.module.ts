@@ -6,14 +6,11 @@ import { DatabaseModule } from '@kafaat-systems/database';
 import { TenantMiddleware } from './midilwares/tenant.middlewar';
 import { SubdomainMiddleware } from './midilwares/subdomain.middleware';
 import { TemplateSchemaService } from './services/template-schema.service';
-import {
-  SchemaConfigModule,
-  TenantContextService,
-} from '@kafaat-systems/schemaConfig';
 import { SubdomainService } from './services/subdomain.service';
+import { TenantContextService } from '../tenant/services/tenant-context.service';
 
 @Module({
-  imports: [DatabaseModule, SchemaConfigModule],
+  imports: [DatabaseModule],
   controllers: [CommonController],
   providers: [
     CommonService,

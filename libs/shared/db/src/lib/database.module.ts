@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TenantContextService } from '@kafaat-systems/schemaConfig';
 import { DataSourceOptions } from 'typeorm';
 import { entities_name } from '@kafaat-systems/entities';
-import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
+import { TenantContextModule } from '@kafaat-systems/tenant-context';
 
 type CustomTypeOrmOptions = DataSourceOptions & {
   schema?: string;
@@ -18,7 +18,7 @@ export class DatabaseModule {
     return {
       module: DatabaseModule,
       imports: [
-        SchemaConfigModule,
+        TenantContextModule,
         TypeOrmModule.forRootAsync({
           imports: [SchemaConfigModule],
           useFactory: (

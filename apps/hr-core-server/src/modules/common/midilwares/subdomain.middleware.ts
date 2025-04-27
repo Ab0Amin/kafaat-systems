@@ -1,8 +1,8 @@
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { TenantContextService } from '@kafaat-systems/schemaConfig';
 import { RoleType } from '@kafaat-systems/entities';
 import { SubdomainService } from '../services/subdomain.service';
+import { TenantContextService } from '../../tenant/services/tenant-context.service';
 
 export interface SchemaRequest extends Request {
   tenantId?: number;
