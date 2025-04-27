@@ -3,7 +3,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": ".",
-    "module": "NodeNext",
+    "module": "CommonJS",
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -34,9 +34,7 @@
     {
       "path": "./libs/shared/tenant"
     },
-    {
-      "path": "./libs/shared/schemaConfig"
-    },
+ 
     {
       "path": "./libs/shared/entities"
     },

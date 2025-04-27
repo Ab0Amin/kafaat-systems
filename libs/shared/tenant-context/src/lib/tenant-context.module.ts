@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { TenantContextService } from './services/tenant-context.service.js';
-import { TenantConfigService } from './services/tenant-config.service.js';
+import { TenantContextService } from './services/tenant-context.service';
+import { TenantConfigService } from './services/tenant-config.service';
 
 @Module({
   providers: [TenantContextService, TenantConfigService],

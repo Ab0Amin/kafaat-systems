@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { RoleType } from '@kafaat-systems/entities';
 import { Reflector } from '@nestjs/core';
-import { TenantContextService } from '../../tenant/services/tenant-context.service';
+import { TenantContextService } from '@kafaat-systems/tenant-context';
 
 @Injectable({ scope: Scope.REQUEST })
 export class SchemaAccessGuard implements CanActivate {

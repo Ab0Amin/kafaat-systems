@@ -6,13 +6,12 @@ import { UserModule } from '../modules/user/user.module';
 import { TenantModule } from './../modules/tenant/tenant.module';
 import { AdminModule } from '../modules/admin/admin.module';
 
-import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
 import { CommonModule } from '../modules/common/common.module';
+import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { MIDDLEWARES } from '../modules/common/midilwares';
 
 @Module({
   imports: [
-    SchemaConfigModule,
     DatabaseModule.forRoot(),
     UserModule,
     TenantModule,
@@ -20,7 +19,7 @@ import { MIDDLEWARES } from '../modules/common/midilwares';
     CommonModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TenantContextService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

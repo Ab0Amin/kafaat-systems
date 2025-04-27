@@ -4,19 +4,7 @@
     "baseUrl": ".",
     "rootDir": "src",
     "outDir": "dist",
-    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
-    "emitDeclarationOnly": false,
-    "types": ["node"],
-    "target": "es2021",
-    "module": "NodeNext",         // ✅ ضروري
-    "moduleResolution": "nodenext", // ✅ ضروري
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "strictBindCallApply": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,     // ✅ يسهل الـ import/export
-    "allowSyntheticDefaultImports": true
+    
   },
   "include": ["src/**/*.ts"],
   "references": []

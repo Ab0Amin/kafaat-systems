@@ -8,9 +8,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "es2021",
-    "module": "esnext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler"
   },
   "include": ["src/**/*.ts", "../../libs/**/*"],
   "exclude": [

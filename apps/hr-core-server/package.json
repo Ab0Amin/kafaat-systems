@@ -25,7 +25,7 @@
         "executor": "@nx/js:node",
         "defaultConfiguration": "development",
         "dependsOn": [
-          "^build"
+          "build"
         ],
         "options": {
           "buildTarget": "@kafaat-systems/hr-core-server:build",
