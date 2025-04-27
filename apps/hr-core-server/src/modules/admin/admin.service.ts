@@ -92,4 +92,16 @@ export class AdminService {
       await ownerDS.destroy();
     }
   }
+
+  async deactivateTenant(id: number) {
+    const ownerDS = new DataSource(getDataSourceOptions('owner'));
+    await ownerDS.initialize();
+
+    try {
+      await ownerDS.getRepository(TenantEntity).update(id, { isActive: false });
+      return { success: true, message: 'Tenant deactivated successfully' };
+    } finally {
+      await ownerDS.destroy();
+    }
+  }
 }

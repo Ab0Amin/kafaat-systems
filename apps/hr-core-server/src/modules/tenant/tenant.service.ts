@@ -5,20 +5,20 @@ import {
   createTenantDataSource,
   getDataSourceOptions,
 } from '@kafaat-systems/database';
-import { Tenant } from '@kafaat-systems/database';
+import { TenantEntity } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
-import { User } from '@kafaat-systems/database';
+import { UserEntity } from '@kafaat-systems/entities';
 
 @Injectable()
 export class TenantService {
   constructor(private dataSource: DataSource) {}
 
-  async getTenantByDomain(domain: string): Promise<Tenant | null> {
+  async getTenantByDomain(domain: string): Promise<TenantEntity | null> {
     const ownerDS = new DataSource(getDataSourceOptions('owner'));
     await ownerDS.initialize();
 
     try {
-      const tenant = await ownerDS.getRepository(Tenant).findOne({
+      const tenant = await ownerDS.getRepository(TenantEntity).findOne({
         where: { domain, isActive: true },
       });
       return tenant;
@@ -54,7 +54,7 @@ export class TenantService {
       // Create admin user for the tenant
       const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
-      await tenantDS.getRepository(User).save({
+      await tenantDS.getRepository(UserEntity).save({
         firstName: dto.admin.fullName.split(' ')[0],
         lastName: dto.admin.fullName.split(' ').slice(1).join(' '),
         email: dto.admin.email,
@@ -68,7 +68,7 @@ export class TenantService {
       await ownerDS.initialize();
 
       try {
-        await ownerDS.getRepository(Tenant).save({
+        await ownerDS.getRepository(TenantEntity).save({
           name: dto.name,
           domain: dto.domain,
           schema_name: schemaName,
@@ -112,7 +112,7 @@ export class TenantService {
     await ownerDS.initialize();
 
     try {
-      return await ownerDS.getRepository(Tenant).find();
+      return await ownerDS.getRepository(TenantEntity).find();
     } finally {
       await ownerDS.destroy();
     }
@@ -123,7 +123,7 @@ export class TenantService {
     await ownerDS.initialize();
 
     try {
-      await ownerDS.getRepository(Tenant).update(id, { isActive: false });
+      await ownerDS.getRepository(TenantEntity).update(id, { isActive: false });
       return { success: true, message: 'Tenant deactivated successfully' };
     } finally {
       await ownerDS.destroy();

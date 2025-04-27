@@ -9,10 +9,6 @@ import { AdminEntity, TenantEntity, RoleType } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
 import { TemplateSchemaService } from './services/template-schema.service';
 
-interface TableRow {
-  tablename: string;
-}
-
 @Injectable()
 export class TenantService {
   private readonly logger = new Logger(TenantService.name);
@@ -138,34 +134,34 @@ export class TenantService {
     return name.toLowerCase().replace(/\s+/g, '_');
   }
 
-  async getTablesFromTemplate(): Promise<string[]> {
-    try {
-      const result = await this.dataSource.query(
-        `
-        SELECT tablename
-        FROM pg_tables
-        WHERE schemaname = $1
-        AND tablename NOT LIKE 'pg_%'
-        AND tablename NOT LIKE 'sql_%'
-        AND tablename NOT LIKE 'migrations'
-        AND tablename NOT LIKE '\\_%' ESCAPE '\\'
-      `,
-        [copyFromTemplate]
-      );
+  // async getTablesFromTemplate(): Promise<string[]> {
+  //   try {
+  //     const result = await this.dataSource.query(
+  //       `
+  //       SELECT tablename
+  //       FROM pg_tables
+  //       WHERE schemaname = $1
+  //       AND tablename NOT LIKE 'pg_%'
+  //       AND tablename NOT LIKE 'sql_%'
+  //       AND tablename NOT LIKE 'migrations'
+  //       AND tablename NOT LIKE '\\_%' ESCAPE '\\'
+  //     `,
+  //       [copyFromTemplate]
+  //     );
 
-      if (!result || result.length === 0) {
-        Logger.warn(`No tables found in template schema: `);
-        // Return default tables if none found
-        return ['users'];
-      }
+  //     if (!result || result.length === 0) {
+  //       Logger.warn(`No tables found in template schema: `);
+  //       // Return default tables if none found
+  //       return ['users'];
+  //     }
 
-      return result.map((row: TableRow) => row.tablename);
-    } catch (error) {
-      Logger.error(`Error getting tables from template: ${error.message}`);
-      // Return default tables on error
-      return ['users'];
-    }
-  }
+  //     return result.map((row: TableRow) => row.tablename);
+  //   } catch (error) {
+  //     Logger.error(`Error getting tables from template: ${error.message}`);
+  //     // Return default tables on error
+  //     return ['users'];
+  //   }
+  // }
 
   async findAll() {
     const ownerDS = new DataSource(getDataSourceOptions('owner'));
@@ -214,39 +210,39 @@ export class TenantService {
     }
   }
 
-  async getTenantById(id: number): Promise<TenantEntity | null> {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
-    await ownerDS.initialize();
+  // async getTenantById(id: number): Promise<TenantEntity | null> {
+  //   const ownerDS = new DataSource(getDataSourceOptions('owner'));
+  //   await ownerDS.initialize();
 
-    try {
-      const tenant = await ownerDS.getRepository(TenantEntity).findOne({
-        where: { id },
-      });
-      return tenant;
-    } catch (error) {
-      this.logger.error(`Error getting tenant by ID ${id}: ${error.message}`);
-      return null;
-    } finally {
-      await ownerDS.destroy();
-    }
-  }
+  //   try {
+  //     const tenant = await ownerDS.getRepository(TenantEntity).findOne({
+  //       where: { id },
+  //     });
+  //     return tenant;
+  //   } catch (error) {
+  //     this.logger.error(`Error getting tenant by ID ${id}: ${error.message}`);
+  //     return null;
+  //   } finally {
+  //     await ownerDS.destroy();
+  //   }
+  // }
 
-  async getTenantBySchema(schema: string): Promise<TenantEntity | null> {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
-    await ownerDS.initialize();
+  // async getTenantBySchema(schema: string): Promise<TenantEntity | null> {
+  //   const ownerDS = new DataSource(getDataSourceOptions('owner'));
+  //   await ownerDS.initialize();
 
-    try {
-      const tenant = await ownerDS.getRepository(TenantEntity).findOne({
-        where: { schema_name: schema },
-      });
-      return tenant;
-    } catch (error) {
-      this.logger.error(
-        `Error getting tenant by schema ${schema}: ${error.message}`
-      );
-      return null;
-    } finally {
-      await ownerDS.destroy();
-    }
-  }
+  //   try {
+  //     const tenant = await ownerDS.getRepository(TenantEntity).findOne({
+  //       where: { schema_name: schema },
+  //     });
+  //     return tenant;
+  //   } catch (error) {
+  //     this.logger.error(
+  //       `Error getting tenant by schema ${schema}: ${error.message}`
+  //     );
+  //     return null;
+  //   } finally {
+  //     await ownerDS.destroy();
+  //   }
+  // }
 }

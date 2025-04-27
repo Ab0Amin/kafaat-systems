@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { TenantService } from '@kafaat-systems/tenant';
 import { CreateTenantDto } from './dto/create-tenant.dto';
-import { UpdateTenantDto } from './dto/update-tenant.dto';
+// import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 // This would be your actual auth guard
@@ -32,26 +32,20 @@ export class TenantController {
   }
 
   // @UseGuards(AdminGuard) // Uncomment when you have the guard
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tenantService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.tenantService.findOne(+id);
+  // }
 
   // @UseGuards(AdminGuard) // Uncomment when you have the guard
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTenantDto: UpdateTenantDto) {
-    return this.tenantService.update(+id, updateTenantDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateTenantDto: UpdateTenantDto) {
+  //   return this.tenantService.update(+id, updateTenantDto);
+  // }
 
   // @UseGuards(AdminGuard) // Uncomment when you have the guard
-  @Post(':id/deactivate')
-  deactivate(@Param('id') id: string) {
-    return this.tenantService.deactivateTenant(+id);
-  }
-
-  // @UseGuards(AdminGuard) // Uncomment when you have the guard
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tenantService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.tenantService.remove(+id);
+  // }
 }

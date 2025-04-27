@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -19,5 +19,10 @@ export class AdminController {
   @Get('stats')
   getTenantStats() {
     return this.adminService.getTenantStats();
+  }
+
+  @Post(':id/deactivate')
+  deactivate(@Param('id') id: string) {
+    return this.adminService.deactivateTenant(+id);
   }
 }

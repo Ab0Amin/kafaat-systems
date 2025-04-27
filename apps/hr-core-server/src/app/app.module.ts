@@ -1,17 +1,14 @@
-import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from '@kafaat-systems/database';
 import { UserModule } from '../modules/user/user.module';
 import { TenantModule } from './../modules/tenant/tenant.module';
 import { AdminModule } from '../modules/admin/admin.module';
-import {
-  TenantMiddleware,
-  TenantService,
-  SubdomainMiddleware,
-  TemplateSchemaService,
-} from '@kafaat-systems/tenant';
+
 import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
+import { CommonModule } from '../modules/common/common.module';
+import { MIDDLEWARES } from '../modules/common/midilwares';
 
 @Module({
   imports: [
@@ -20,28 +17,20 @@ import { SchemaConfigModule } from '@kafaat-systems/schemaConfig';
     UserModule,
     TenantModule,
     AdminModule,
+    CommonModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    TenantService,
-    TenantMiddleware,
-    SubdomainMiddleware,
-    TemplateSchemaService,
-  ],
+  providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    // Apply subdomain middleware first to extract schema from subdomain
-    consumer.apply(SubdomainMiddleware).forRoutes('*');
-
-    // Then apply tenant middleware to all routes except tenant registration and admin routes
-    consumer
-      .apply(TenantMiddleware)
-      .exclude(
-        { path: 'tenant/register', method: RequestMethod.POST },
-        { path: 'admin/(.*)', method: RequestMethod.ALL }
-      )
-      .forRoutes('*');
+    for (const middlewar of MIDDLEWARES) {
+      const { middleware, exclude = [] } = middlewar;
+      const mw = consumer.apply(middleware);
+      if (exclude.length > 0) {
+        mw.exclude(...exclude);
+      }
+      mw.forRoutes('*');
+    }
   }
 }
