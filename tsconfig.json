@@ -12,7 +12,7 @@
     "declaration": true,
     "outDir": "./dist",
     "esModuleInterop": true,
-    "moduleResolution": "node16"
+    "moduleResolution": "node"
   },
   "files": [],
   "references": [
@@ -32,15 +32,13 @@
       "path": "./libs/shared/db"
     },
     {
-      "path": "./libs/shared/tenant"
-    },
- 
-    {
       "path": "./libs/shared/entities"
     },
-
     {
       "path": "./libs/shared/tenant-context"
+    },
+    {
+      "path": "./libs/shared/database"
     }
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "name": "@kafaat-systems/tenant-context",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/tenant-context/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "outputPath": "libs/shared/tenant-context/dist",
+        "tsConfig": "libs/shared/tenant-context/tsconfig.lib.json",
+        "main": "libs/shared/tenant-context/src/index.ts"
+      }
+    }
+  },
+  "tags": []
+}

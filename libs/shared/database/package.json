@@ -1,0 +1,49 @@
+{
+  "name": "@kafaat-systems/database",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "implicitDependencies": [
+    "tenant-context"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "nx": {
+    "name": "@kafaat-systems/database",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "dist/libs/shared/database",
+          "tsConfig": "libs/shared/database/tsconfig.lib.json",
+          "packageJson": "libs/shared/database/package.json",
+          "main": "libs/shared/database/src/index.ts",
+          "assets": [
+            "libs/shared/database/*.md"
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.0",
+    "dotenv": "^16.0.0",
+    "@kafaat-systems/entities": "^0.0.1",
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "@kafaat-systems/tenant-context": "^0.0.1"
+  }
+}
