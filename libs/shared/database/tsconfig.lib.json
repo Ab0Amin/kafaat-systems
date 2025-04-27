@@ -15,8 +15,9 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@kafaat-systems/tenant-context": ["../tenant-context/dist/src/lib/index.d.ts"]
-    },
+      "@kafaat-systems/tenant-context": ["../tenant-context/src/index.ts"],
+      "@kafaat-systems/entities": ["../entities/src/index.ts"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": [
