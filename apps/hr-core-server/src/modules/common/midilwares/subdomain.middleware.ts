@@ -1,9 +1,15 @@
-import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  Logger,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { RoleType } from '@kafaat-systems/entities';
 import { SubdomainService } from '../services/subdomain.service';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
-
+import { parse } from 'tldts';
 export interface SchemaRequest extends Request {
   tenantId?: number;
   schemaName?: string;
@@ -49,60 +55,47 @@ export class SubdomainMiddleware implements NestMiddleware {
 
       // Extract subdomain from host
       const host = req.headers.host || '';
-      const hostParts = host.split('.');
+      const parsedHost = parse(host);
+      this.logger.log('Host:', parsedHost.hostname);
 
+      // Remove localhost from host if present
+      const mainHost: string = '.' + process.env.BE_HOST || '';
+      let subdomain: string = parsedHost.hostname?.replace(mainHost, '') || '';
+      this.logger.log('sssssssHost:', subdomain);
+      if (subdomain?.includes('www.') || subdomain?.includes('api.')) {
+        subdomain = subdomain?.replace('www.', '').replace('api.', '');
+      }
       // Check if we have a subdomain
-      if (hostParts.length > 2) {
-        const subdomain = hostParts[0];
-
-        // Skip for 'www' or 'api' subdomains
-        if (subdomain === 'www' || subdomain === 'api') {
-          next();
-          return;
-        }
-
-        // Special case for owner subdomain
-        if (subdomain === 'owner') {
-          req.userRole = RoleType.OWNER;
-          req.schemaName = 'owner';
-          this.tenantContextService.setSchema('owner');
-          this.logger.debug('Owner subdomain detected, using owner schema');
-          next();
-          return;
-        }
-
-        // Look up tenant by subdomain
-        const tenant = await this.subdomainService.getTenantByDomain(subdomain);
-
-        if (tenant) {
-          req.tenantId = tenant.id;
-          req.schemaName = tenant.schema_name;
-
-          // Default to admin role for tenant subdomains
-          if (!req.userRole) {
-            req.userRole = RoleType.ADMIN;
-          }
-
-          this.tenantContextService.setSchema(tenant.schema_name);
-          this.logger.debug(
-            `Tenant found for subdomain ${subdomain}, using schema: ${tenant.schema_name}`
-          );
+      if (subdomain) {
+        if (subdomain === 'admin') {
+          // Admin subdomain - set schema to public and role to admin
         } else {
-          this.logger.warn(`No tenant found for subdomain: ${subdomain}`);
+          // Look up tenant by subdomain
+
+          const tenant = await this.subdomainService.getTenantByDomain(
+            subdomain
+          );
+
+          if (tenant) {
+            req.tenantId = tenant.id;
+            req.schemaName = tenant.schema_name;
+
+            this.tenantContextService.setSchema(tenant.schema_name);
+            this.logger.debug(
+              `Tenant found for subdomain ${subdomain}, using schema: ${tenant.schema_name}`
+            );
+          } else {
+            // this.logger.warn(`No tenant found for subdomain: ${subdomain}`);
+            throw new HttpException(
+              'Tenant does not exist',
+              HttpStatus.BAD_REQUEST
+            );
+          }
         }
       } else {
-        // Main domain - default to owner role and public schema
-        if (!req.userRole) {
-          req.userRole = RoleType.OWNER;
-        }
-
-        if (!req.schemaName) {
-          req.schemaName = 'public';
-          this.tenantContextService.setSchema('public');
-        }
-
-        this.logger.debug(
-          `Main domain detected, using schema: ${req.schemaName}`
+        throw new HttpException(
+          'Tenant does not exist',
+          HttpStatus.BAD_REQUEST
         );
       }
 
@@ -112,7 +105,7 @@ export class SubdomainMiddleware implements NestMiddleware {
 
       this.logger.error(`Error in subdomain middleware: ${message}`);
       // Continue with default schema
-      next();
+      next(error);
     }
   }
 }

@@ -136,16 +136,17 @@ export class TenantService {
   }
 
   async findAll() {
-    const ownerDS = createTenantDataSource('owner');
-    if (!ownerDS.isInitialized) {
-      await ownerDS.initialize();
-    }
+    // const ownerDS = createTenantDataSource('owner');
+    // if (!ownerDS.isInitialized) {
+    //   await ownerDS.initialize();
+    // }
 
-    try {
-      return await ownerDS.getRepository(TenantEntity).find();
-    } finally {
-      await ownerDS.destroy();
-    }
+    // try {
+    //   return await ownerDS.getRepository(TenantEntity).find();
+    // } finally {
+    //   await ownerDS.destroy();
+    // }
+    return 'working';
   }
 
   async deactivateTenant(id: number) {

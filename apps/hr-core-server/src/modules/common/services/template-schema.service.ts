@@ -1,73 +1,39 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { TemplateConfigEntity } from '@kafaat-systems/entities';
 
 interface TableInfo {
-  tableName: string;
+  tableNames: Array<string>;
   schemaName: string;
   copyStructure: boolean;
   copyData: boolean;
   priority: number;
 }
+// TODO: Move this to a config file
+const tablesNames = ['roles', 'users'];
 
 @Injectable()
 export class TemplateSchemaService {
   private readonly logger = new Logger(TemplateSchemaService.name);
-
   constructor(private dataSource: DataSource) {}
-
-  /**
-   * Get all template configurations from the owner schema
-   */
-  async getTemplateConfigs(): Promise<TableInfo[]> {
-    try {
-      const configs = await this.dataSource
-        .getRepository(TemplateConfigEntity)
-        .find({
-          order: { priority: 'ASC' },
-        });
-
-      return configs.map((config) => ({
-        tableName: config.tableName,
-        schemaName: config.schemaName,
-        copyStructure: config.copyStructure,
-        copyData: config.copyData,
-        priority: config.priority,
-      }));
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      this.logger.error(`Error getting template configs: ${message}`);
-      return [];
-    }
-  }
 
   /**
    * Clone tables from template schema to target schema
    */
   async cloneTemplateToSchema(targetSchema: string): Promise<void> {
-    const configs = await this.getTemplateConfigs();
+    const config = {
+      tableNames: tablesNames,
+      schemaName: process.env.DB_COPY_SOURCE ?? 'public',
+      copyStructure: true,
+      copyData: true,
+      priority: 10,
+    };
 
-    if (configs.length === 0) {
-      this.logger.warn(
-        'No template configurations found, using default template schema'
-      );
-      // Default to copying roles from template schema
-      configs.push({
-        tableName: 'roles',
-        schemaName: 'template',
-        copyStructure: true,
-        copyData: true,
-        priority: 10,
-      });
-    }
-
-    for (const config of configs) {
+    for (const tableName of config.tableNames) {
       await this.cloneTable(
         config.schemaName,
-        config.tableName,
+        tableName,
         targetSchema,
-        config.copyStructure,
-        config.copyData
+        config.copyStructure
       );
     }
   }
@@ -79,8 +45,7 @@ export class TemplateSchemaService {
     sourceSchema: string,
     tableName: string,
     targetSchema: string,
-    copyStructure: boolean,
-    copyData: boolean
+    copyStructure: boolean
   ): Promise<void> {
     try {
       // Check if source table exists
@@ -105,9 +70,9 @@ export class TemplateSchemaService {
         );
       } else if (copyStructure) {
         // Create table structure in target schema
-        this.logger.debug(
-          `Creating table ${targetSchema}.${tableName} from ${sourceSchema}.${tableName}`
-        );
+        // this.logger.debug(
+        //   `Creating table ${targetSchema}.${tableName} from ${sourceSchema}.${tableName}`
+        // );
         await this.dataSource.query(`
           CREATE TABLE IF NOT EXISTS "${targetSchema}"."${tableName}" 
           (LIKE "${sourceSchema}"."${tableName}" INCLUDING ALL)
@@ -115,19 +80,18 @@ export class TemplateSchemaService {
       }
 
       // Copy data if requested and table was created
-      if (copyData && (targetTableExists || copyStructure)) {
-        this.logger.debug(
-          `Copying data from ${sourceSchema}.${tableName} to ${targetSchema}.${tableName}`
-        );
+      if (targetTableExists || copyStructure) {
+        // this.logger.debug(
+        //   `Copying data from ${sourceSchema}.${tableName} to ${targetSchema}.${tableName}`
+        // );
 
         // Check if target table has data
         const hasData = await this.tableHasData(targetSchema, tableName);
 
-        if (hasData) {
-          this.logger.warn(
-            `Target table ${targetSchema}.${tableName} already has data, skipping data copy`
-          );
-        } else {
+        if (!hasData) {
+          // this.logger.warn(
+          //   `Target table ${targetSchema}.${tableName} already has data, skipping data copy`
+          // );
           // Copy data from source to target
           await this.dataSource.query(`
             INSERT INTO "${targetSchema}"."${tableName}"

@@ -18,7 +18,9 @@ export class DatabaseModule {
           useFactory: (tenantContext: TenantContextService) => ({
             ...getDefaultDatabaseOptions(),
             schema:
-              tenantContext.getSchema() || process.env.DB_SCHEMA || 'public',
+              tenantContext.getSchema() ||
+              process.env.DEFAULT_SCHEMA ||
+              'public',
           }),
           inject: [TenantContextService],
         }),

@@ -15,7 +15,7 @@ export const getDataSourceOptions = (schema?: string): DataSourceOptions => {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    schema: schema || process.env.DB_SCHEMA,
+    schema: schema || process.env.DEFAULT_SCHEMA,
     synchronize: false,
     logging: false,
 
