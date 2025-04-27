@@ -6,18 +6,14 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
-    "module": "CommonJS",
-    "moduleResolution": "node",
+
     "types": ["node"],
     "strictNullChecks": true,
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "@kafaat-systems/tenant-context": ["../tenant-context/src/index.ts"],
-      "@kafaat-systems/entities": ["../entities/src/index.ts"]
-    }
+
   },
   "include": ["src/**/*.ts"],
   "exclude": [

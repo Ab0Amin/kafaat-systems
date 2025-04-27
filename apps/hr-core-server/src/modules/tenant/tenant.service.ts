@@ -2,11 +2,11 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import {
   createTenantDataSource,
-  getDataSourceOptions,
+  // getDataSourceOptions,
 } from '@kafaat-systems/database';
 import { AdminEntity, RoleType, TenantEntity } from '@kafaat-systems/entities';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from '@kafaat-systems/entities';
+// import { UserEntity } from '@kafaat-systems/entities';
 import { TemplateSchemaService } from '../common/services/template-schema.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 
@@ -19,8 +19,10 @@ export class TenantService {
   private readonly logger = new Logger(TenantService.name);
 
   async getTenantByDomain(domain: string): Promise<TenantEntity | null> {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
-    await ownerDS.initialize();
+    const ownerDS = createTenantDataSource('owner');
+    if (!ownerDS.isInitialized) {
+      await ownerDS.initialize();
+    }
 
     try {
       const tenant = await ownerDS.getRepository(TenantEntity).findOne({
@@ -62,7 +64,9 @@ export class TenantService {
 
     // Initialize tenant data source
     const tenantDS = createTenantDataSource(schemaName);
-    await tenantDS.initialize();
+    if (!tenantDS.isInitialized) {
+      await tenantDS.initialize();
+    }
 
     try {
       // Clone template schema tables to the new schema
@@ -84,8 +88,10 @@ export class TenantService {
       });
 
       // Save tenant info in owner schema
-      const ownerDS = new DataSource(getDataSourceOptions('owner'));
-      await ownerDS.initialize();
+      const ownerDS = createTenantDataSource('owner');
+      if (!ownerDS.isInitialized) {
+        await ownerDS.initialize();
+      }
 
       try {
         await ownerDS.getRepository(TenantEntity).save({
@@ -130,8 +136,10 @@ export class TenantService {
   }
 
   async findAll() {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
-    await ownerDS.initialize();
+    const ownerDS = createTenantDataSource('owner');
+    if (!ownerDS.isInitialized) {
+      await ownerDS.initialize();
+    }
 
     try {
       return await ownerDS.getRepository(TenantEntity).find();
@@ -141,8 +149,10 @@ export class TenantService {
   }
 
   async deactivateTenant(id: number) {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
-    await ownerDS.initialize();
+    const ownerDS = createTenantDataSource('owner');
+    if (!ownerDS.isInitialized) {
+      await ownerDS.initialize();
+    }
 
     try {
       await ownerDS.getRepository(TenantEntity).update(id, { isActive: false });
