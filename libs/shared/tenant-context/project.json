@@ -6,6 +6,7 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
+      "dependsOn": ["^build"],
       "options": {
         "outputPath": "libs/shared/tenant-context/dist",
         "tsConfig": "libs/shared/tenant-context/tsconfig.lib.json",

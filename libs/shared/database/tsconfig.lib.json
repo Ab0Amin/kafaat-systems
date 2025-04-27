@@ -13,10 +13,17 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@kafaat-systems/tenant-context": ["../tenant-context/dist/src/lib/index.d.ts"]
+    },
   },
   "include": ["src/**/*.ts"],
+  "exclude": [
+    "**/*.spec.ts",
+    "src/lib/config/typeorm.cli.config.ts"
+  ],
   "references": [{
     "path": "../tenant-context"
-  }]
+  }, { "path": "../entities" },]
 }
