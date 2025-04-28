@@ -1,12 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { SetPasswordDto } from './dto/set-password.dto';
+import { TokenService } from './service/temp-token.service';
+import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AdminEntity } from '@kafaat-systems/entities';
+import { Repository } from 'typeorm';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly tokenService: TokenService,
+    @InjectRepository(AdminEntity)
+    private readonly adminRepository: Repository<AdminEntity>
+  ) {}
+  @Post('set-password')
+  // async setPassword(@Body() dto: SetPasswordDto) {
+  //   const resetToken = await this.tokenService.validateToken(dto.token);
 
+  //   if (!resetToken) {
+  //     throw new BadRequestException('Invalid or expired token');
+  //   }
+
+  //   const admin = resetToken.admin;
+
+  //   const passwordHash = await bcrypt.hash(dto.password, 10);
+  //   admin.passwordHash = passwordHash;
+
+  //   await this.adminRepository.save(admin);
+  //   await this.tokenService.markTokenAsUsed(dto.token);
+
+  //   return { message: 'Password set successfully' };
+  // }
   @Post()
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.create(createAuthDto);

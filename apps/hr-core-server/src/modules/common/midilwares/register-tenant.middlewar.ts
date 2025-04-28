@@ -2,6 +2,7 @@ import {
   Injectable,
   NestMiddleware,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { SubdomainService } from '../services/subdomain.service';
@@ -19,7 +20,9 @@ export class RegisterTenantMiddleware implements NestMiddleware {
     if (req.method !== 'POST') {
       return next();
     }
-
+    Logger.log(
+      'RegisterTenantMiddleware called1111111111111111111111111111111111111111'
+    );
     const dto = req.body as CreateTenantDto;
 
     // Validate email domain matches tenant domain
@@ -27,6 +30,7 @@ export class RegisterTenantMiddleware implements NestMiddleware {
       .split('@')[1]
       .split('.')[0]
       .toLowerCase();
+
     const tenantDomain = dto.domain.toLowerCase();
 
     if (emailDomain !== tenantDomain) {
@@ -63,7 +67,7 @@ export class RegisterTenantMiddleware implements NestMiddleware {
         'Domain must contain only letters, numbers, and hyphens, and cannot start or end with a hyphen.'
       );
     }
-
+    Logger.log('ssssssssssssssssssss');
     next();
   }
 }

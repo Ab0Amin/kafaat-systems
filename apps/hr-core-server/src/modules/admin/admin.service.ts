@@ -1,18 +1,28 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { AdminEntity, RoleType, TenantEntity } from '@kafaat-systems/entities';
+import {
+  AdminEntity,
+  ResetTokenEntity,
+  RoleType,
+  TenantEntity,
+  UserEntity,
+} from '@kafaat-systems/entities';
 import { createTenantDataSource } from '@kafaat-systems/database';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { SubdomainService } from '../common/services/subdomain.service';
 import { TemplateSchemaService } from '../common/services/template-schema.service';
 import * as bcrypt from 'bcrypt';
+import { TokenService } from '../auth/service/temp-token.service';
+import { EmailService } from '../auth/service/email.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     private dataSource: DataSource,
     private readonly subdomainService: SubdomainService,
-    private templateSchemaService: TemplateSchemaService
+    private templateSchemaService: TemplateSchemaService,
+    private readonly tokenService: TokenService,
+    private readonly emailService: EmailService
   ) {}
 
   async runMigrationForAllTenants() {
@@ -109,43 +119,54 @@ export class AdminService {
       await ownerDS.destroy();
     }
   }
-
   async createNewTenant(dto: CreateTenantDto) {
     const schemaName = this.subdomainService.slugify(dto.domain);
+    let resetToken;
+    let createdTenant;
 
-    // Create schema
-    await this.dataSource.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
 
-    // Initialize tenant data source
+    // Create schema **without** transaction first
+    await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
+
+    // Initialize tenantDS now
     const tenantDS = createTenantDataSource(schemaName);
     if (!tenantDS.isInitialized) {
       await tenantDS.initialize();
     }
 
     try {
-      // Clone template schema tables to the new schema
-      await this.templateSchemaService.cloneTemplateToSchema(schemaName);
+      // Now start transaction for the rest
+      await queryRunner.startTransaction();
 
-      // Create admin user for the tenant
+      // Step 3: Clone template tables into new schema
+      await this.templateSchemaService.cloneTemplateToSchema(
+        schemaName,
+        tenantDS
+      );
+
+      // Step 4: Create admin user
       const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
-      await tenantDS.getRepository(AdminEntity).save({
+      createdTenant = await tenantDS.getRepository(UserEntity).save({
         firstName: dto.admin.firstName,
         lastName: dto.admin.lastName,
         email: dto.admin.email,
-        passwordHash,
+        passwordHash: passwordHash,
         isActive: true,
         role: RoleType.ADMIN,
         schemaName: schemaName,
       });
 
-      // Save tenant info in owner schema
+      // Step 5: Save tenant info into owner schema
       const ownerDS = createTenantDataSource('owner');
       if (!ownerDS.isInitialized) {
         await ownerDS.initialize();
       }
-
       try {
+        // createdAdmin = await ownerDS.manager.transaction(async (manager) => {
+        //   await manager.getRepository(TenantEntity).save({
         await ownerDS.getRepository(TenantEntity).save({
           name: dto.name,
           domain: dto.domain,
@@ -161,28 +182,55 @@ export class AdminService {
       } finally {
         await ownerDS.destroy();
       }
-
-      return {
-        success: true,
-        message: `Tenant ${dto.name} successfully registered with schema ${schemaName}.`,
-        tenant: {
-          name: dto.name,
-          domain: dto.domain,
-          schema: schemaName,
-        },
-      };
-    } catch (error: unknown) {
-      // Rollback on error
+      // Step 6: If everything went fine, commit the transaction
+      await queryRunner.commitTransaction();
+      // Step 7: After commit, send email (email sending should NOT be inside transaction)
+      resetToken = await this.tokenService.createResetToken(
+        createdTenant?.id,
+        tenantDS
+      );
+    } catch (error: any) {
+      // Step 8: Rollback if anything fails
+      await queryRunner.rollbackTransaction();
       await this.dataSource.query(
         `DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`
       );
+
+      if (error?.code === '23505') {
+        // Duplicate key
+        throw new BadRequestException('Tenant domain or name already exists.');
+      }
+
       throw new BadRequestException(
         `Failed to register tenant: ${
           error instanceof Error ? error.message : 'Unknown error'
         }`
       );
     } finally {
-      await tenantDS.destroy();
+      await queryRunner.release();
+      if (tenantDS && tenantDS.isInitialized) {
+        await tenantDS.destroy();
+      }
     }
+
+    const expiresAt = new Date();
+    expiresAt.setDate(new Date().getDate() + 3);
+
+    await this.emailService.sendSetPasswordEmail(
+      dto.admin.email,
+      resetToken.token,
+      expiresAt.toString()
+    );
+    return {
+      success: true,
+      message: `Tenant ${dto.name} successfully registered with schema ${schemaName}.`,
+      tenant: {
+        name: dto.name,
+        domain: dto.domain,
+        schema: schemaName,
+        admin: createdTenant,
+        admin1: resetToken,
+      },
+    };
   }
 }

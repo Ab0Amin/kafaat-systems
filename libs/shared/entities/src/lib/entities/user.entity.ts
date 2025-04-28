@@ -7,35 +7,35 @@ import {
 } from 'typeorm';
 import { RoleType } from './role.entity';
 
-@Entity({ name: 'users', schema: 'template' })
+@Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ nullable: false })
+  @Column()
   firstName!: string;
 
-  @Column({ nullable: false })
+  @Column()
   lastName!: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ unique: true })
   email!: string;
 
-  @Column({ nullable: false })
+  @Column()
   passwordHash!: string;
 
   @Column({ default: true })
   isActive!: boolean;
 
-  @Column({ nullable: true })
-  schemaName!: string;
-
   @Column({
     type: 'enum',
     enum: RoleType,
-    default: RoleType.USER,
+    default: RoleType.ADMIN,
   })
   role!: RoleType;
+
+  @Column({ nullable: true })
+  schemaName!: string;
 
   @CreateDateColumn()
   createdAt!: Date;

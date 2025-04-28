@@ -13,7 +13,7 @@ export interface TenantSettings {
 }
 @Entity({ name: 'tenants', schema: 'owner' })
 export class TenantEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: number;
 
   @Column()
