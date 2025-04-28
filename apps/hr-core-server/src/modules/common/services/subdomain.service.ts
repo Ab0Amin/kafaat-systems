@@ -22,8 +22,6 @@ export class SubdomainService {
       const tenant = await ownerDS.getRepository(TenantEntity).findOne({
         where: { domain, isActive: true },
       });
-      Logger.log('aaaaaaaaaaaaaaaaaaaaaaaaa');
-      Logger.log(domain);
       return tenant;
     } catch (error) {
       this.logger.error(

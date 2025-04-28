@@ -19,9 +19,8 @@ interface SchemaRequest extends Request {
 @Injectable({ scope: Scope.REQUEST })
 export class TenantContextService {
   private readonly als = new AsyncLocalStorage<TenantContext>();
-  private defaultSchema = process.env.DEFAULT_SCHEMA || 'public';
   private readonly logger = new Logger(TenantContextService.name);
-  private currentSchema: string = this.defaultSchema;
+  private currentSchema: string = process.env.DEFAULT_SCHEMA || 'public';
   private currentRole: RoleType = RoleType.USER;
 
   constructor(@Optional() @Inject(REQUEST) private request?: SchemaRequest) {
@@ -54,18 +53,10 @@ export class TenantContextService {
       };
     }
 
-    // Return current context if we have one
-    if (this.currentSchema) {
-      return {
-        schema: this.currentSchema,
-        role: this.currentRole,
-      };
-    }
-
     // Return default context as fallback
     return {
-      schema: this.defaultSchema,
-      role: RoleType.USER,
+      schema: this.currentSchema,
+      role: this.currentRole,
     };
   }
 
@@ -75,16 +66,12 @@ export class TenantContextService {
 
   getSchema(): string {
     // Return the schema from context or current schema or default
-    return (
-      this.getContext()?.schema || this.currentSchema || this.defaultSchema
-    );
+    return this.getContext()?.schema || this.currentSchema;
   }
 
   getRole(): RoleType {
     // Return the role from context or current role or default
-    Logger.log('Aaaaaaaaaaaaaaaaaaaaaaaaaaa');
-    Logger.log(this.getContext()?.role || this.currentRole || RoleType.USER);
-    return this.getContext()?.role || this.currentRole || RoleType.USER;
+    return this.getContext()?.role || this.currentRole;
   }
 
   isOwner(): boolean {
@@ -93,10 +80,6 @@ export class TenantContextService {
 
   isAdmin(): boolean {
     return this.getRole() === RoleType.ADMIN || this.isOwner();
-  }
-
-  run(context: TenantContext, callback: () => unknown) {
-    return this.als.run(context, callback);
   }
 
   setSchema(schema: string): void {
@@ -109,7 +92,7 @@ export class TenantContextService {
     this.currentRole = role;
   }
 
-  setDefaultSchema(schema: string): void {
-    this.defaultSchema = schema;
+  setcurrentSchema(schema: string): void {
+    this.currentSchema = schema;
   }
 }

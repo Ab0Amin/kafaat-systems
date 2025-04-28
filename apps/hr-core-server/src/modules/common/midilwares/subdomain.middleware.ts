@@ -56,12 +56,10 @@ export class SubdomainMiddleware implements NestMiddleware {
       // Extract subdomain from host
       const host = req.headers.host || '';
       const parsedHost = parse(host);
-      this.logger.log('Host:', parsedHost.hostname);
 
       // Remove localhost from host if present
       const mainHost: string = '.' + process.env.BE_HOST || '';
       let subdomain: string = parsedHost.hostname?.replace(mainHost, '') || '';
-      this.logger.log('sssssssHost:', subdomain);
       if (subdomain?.includes('www.') || subdomain?.includes('api.')) {
         subdomain = subdomain?.replace('www.', '').replace('api.', '');
       }
@@ -85,7 +83,6 @@ export class SubdomainMiddleware implements NestMiddleware {
               `Tenant found for subdomain ${subdomain}, using schema: ${tenant.schema_name}`
             );
           } else {
-            // this.logger.warn(`No tenant found for subdomain: ${subdomain}`);
             throw new HttpException(
               'Tenant does not exist',
               HttpStatus.BAD_REQUEST
