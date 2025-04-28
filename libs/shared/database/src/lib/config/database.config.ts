@@ -9,6 +9,7 @@ export const getDefaultDatabaseOptions = (): PostgresConnectionOptions => ({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: entities_name,
-  synchronize: false,
+  synchronize: true,
+  // synchronize: false, // Set to false in production
   logging: false,
 });

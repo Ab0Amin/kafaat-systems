@@ -19,11 +19,11 @@
     "dev:docker": "rimraf apps/hr-core-client/.next apps/hr-core-server/dist && docker-compose up --build",
     "stop:docker": "docker-compose down",
     "typeorm": "cross-env TS_NODE_PROJECT=tsconfig.typeorm.json typeorm-ts-node-commonjs",
-    "migration:generate": "npm run typeorm -- migration:generate libs/shared/db/src/lib/migrations/Migration -d libs/shared/db/src/lib/config/typeorm.cli.config.ts",
-    "migration:run": "npm run typeorm -- migration:run -d libs/shared/db/src/lib/config/typeorm.cli.config.ts",
-    "migration:revert": "npm run typeorm -- migration:revert -d libs/shared/db/src/lib/config/typeorm.cli.config.ts",
-    "db:init": "npm run typeorm -- migration:run -d libs/shared/db/src/lib/config/typeorm.cli.config.ts",
-    "db:owner": "psql -U postgres -d hr-core  -f libs/shared/db/src/sql/owner.sql"
+    "migration:generate": "npm run typeorm -- migration:generate libs/shared/database/src/lib/migrations/Migration -d libs/shared/database/src/lib/config/typeorm.cli.config.ts",
+    "migration:run": "npm run typeorm -- migration:run -d libs/shared/database/src/lib/config/typeorm.cli.config.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d libs/shared/database/src/lib/config/typeorm.cli.config.ts",
+    "database:init": "npm run typeorm -- migration:run -d libs/shared/database/src/lib/config/typeorm.cli.config.ts",
+    "database:owner": "psql -U postgres -d hr-core  -f libs/shared/database/src/sql/owner.sql"
   },
   "private": true,
   "dependencies": {

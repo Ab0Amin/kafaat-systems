@@ -1,0 +1,30 @@
+import { IsString, IsNotEmpty, ValidateNested, IsEmail } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { AdminDto } from './create-admin.dto';
+
+export class CreateTenantDto {
+  @ApiProperty({
+    example: 'Acme Corporation',
+    description: 'The name of the tenant',
+  })
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @ApiProperty({
+    example: 'acme.com',
+    description: 'The domain name of the tenant',
+  })
+  @IsString()
+  @IsNotEmpty()
+  domain!: string;
+
+  @ApiProperty({
+    type: () => AdminDto,
+    description: 'The admin user details for the tenant',
+  })
+  @ValidateNested()
+  @Type(() => AdminDto)
+  admin!: AdminDto;
+}

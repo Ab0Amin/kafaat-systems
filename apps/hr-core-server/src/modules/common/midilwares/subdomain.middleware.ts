@@ -37,7 +37,13 @@ export class SubdomainMiddleware implements NestMiddleware {
 
       if (roleHeader) {
         req.userRole = roleHeader as RoleType;
-        this.logger.debug(`Using role from header: ${roleHeader}`);
+        if (roleHeader === 'owner') {
+          this.logger.debug(`Using role from header: ${roleHeader}`);
+          next();
+          return;
+        }
+
+        this.logger.debug(`Using role from header1: ${roleHeader}`);
       }
 
       if (schemaHeader) {

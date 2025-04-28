@@ -16,7 +16,8 @@ export const getDataSourceOptions = (schema?: string): DataSourceOptions => {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     schema: schema || process.env.DEFAULT_SCHEMA,
-    synchronize: false,
+    synchronize: true,
+    // synchronize: false, // Set to false in production
     logging: false,
 
     entities: entities_name,

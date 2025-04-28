@@ -8,7 +8,11 @@ export class AdminDto {
   })
   @IsString()
   @IsNotEmpty()
-  fullName!: string;
+  firstName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  lastName!: string;
 
   @ApiProperty({
     example: 'john.doe@example.com',

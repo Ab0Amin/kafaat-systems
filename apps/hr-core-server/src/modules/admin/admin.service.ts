@@ -1,19 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { TenantEntity } from '@kafaat-systems/entities';
-import {
-  getDataSourceOptions,
-  createTenantDataSource,
-} from '@kafaat-systems/database';
+import { AdminEntity, RoleType, TenantEntity } from '@kafaat-systems/entities';
+import { createTenantDataSource } from '@kafaat-systems/database';
+import { CreateTenantDto } from './dto/create-tenant.dto';
+import { SubdomainService } from '../common/services/subdomain.service';
+import { TemplateSchemaService } from '../common/services/template-schema.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdminService {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    private readonly subdomainService: SubdomainService,
+    private templateSchemaService: TemplateSchemaService
+  ) {}
 
   async runMigrationForAllTenants() {
     // Get all active tenants
 
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
+    const ownerDS = createTenantDataSource('owner');
     await ownerDS.initialize();
 
     try {
@@ -71,7 +76,7 @@ export class AdminService {
   }
 
   async getTenantStats() {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
+    const ownerDS = createTenantDataSource('owner');
     await ownerDS.initialize();
     try {
       const tenants = await ownerDS.getRepository(TenantEntity).find();
@@ -94,7 +99,7 @@ export class AdminService {
   }
 
   async deactivateTenant(id: number) {
-    const ownerDS = new DataSource(getDataSourceOptions('owner'));
+    const ownerDS = createTenantDataSource('owner');
     await ownerDS.initialize();
 
     try {
@@ -102,6 +107,99 @@ export class AdminService {
       return { success: true, message: 'Tenant deactivated successfully' };
     } finally {
       await ownerDS.destroy();
+    }
+  }
+
+  async createNewTenant(dto: CreateTenantDto) {
+    const schemaName = this.subdomainService.slugify(dto.domain);
+
+    // Check if schema already exists
+    const existing = await this.dataSource.query(
+      `SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1`,
+      [schemaName]
+    );
+
+    if (existing.length > 0) {
+      throw new BadRequestException(`Schema "${schemaName}" already exists.`);
+    }
+
+    // Check if domain is already in use
+    const existingTenant = await this.subdomainService.getTenantByDomain(
+      dto.domain
+    );
+    if (existingTenant) {
+      throw new BadRequestException(
+        `Domain "${dto.domain}" is already in use.`
+      );
+    }
+
+    // Create schema
+    await this.dataSource.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
+
+    // Initialize tenant data source
+    const tenantDS = createTenantDataSource(schemaName);
+    if (!tenantDS.isInitialized) {
+      await tenantDS.initialize();
+    }
+
+    try {
+      // Clone template schema tables to the new schema
+      await this.templateSchemaService.cloneTemplateToSchema(schemaName);
+
+      // Create admin user for the tenant
+      const passwordHash = await bcrypt.hash(dto.admin.password, 10);
+
+      await tenantDS.getRepository(AdminEntity).save({
+        firstName: dto.admin.firstName,
+        lastName: dto.admin.lastName,
+        email: dto.admin.email,
+        passwordHash,
+        isActive: true,
+        role: RoleType.ADMIN,
+        schemaName: schemaName,
+      });
+
+      // Save tenant info in owner schema
+      const ownerDS = createTenantDataSource('owner');
+      if (!ownerDS.isInitialized) {
+        await ownerDS.initialize();
+      }
+
+      try {
+        await ownerDS.getRepository(TenantEntity).save({
+          name: dto.name,
+          domain: dto.domain,
+          schema_name: schemaName,
+          isActive: true,
+          contactEmail: dto.admin.email,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      } finally {
+        await ownerDS.destroy();
+      }
+
+      return {
+        success: true,
+        message: `Tenant ${dto.name} successfully registered with schema ${schemaName}.`,
+        tenant: {
+          name: dto.name,
+          domain: dto.domain,
+          schema: schemaName,
+        },
+      };
+    } catch (error: unknown) {
+      // Rollback on error
+      await this.dataSource.query(
+        `DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`
+      );
+      throw new BadRequestException(
+        `Failed to register tenant: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      );
+    } finally {
+      await tenantDS.destroy();
     }
   }
 }

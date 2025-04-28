@@ -1,6 +1,7 @@
-import { Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Param, Body } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 
 // This would be your actual auth guard
 // import { AdminGuard } from '../../guards/admin.guard';
@@ -9,7 +10,13 @@ import { ApiTags } from '@nestjs/swagger';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  // @UseGuards(AdminGuard) // Uncomment when you have the guard
+  // @UseGuards(dminGuard)A // Uncomment when you have the guard
+  @Post('register')
+  create(@Body() createTenantDto: CreateTenantDto) {
+    return this.adminService.createNewTenant(createTenantDto);
+  }
+
+  // @UseGuards(dminGuard)A // Uncomment when you have the guard
   @Post('migrations/run-all')
   runMigrationsForAllTenants() {
     return this.adminService.runMigrationForAllTenants();

@@ -32,4 +32,8 @@ export class SubdomainService {
       await ownerDS.destroy();
     }
   }
+
+  slugify(name: string) {
+    return name.toLowerCase().replace(/\s+/g, '_');
+  }
 }

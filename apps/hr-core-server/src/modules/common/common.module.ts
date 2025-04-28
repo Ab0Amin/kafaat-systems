@@ -26,6 +26,8 @@ import { TenantContextService } from '@kafaat-systems/tenant-context';
     TenantMiddleware,
     SubdomainMiddleware,
     SubdomainService,
+    TenantContextService,
+    TemplateSchemaService,
   ],
 })
 export class CommonModule {}
