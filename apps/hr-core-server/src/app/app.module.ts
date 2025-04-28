@@ -24,12 +24,16 @@ import { MIDDLEWARES } from '../modules/common/midilwares';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     for (const middlewar of MIDDLEWARES) {
-      const { middleware, exclude = [] } = middlewar;
+      const { middleware, exclude = [], include = [] } = middlewar;
       const mw = consumer.apply(middleware);
       if (exclude.length > 0) {
         mw.exclude(...exclude);
       }
-      mw.forRoutes('*');
+      if (include.length > 0) {
+        mw.forRoutes(...include);
+      } else {
+        mw.forRoutes('*');
+      }
     }
   }
 }

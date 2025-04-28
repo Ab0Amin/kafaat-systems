@@ -113,26 +113,6 @@ export class AdminService {
   async createNewTenant(dto: CreateTenantDto) {
     const schemaName = this.subdomainService.slugify(dto.domain);
 
-    // Check if schema already exists
-    const existing = await this.dataSource.query(
-      `SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1`,
-      [schemaName]
-    );
-
-    if (existing.length > 0) {
-      throw new BadRequestException(`Schema "${schemaName}" already exists.`);
-    }
-
-    // Check if domain is already in use
-    const existingTenant = await this.subdomainService.getTenantByDomain(
-      dto.domain
-    );
-    if (existingTenant) {
-      throw new BadRequestException(
-        `Domain "${dto.domain}" is already in use.`
-      );
-    }
-
     // Create schema
     await this.dataSource.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
 
@@ -172,6 +152,9 @@ export class AdminService {
           schema_name: schemaName,
           isActive: true,
           contactEmail: dto.admin.email,
+          plan: dto.plan,
+          phone: dto.contactPhone,
+          maxUsers: dto.maxUsers,
           createdAt: new Date(),
           updatedAt: new Date(),
         });
