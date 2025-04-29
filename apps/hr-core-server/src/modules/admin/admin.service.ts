@@ -1,12 +1,6 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import {
-  AdminEntity,
-  ResetTokenEntity,
-  RoleType,
-  TenantEntity,
-  UserEntity,
-} from '@kafaat-systems/entities';
+import { RoleType, TenantEntity, UserEntity } from '@kafaat-systems/entities';
 import { createTenantDataSource } from '@kafaat-systems/database';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { SubdomainService } from '../common/services/subdomain.service';
@@ -189,17 +183,12 @@ export class AdminService {
         createdTenant?.id,
         tenantDS
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Step 8: Rollback if anything fails
       await queryRunner.rollbackTransaction();
       await this.dataSource.query(
         `DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`
       );
-
-      if (error?.code === '23505') {
-        // Duplicate key
-        throw new BadRequestException('Tenant domain or name already exists.');
-      }
 
       throw new BadRequestException(
         `Failed to register tenant: ${

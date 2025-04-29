@@ -8,7 +8,7 @@ export class TokenService {
   async createResetToken(
     adminId: string,
     tenantDS: DataSource,
-    durationPerDay: 3
+    durationPerDay = 3
   ): Promise<ResetTokenEntity> {
     const resetTokenRepo = tenantDS.getRepository(ResetTokenEntity);
 
