@@ -142,13 +142,13 @@ export class OwnerService {
       );
 
       // Step 4: Create admin user
-      const passwordHash = await bcrypt.hash(dto.admin.password, 10);
+      // const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
       createdTenant = await tenantDS.getRepository(UserEntity).save({
         firstName: dto.admin.firstName,
         lastName: dto.admin.lastName,
         email: dto.admin.email,
-        passwordHash: passwordHash,
+        // passwordHash: '',
         isActive: true,
         role: RoleType.ADMIN,
         schemaName: schemaName,
