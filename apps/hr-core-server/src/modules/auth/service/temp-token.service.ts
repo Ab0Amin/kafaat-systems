@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { ResetTokenEntity } from '@kafaat-systems/entities';
 import { randomBytes } from 'crypto';
 
@@ -7,13 +7,14 @@ import { randomBytes } from 'crypto';
 export class TokenService {
   async createResetToken(
     adminId: string,
-    tenantDS: DataSource
+    tenantDS: DataSource,
+    durationPerDay: 3
   ): Promise<ResetTokenEntity> {
     const resetTokenRepo = tenantDS.getRepository(ResetTokenEntity);
 
     const token = randomBytes(32).toString('hex');
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 3); // valid for 3 days
+    expiresAt.setDate(expiresAt.getDate() + durationPerDay); // valid for 3 days
 
     const resetToken = resetTokenRepo.create({
       token,
@@ -24,7 +25,7 @@ export class TokenService {
     return resetTokenRepo.save(resetToken);
   }
 
-  // Validate Token داخل tenant-specific datasource
+  // Validate Token in tenant-specific datasource
   async validateToken(
     token: string,
     tenantDS: DataSource
