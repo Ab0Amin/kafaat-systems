@@ -46,4 +46,8 @@ export class TokenService {
     const resetTokenRepo = tenantDS.getRepository(ResetTokenEntity);
     await resetTokenRepo.update({ token }, { used: true });
   }
+  async deleteToken(token: string, tenantDS: DataSource): Promise<void> {
+    const resetTokenRepo = tenantDS.getRepository(ResetTokenEntity);
+    await resetTokenRepo.delete({ token });
+  }
 }
