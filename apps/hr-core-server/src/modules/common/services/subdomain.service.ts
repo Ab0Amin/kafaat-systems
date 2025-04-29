@@ -1,17 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-// import { getDataSourceOptions } from './database.config';
 import { TenantEntity } from '@kafaat-systems/entities';
-import { TemplateSchemaService } from './template-schema.service';
 import { createTenantDataSource } from '@kafaat-systems/database';
 @Injectable()
 export class SubdomainService {
   private readonly logger = new Logger(SubdomainService.name);
-
-  // constructor(
-  //   private dataSource: DataSource,
-  //   private templateSchemaService: TemplateSchemaService
-  // ) {}
+  // constructor() {}
   async getTenantByDomain(domain: string): Promise<TenantEntity | null> {
     const ownerDS = createTenantDataSource('owner');
     if (!ownerDS.isInitialized) {

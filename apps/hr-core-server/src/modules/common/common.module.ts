@@ -8,6 +8,7 @@ import { SubdomainMiddleware } from './midilwares/subdomain.middleware';
 import { TemplateSchemaService } from './services/template-schema.service';
 import { SubdomainService } from './services/subdomain.service';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
+import { UserAgentService } from './services/user-agent.service';
 
 @Module({
   imports: [DatabaseModule],
@@ -20,6 +21,7 @@ import { TenantContextService } from '@kafaat-systems/tenant-context';
     TemplateSchemaService,
     SubdomainService,
     TenantContextService,
+    UserAgentService,
   ],
   exports: [
     // TenantService,
