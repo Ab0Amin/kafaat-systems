@@ -8,7 +8,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import { UserModule } from './modules/user/user.module';
 import { OwnerModule } from './modules/owner/owner.module';
-import { TenantModule } from './modules/tenant/tenant.module';
 
 // Load environment variables
 dotenv.config();
@@ -48,7 +47,7 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {
-      include: [UserModule, OwnerModule, TenantModule],
+      include: [UserModule, OwnerModule],
     });
     SwaggerModule.setup('docs', app, document);
   }

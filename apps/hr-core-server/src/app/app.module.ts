@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from '@kafaat-systems/database';
 import { UserModule } from '../modules/user/user.module';
-import { TenantModule } from './../modules/tenant/tenant.module';
 import { OwnerModule } from '../modules/owner/owner.module';
 
 import { CommonModule } from '../modules/common/common.module';
@@ -11,13 +10,7 @@ import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { MIDDLEWARES } from '../modules/common/midilwares';
 
 @Module({
-  imports: [
-    DatabaseModule.forRoot(),
-    UserModule,
-    TenantModule,
-    OwnerModule,
-    CommonModule,
-  ],
+  imports: [DatabaseModule.forRoot(), UserModule, OwnerModule, CommonModule],
   controllers: [AppController],
   providers: [AppService, TenantContextService],
 })
