@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AdminController } from './admin.controller';
-import { AdminService } from './admin.service';
+import { OwnerController } from './owner.controller';
+import { OwnerService } from './owner.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TenantEntity } from '@kafaat-systems/entities';
 import { CommonModule } from '../common/common.module';
@@ -8,8 +8,8 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TenantEntity]), CommonModule, AuthModule],
-  controllers: [AdminController],
-  providers: [AdminService, CommonModule],
-  exports: [AdminService],
+  controllers: [OwnerController],
+  providers: [OwnerService, CommonModule],
+  exports: [OwnerService],
 })
-export class AdminModule {}
+export class OwnerModule {}

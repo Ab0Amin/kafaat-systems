@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from '@kafaat-systems/database';
 import { UserModule } from '../modules/user/user.module';
 import { TenantModule } from './../modules/tenant/tenant.module';
-import { AdminModule } from '../modules/admin/admin.module';
+import { OwnerModule } from '../modules/owner/owner.module';
 
 import { CommonModule } from '../modules/common/common.module';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
@@ -15,7 +15,7 @@ import { MIDDLEWARES } from '../modules/common/midilwares';
     DatabaseModule.forRoot(),
     UserModule,
     TenantModule,
-    AdminModule,
+    OwnerModule,
     CommonModule,
   ],
   controllers: [AppController],

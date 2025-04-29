@@ -12,11 +12,11 @@ export const MIDDLEWARES = [
     middleware: TenantMiddleware,
     exclude: [
       { path: 'tenant/register', method: RequestMethod.POST },
-      { path: 'admin/(.*)', method: RequestMethod.ALL },
+      { path: 'owner/(.*)', method: RequestMethod.ALL },
     ],
   },
   {
     middleware: RegisterTenantMiddleware,
-    include: [{ path: 'admin/register', method: RequestMethod.POST }],
+    include: [{ path: 'owner/register', method: RequestMethod.POST }],
   },
 ];

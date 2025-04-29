@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { AdminDto } from './create-admin.dto';
+import { CreateUserDto } from '../../user/dto/create-user.dto';
 
 export class CreateTenantDto {
   @ApiProperty({
@@ -53,10 +53,10 @@ export class CreateTenantDto {
   contactPhone!: string;
 
   @ApiProperty({
-    type: () => AdminDto,
+    type: () => CreateUserDto,
     description: 'The admin user details for the tenant',
   })
   @ValidateNested()
-  @Type(() => AdminDto)
-  admin!: AdminDto;
+  @Type(() => CreateUserDto)
+  admin!: CreateUserDto;
 }
