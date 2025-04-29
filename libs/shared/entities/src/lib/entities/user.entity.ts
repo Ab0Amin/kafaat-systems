@@ -24,7 +24,7 @@ export class UserEntity {
   @Column({ nullable: true })
   passwordHash!: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isActive!: boolean;
 
   @Column({

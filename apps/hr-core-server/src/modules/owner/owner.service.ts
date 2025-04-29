@@ -149,7 +149,7 @@ export class OwnerService {
         lastName: dto.admin.lastName,
         email: dto.admin.email,
         // passwordHash: '',
-        isActive: true,
+        isActive: false,
         role: RoleType.ADMIN,
         schemaName: schemaName,
       });

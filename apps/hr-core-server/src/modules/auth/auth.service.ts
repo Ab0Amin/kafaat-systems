@@ -41,6 +41,7 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
     admin.passwordHash = passwordHash;
+    admin.isActive = true; // Activate the user if needed
 
     await userRepo.save(admin);
     await this.tokenService.deleteToken(dto.token, tenantDS);
