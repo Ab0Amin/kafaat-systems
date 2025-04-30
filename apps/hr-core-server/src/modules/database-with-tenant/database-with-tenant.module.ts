@@ -1,28 +1,29 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
-  TenantContextService,
   TenantContextModule,
+  TenantContextService,
 } from '@kafaat-systems/tenant-context';
-import { getDefaultDatabaseOptions } from './config/database.config';
+import { getDefaultDatabaseOptions } from '@kafaat-systems/database';
 
 @Module({})
-export class DatabaseModule {
+export class DatabaseWithTenantModule {
   static forRoot(): DynamicModule {
     return {
-      module: DatabaseModule,
+      module: DatabaseWithTenantModule,
       imports: [
         TenantContextModule,
         TypeOrmModule.forRootAsync({
           imports: [TenantContextModule],
-          useFactory: (tenantContext: TenantContextService) => ({
-            ...getDefaultDatabaseOptions(),
-            schema:
-              tenantContext.getSchema() ||
-              process.env.DEFAULT_SCHEMA ||
-              'public',
-          }),
           inject: [TenantContextService],
+          useFactory: async (tenantContext: TenantContextService) => {
+            const schema = tenantContext.getSchema() || 'public';
+
+            return {
+              ...getDefaultDatabaseOptions(),
+              schema,
+            };
+          },
         }),
       ],
     };

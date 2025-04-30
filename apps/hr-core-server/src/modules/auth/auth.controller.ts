@@ -8,6 +8,8 @@ import { LoginDto, LoginResponseDto } from './dto/login.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Public()
   @Post('set-password')
   async setPassword(@Body() dto: SetPasswordDto) {
     return this.authService.setPassword(dto);
