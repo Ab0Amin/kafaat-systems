@@ -51,7 +51,6 @@ async function bootstrap() {
     });
     SwaggerModule.setup('docs', app, document);
   }
-  // try
 
   // Set global prefix
   app.setGlobalPrefix('api');
