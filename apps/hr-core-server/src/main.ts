@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import * as compression from 'compression';
 
@@ -8,6 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import { UserModule } from './modules/user/user.module';
 import { OwnerModule } from './modules/owner/owner.module';
+import { AppModule } from './app/app.module';
 
 // Load environment variables
 dotenv.config();
@@ -51,6 +51,7 @@ async function bootstrap() {
     });
     SwaggerModule.setup('docs', app, document);
   }
+  // try
 
   // Set global prefix
   app.setGlobalPrefix('api');
