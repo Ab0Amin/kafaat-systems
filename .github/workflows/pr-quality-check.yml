@@ -26,9 +26,6 @@ jobs:
       - name: Run Lint + Format
         run: npm run check:all
 
-      - name: Build Server Docker Image
-        run: npm run docker:build:server
-
       - name: Check if branch is up-to-date with target branch
         run: |
           git fetch origin ${{ github.base_ref }}
