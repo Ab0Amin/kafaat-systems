@@ -1,0 +1,39 @@
+name: PR Quality Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - dev
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Lint + Format
+        run: npm run check:all
+
+      - name: Build Server Docker Image
+        run: npm run docker:build:server
+
+      - name: Check if branch is up-to-date with target branch
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          BASE=$(git merge-base HEAD origin/${{ github.base_ref }})
+          if [ "$BASE" != "$(git rev-parse origin/${{ github.base_ref }})" ]; then
+            echo "❌ Branch is behind ${{ github.base_ref }}. Please rebase."
+            exit 1
+          fi
