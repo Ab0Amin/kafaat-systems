@@ -22,7 +22,7 @@ export const getDataSourceOptions = (schema?: string): DataSourceOptions => {
 
     entities: entities_name,
 
-    migrations: ['libs/shared/db/src/lib/migrations/*.ts'],
+    migrations: ['libs/shared/database/src/lib/migrations/*.ts'],
     migrationsTableName: 'migrations',
   };
 };

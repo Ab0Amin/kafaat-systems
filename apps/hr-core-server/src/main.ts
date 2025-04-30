@@ -7,8 +7,7 @@ import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import { UserModule } from './modules/user/user.module';
-import { AdminModule } from './modules/admin/admin.module';
-import { TenantModule } from './modules/tenant/tenant.module';
+import { OwnerModule } from './modules/owner/owner.module';
 
 // Load environment variables
 dotenv.config();
@@ -48,7 +47,7 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {
-      include: [UserModule, AdminModule, TenantModule],
+      include: [UserModule, OwnerModule],
     });
     SwaggerModule.setup('docs', app, document);
   }

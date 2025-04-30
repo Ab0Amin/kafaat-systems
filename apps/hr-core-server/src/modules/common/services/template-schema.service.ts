@@ -7,11 +7,9 @@ const tablesNames = ['roles', 'users', 'reset_tokens'];
 @Injectable()
 export class TemplateSchemaService {
   private readonly logger = new Logger(TemplateSchemaService.name);
-  // constructor(private dataSource: DataSource) {}
+  // constructor() {}
 
-  /**
-   * Clone tables from template schema to target schema
-   */
+  //  Clone tables from template schema to target schema
   async cloneTemplateToSchema(
     targetSchema: string,
     dataSource: DataSource
@@ -43,9 +41,7 @@ export class TemplateSchemaService {
     }
   }
 
-  /**
-   * Clone all ENUM types from source schema to target schema
-   */
+  //   Clone all ENUM types from source schema to target schema
   private async cloneEnumTypes(
     sourceSchema: string,
     targetSchema: string,
@@ -145,9 +141,7 @@ export class TemplateSchemaService {
 
     return clonedEnums;
   }
-  /**
-   * Clone a single table from source schema to target schema
-   */
+  //   Clone a single table from source schema to target schema
   private async cloneTable(
     sourceSchema: string,
     tableName: string,
@@ -209,7 +203,6 @@ export class TemplateSchemaService {
             `Copying data from ${sourceSchema}.${tableName} to ${targetSchema}.${tableName}`
           );
 
-          // Instead of using direct INSERT, we'll fetch the data and insert it row by row
           // This way we avoid enum type conflicts
           const sourceData = await dataSource.query(
             `SELECT * FROM "${sourceSchema}"."${tableName}"`
@@ -258,9 +251,7 @@ export class TemplateSchemaService {
     }
   }
 
-  /**
-   * Check if a table exists in a schema
-   */
+  //   Check if a table exists in a schema
   private async checkTableExists(
     schema: string,
     table: string,
@@ -280,9 +271,7 @@ export class TemplateSchemaService {
     return result[0].exists;
   }
 
-  /**
-   * Check if a table has any data
-   */
+  //   Check if a table has any data
   private async tableHasData(
     schema: string,
     table: string,

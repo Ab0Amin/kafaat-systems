@@ -21,10 +21,10 @@ export class UserEntity {
   @Column({ unique: true })
   email!: string;
 
-  @Column()
+  @Column({ nullable: true })
   passwordHash!: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isActive!: boolean;
 
   @Column({

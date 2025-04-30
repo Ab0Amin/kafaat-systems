@@ -5,8 +5,10 @@ const dataSourceCache = new Map<string, DataSource>();
 
 export const createTenantDataSource = (schema: string): DataSource => {
   if (dataSourceCache.has(schema)) {
-    const existing = dataSourceCache.get(schema)!;
-    return existing;
+    const existing = dataSourceCache.get(schema);
+    if (existing) {
+      return existing;
+    }
   }
 
   const options = getDefaultDatabaseOptions();

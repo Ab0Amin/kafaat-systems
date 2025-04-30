@@ -1,12 +1,6 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import {
-  AdminEntity,
-  ResetTokenEntity,
-  RoleType,
-  TenantEntity,
-  UserEntity,
-} from '@kafaat-systems/entities';
+import { RoleType, TenantEntity, UserEntity } from '@kafaat-systems/entities';
 import { createTenantDataSource } from '@kafaat-systems/database';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { SubdomainService } from '../common/services/subdomain.service';
@@ -16,7 +10,7 @@ import { TokenService } from '../auth/service/temp-token.service';
 import { EmailService } from '../auth/service/email.service';
 
 @Injectable()
-export class AdminService {
+export class OwnerService {
   constructor(
     private dataSource: DataSource,
     private readonly subdomainService: SubdomainService,
@@ -123,6 +117,7 @@ export class AdminService {
     const schemaName = this.subdomainService.slugify(dto.domain);
     let resetToken;
     let createdTenant;
+    const TokenDuratuon = 3; // days
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -147,14 +142,14 @@ export class AdminService {
       );
 
       // Step 4: Create admin user
-      const passwordHash = await bcrypt.hash(dto.admin.password, 10);
+      // const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
       createdTenant = await tenantDS.getRepository(UserEntity).save({
         firstName: dto.admin.firstName,
         lastName: dto.admin.lastName,
         email: dto.admin.email,
-        passwordHash: passwordHash,
-        isActive: true,
+        // passwordHash: '',
+        isActive: false,
         role: RoleType.ADMIN,
         schemaName: schemaName,
       });
@@ -187,19 +182,15 @@ export class AdminService {
       // Step 7: After commit, send email (email sending should NOT be inside transaction)
       resetToken = await this.tokenService.createResetToken(
         createdTenant?.id,
-        tenantDS
+        tenantDS,
+        TokenDuratuon
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Step 8: Rollback if anything fails
       await queryRunner.rollbackTransaction();
       await this.dataSource.query(
         `DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`
       );
-
-      if (error?.code === '23505') {
-        // Duplicate key
-        throw new BadRequestException('Tenant domain or name already exists.');
-      }
 
       throw new BadRequestException(
         `Failed to register tenant: ${
@@ -214,13 +205,20 @@ export class AdminService {
     }
 
     const expiresAt = new Date();
-    expiresAt.setDate(new Date().getDate() + 3);
+    expiresAt.setDate(new Date().getDate() + TokenDuratuon);
 
-    await this.emailService.sendSetPasswordEmail(
-      dto.admin.email,
-      resetToken.token,
-      expiresAt.toString()
-    );
+    // await this.emailService.sendSetPasswordEmail({
+    //   to: dto.admin.email,
+
+    //   ClientName: `${dto.admin.firstName} ${dto.admin.lastName}`,
+    //   expiryDate: expiresAt.toString(),
+    //   url: `https://${dto.domain}.${process.env.BE_HOST}:${process.env.BE_PORT}/set-password?token=${resetToken.token}`,
+    //   operating_system: 'Web',
+    //   browser_name: 'Any',
+    //   button_text: 'Set Password',
+    //   support_url: 'support.kbs.sa',
+    //   product_name: 'KAFAAT SYSTEMS',
+    // });
     return {
       success: true,
       message: `Tenant ${dto.name} successfully registered with schema ${schemaName}.`,
