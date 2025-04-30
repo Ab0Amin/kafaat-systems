@@ -8,11 +8,37 @@ import { OwnerModule } from '../modules/owner/owner.module';
 import { CommonModule } from '../modules/common/common.module';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { MIDDLEWARES } from '../modules/common/midilwares';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from '../modules/auth/strategies/jwt.constants.strategy';
+import { AuthService } from '../modules/auth/auth.service';
+import { JwtStrategy } from '../modules/auth/strategies/jwt.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from '@kafaat-systems/entities';
+import { AuthModule } from '../modules/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '../modules/auth/guards/jwt-auth.guard';
 
 @Module({
-  imports: [DatabaseModule.forRoot(), UserModule, OwnerModule, CommonModule],
+  imports: [
+    DatabaseModule.forRoot(),
+    UserModule,
+    OwnerModule,
+    CommonModule,
+    JwtModule,
+    TypeOrmModule.forFeature([UserEntity]),
+    AuthModule,
+  ],
   controllers: [AppController],
-  providers: [AppService, TenantContextService],
+  providers: [
+    AppService,
+    TenantContextService,
+    AuthService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

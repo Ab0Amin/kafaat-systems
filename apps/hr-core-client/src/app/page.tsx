@@ -1,4 +1,4 @@
-import styles from './page.module.scss';
+import  './page.module.scss';
 
 export default function Index() {
   /*
@@ -6,5 +6,5 @@ export default function Index() {
    *
    * Note: The corresponding styles are in the ./index.scss file.
    */
-  return <div className={styles.page}>ho,me</div>;
+  return <div className='page'>ho,me</div>;
 }

@@ -6,7 +6,6 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { AdminEntity } from './admin.entity';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'reset_tokens' })
