@@ -23,7 +23,10 @@ export class DatabaseWithTenantController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDatabaseWithTenantDto: UpdateDatabaseWithTenantDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateDatabaseWithTenantDto: UpdateDatabaseWithTenantDto
+  ) {
     return this.databaseWithTenantService.update(+id, updateDatabaseWithTenantDto);
   }
 

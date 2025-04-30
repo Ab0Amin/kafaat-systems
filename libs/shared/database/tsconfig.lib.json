@@ -12,15 +12,14 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": [
-    "**/*.spec.ts",
-    "src/lib/config/typeorm.cli.config.ts"
-  ],
-  "references": [{
-    "path": "../tenant-context"
-  }, { "path": "../entities" },]
+  "exclude": ["**/*.spec.ts", "src/lib/config/typeorm.cli.config.ts"],
+  "references": [
+    {
+      "path": "../tenant-context"
+    },
+    { "path": "../entities" }
+  ]
 }

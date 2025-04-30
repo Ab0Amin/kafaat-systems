@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  NestMiddleware,
-  Logger,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, NestMiddleware, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { RoleType } from '@kafaat-systems/entities';
 import { SubdomainService } from '../services/subdomain.service';
@@ -25,11 +19,7 @@ export class SubdomainMiddleware implements NestMiddleware {
     private tenantContextService: TenantContextService
   ) {}
 
-  async use(
-    req: SchemaRequest,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async use(req: SchemaRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       // Check for role override in headers (for testing)
       const roleHeader = req.headers['x-user-role'] as string | undefined;
@@ -76,9 +66,7 @@ export class SubdomainMiddleware implements NestMiddleware {
         } else {
           // Look up tenant by subdomain
 
-          const tenant = await this.subdomainService.getTenantByDomain(
-            subdomain
-          );
+          const tenant = await this.subdomainService.getTenantByDomain(subdomain);
 
           if (tenant) {
             req.tenantId = tenant.id;
@@ -89,17 +77,11 @@ export class SubdomainMiddleware implements NestMiddleware {
               `Tenant found for subdomain ${subdomain}, using schema: ${tenant.schema_name}`
             );
           } else {
-            throw new HttpException(
-              'Tenant does not exist',
-              HttpStatus.BAD_REQUEST
-            );
+            throw new HttpException('Tenant does not exist', HttpStatus.BAD_REQUEST);
           }
         }
       } else {
-        throw new HttpException(
-          'Tenant does not exist',
-          HttpStatus.BAD_REQUEST
-        );
+        throw new HttpException('Tenant does not exist', HttpStatus.BAD_REQUEST);
       }
 
       next();

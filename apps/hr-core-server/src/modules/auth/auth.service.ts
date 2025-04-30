@@ -27,10 +27,7 @@ export class AuthService {
       await tenantDS.initialize();
     }
 
-    const resetToken = await this.tokenService.validateToken(
-      dto.token,
-      tenantDS
-    );
+    const resetToken = await this.tokenService.validateToken(dto.token, tenantDS);
     if (!resetToken) {
       throw new BadRequestException('Invalid or expired token');
     }

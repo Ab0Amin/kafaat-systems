@@ -5,13 +5,12 @@
     "rootDir": "src",
     "outDir": "dist",
     "experimentalDecorators": true,
-"emitDecoratorMetadata": true,
-"composite": true,
-"paths": {
-  "@kafaat-systems/entities": ["../entities/src/index.ts"]
-}
-    
+    "emitDecoratorMetadata": true,
+    "composite": true,
+    "paths": {
+      "@kafaat-systems/entities": ["../entities/src/index.ts"]
+    }
   },
   "include": ["src/**/*.ts"],
-"references": [{ "path": "../entities" }]
+  "references": [{ "path": "../entities" }]
 }

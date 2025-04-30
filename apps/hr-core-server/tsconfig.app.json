@@ -10,7 +10,7 @@
     "target": "es2021",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*.ts", "../../libs/**/*"],
   "exclude": [

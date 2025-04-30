@@ -37,10 +37,7 @@ export class TokenService {
     return { plainToken };
   }
 
-  async validateToken(
-    plainToken: string,
-    tenantDS: DataSource
-  ): Promise<ResetTokenEntity | null> {
+  async validateToken(plainToken: string, tenantDS: DataSource): Promise<ResetTokenEntity | null> {
     const resetTokenRepo = tenantDS.getRepository(ResetTokenEntity);
     const hashed = this.hashToken(plainToken);
 
@@ -55,10 +52,7 @@ export class TokenService {
     return token || null;
   }
 
-  async markTokenAsUsed(
-    plainToken: string,
-    tenantDS: DataSource
-  ): Promise<void> {
+  async markTokenAsUsed(plainToken: string, tenantDS: DataSource): Promise<void> {
     const resetTokenRepo = tenantDS.getRepository(ResetTokenEntity);
     const hashed = this.hashToken(plainToken);
     await resetTokenRepo.update({ token: hashed }, { used: true });

@@ -14,10 +14,7 @@ import { TenantContextService } from '@kafaat-systems/tenant-context';
 export class SchemaAccessGuard implements CanActivate {
   private readonly logger = new Logger(SchemaAccessGuard.name);
 
-  constructor(
-    private tenantContextService: TenantContextService,
-    private reflector: Reflector
-  ) {}
+  constructor(private tenantContextService: TenantContextService, private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     // Skip access control in development mode if configured
@@ -38,8 +35,7 @@ export class SchemaAccessGuard implements CanActivate {
     const schema = this.tenantContextService.getSchema();
 
     // Get required roles from metadata (if any)
-    const requiredRoles =
-      this.reflector.get<RoleType[]>('roles', context.getHandler()) || [];
+    const requiredRoles = this.reflector.get<RoleType[]>('roles', context.getHandler()) || [];
 
     // Check if the user has the required role
     if (requiredRoles.length > 0 && !requiredRoles.includes(userRole)) {
@@ -48,9 +44,7 @@ export class SchemaAccessGuard implements CanActivate {
           ', '
         )}`
       );
-      throw new ForbiddenException(
-        'You do not have the required role to access this resource'
-      );
+      throw new ForbiddenException('You do not have the required role to access this resource');
     }
 
     // Owner role can access any schema
@@ -62,17 +56,11 @@ export class SchemaAccessGuard implements CanActivate {
     if (userRole === RoleType.ADMIN) {
       const requestedSchema = request.params.schema || schema;
 
-      if (
-        requestedSchema &&
-        requestedSchema !== schema &&
-        requestedSchema !== 'public'
-      ) {
+      if (requestedSchema && requestedSchema !== schema && requestedSchema !== 'public') {
         this.logger.warn(
           `Access denied: Admin of schema ${schema} tried to access schema ${requestedSchema}`
         );
-        throw new ForbiddenException(
-          `You do not have access to schema ${requestedSchema}`
-        );
+        throw new ForbiddenException(`You do not have access to schema ${requestedSchema}`);
       }
     }
 

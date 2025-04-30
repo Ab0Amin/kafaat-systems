@@ -20,9 +20,7 @@
     "paths": {
       "@kafaat-systems/database": ["libs/shared/database/src/index.ts"],
       "@kafaat-systems/entities": ["libs/shared/entities/src/index.ts"],
-      "@kafaat-systems/tenant-context": [
-        "libs/shared/tenant-context/src/index.ts"
-      ]
+      "@kafaat-systems/tenant-context": ["libs/shared/tenant-context/src/index.ts"]
     }
   }
 }

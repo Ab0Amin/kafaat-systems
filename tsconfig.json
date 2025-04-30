@@ -28,7 +28,7 @@
     {
       "path": "./apps/hr-core-client"
     },
- 
+
     {
       "path": "./libs/shared/entities"
     },

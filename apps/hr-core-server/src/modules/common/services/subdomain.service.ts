@@ -17,9 +17,7 @@ export class SubdomainService {
       });
       return tenant;
     } catch (error) {
-      this.logger.error(
-        `Error getting tenant by domain ${domain}: ${(error as Error).message}`
-      );
+      this.logger.error(`Error getting tenant by domain ${domain}: ${(error as Error).message}`);
       return null;
     } finally {
       await ownerDS.destroy();

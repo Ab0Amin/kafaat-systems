@@ -10,10 +10,7 @@ export class TemplateSchemaService {
   // constructor() {}
 
   //  Clone tables from template schema to target schema
-  async cloneTemplateToSchema(
-    targetSchema: string,
-    dataSource: DataSource
-  ): Promise<void> {
+  async cloneTemplateToSchema(targetSchema: string, dataSource: DataSource): Promise<void> {
     const config = {
       tableNames: tablesNames,
       schemaName: process.env.DB_COPY_SOURCE ?? 'public',
@@ -22,11 +19,7 @@ export class TemplateSchemaService {
       priority: 10,
     };
     // First clone enum types
-    const enums = await this.cloneEnumTypes(
-      config.schemaName,
-      targetSchema,
-      dataSource
-    );
+    const enums = await this.cloneEnumTypes(config.schemaName, targetSchema, dataSource);
 
     this.logger.log(`Cloned ENUM types: ${enums.join(', ')}`);
 
@@ -66,9 +59,7 @@ export class TemplateSchemaService {
         AND pg_catalog.format_type(a.atttypid, a.atttypmod) LIKE '%_enum'
     `;
 
-    const enumColumns = await dataSource.query(enumColumnsQuery, [
-      sourceSchema,
-    ]);
+    const enumColumns = await dataSource.query(enumColumnsQuery, [sourceSchema]);
 
     // For each enum column, get its values and create the equivalent in the target schema
     for (const col of enumColumns) {
@@ -116,9 +107,7 @@ export class TemplateSchemaService {
         ]);
 
         if (!existsResult[0].exists) {
-          this.logger.log(
-            `Creating enum ${targetSchema}.${targetEnumTypeName}`
-          );
+          this.logger.log(`Creating enum ${targetSchema}.${targetEnumTypeName}`);
           try {
             await dataSource.query(
               `CREATE TYPE "${targetSchema}"."${targetEnumTypeName}" AS ENUM (${enumValues})`
@@ -132,9 +121,7 @@ export class TemplateSchemaService {
             );
           }
         } else {
-          this.logger.log(
-            `Enum ${targetSchema}.${targetEnumTypeName} already exists`
-          );
+          this.logger.log(`Enum ${targetSchema}.${targetEnumTypeName} already exists`);
         }
       }
     }
@@ -151,25 +138,15 @@ export class TemplateSchemaService {
   ): Promise<void> {
     try {
       // Check if source table exists
-      const tableExists = await this.checkTableExists(
-        sourceSchema,
-        tableName,
-        dataSource
-      );
+      const tableExists = await this.checkTableExists(sourceSchema, tableName, dataSource);
 
       if (!tableExists) {
-        this.logger.warn(
-          `Source table ${sourceSchema}.${tableName} does not exist, skipping`
-        );
+        this.logger.warn(`Source table ${sourceSchema}.${tableName} does not exist, skipping`);
         return;
       }
 
       // Check if target table already exists
-      const targetTableExists = await this.checkTableExists(
-        targetSchema,
-        tableName,
-        dataSource
-      );
+      const targetTableExists = await this.checkTableExists(targetSchema, tableName, dataSource);
 
       if (targetTableExists) {
         this.logger.warn(
@@ -192,11 +169,7 @@ export class TemplateSchemaService {
         (await this.checkTableExists(targetSchema, tableName, dataSource))
       ) {
         // Check if target table has data
-        const hasData = await this.tableHasData(
-          targetSchema,
-          tableName,
-          dataSource
-        );
+        const hasData = await this.tableHasData(targetSchema, tableName, dataSource);
 
         if (!hasData) {
           this.logger.log(
@@ -214,11 +187,9 @@ export class TemplateSchemaService {
 
             // For each row in the source data
             for (const row of sourceData) {
-              const placeholders = columns
-                .map((_, index) => `$${index + 1}`)
-                .join(', ');
-              const columnList = columns.map((col) => `"${col}"`).join(', ');
-              const values = columns.map((col) => row[col]);
+              const placeholders = columns.map((_, index) => `$${index + 1}`).join(', ');
+              const columnList = columns.map(col => `"${col}"`).join(', ');
+              const values = columns.map(col => row[col]);
 
               // Insert each row individually
               await dataSource.query(
@@ -227,13 +198,9 @@ export class TemplateSchemaService {
               );
             }
 
-            this.logger.log(
-              `Copied ${sourceData.length} rows to ${targetSchema}.${tableName}`
-            );
+            this.logger.log(`Copied ${sourceData.length} rows to ${targetSchema}.${tableName}`);
           } else {
-            this.logger.log(
-              `No data to copy from ${sourceSchema}.${tableName}`
-            );
+            this.logger.log(`No data to copy from ${sourceSchema}.${tableName}`);
           }
         } else {
           this.logger.warn(

@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NestMiddleware,
-  BadRequestException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NestMiddleware, BadRequestException, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { SubdomainService } from '../services/subdomain.service';
 import { DataSource } from 'typeorm';
@@ -20,16 +15,11 @@ export class RegisterTenantMiddleware implements NestMiddleware {
     if (req.method !== 'POST') {
       return next();
     }
-    Logger.log(
-      'RegisterTenantMiddleware called1111111111111111111111111111111111111111'
-    );
+    Logger.log('RegisterTenantMiddleware called1111111111111111111111111111111111111111');
     const dto = req.body as CreateTenantDto;
 
     // Validate email domain matches tenant domain
-    const emailDomain = dto.admin.email
-      .split('@')[1]
-      .split('.')[0]
-      .toLowerCase();
+    const emailDomain = dto.admin.email.split('@')[1].split('.')[0].toLowerCase();
 
     const tenantDomain = dto.domain.toLowerCase();
 
@@ -41,23 +31,18 @@ export class RegisterTenantMiddleware implements NestMiddleware {
 
     // Check if tenant name and domain already exist
     const [existingName, existingDomain] = await Promise.all([
-      this.dataSource.query(
-        `SELECT name FROM owner.tenants WHERE LOWER(name) = LOWER($1)`,
-        [dto.name]
-      ),
+      this.dataSource.query(`SELECT name FROM owner.tenants WHERE LOWER(name) = LOWER($1)`, [
+        dto.name,
+      ]),
       this.subdomainService.getTenantByDomain(dto.domain),
     ]);
 
     if (existingName.length > 0) {
-      throw new BadRequestException(
-        `Tenant name "${dto.name}" is already in use.`
-      );
+      throw new BadRequestException(`Tenant name "${dto.name}" is already in use.`);
     }
 
     if (existingDomain) {
-      throw new BadRequestException(
-        `Domain "${dto.domain}" is already in use.`
-      );
+      throw new BadRequestException(`Domain "${dto.domain}" is already in use.`);
     }
 
     // Validate domain format

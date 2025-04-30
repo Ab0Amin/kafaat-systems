@@ -1,9 +1,6 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {
-  TenantContextModule,
-  TenantContextService,
-} from '@kafaat-systems/tenant-context';
+import { TenantContextModule, TenantContextService } from '@kafaat-systems/tenant-context';
 import { getDefaultDatabaseOptions } from '@kafaat-systems/database';
 
 @Module({})

@@ -45,9 +45,7 @@ export class TenantContextService {
     // If not in ALS, try to get from request
     if (this.request?.schemaName) {
       return {
-        tenantId: this.request.tenantId
-          ? String(this.request.tenantId)
-          : undefined,
+        tenantId: this.request.tenantId ? String(this.request.tenantId) : undefined,
         schema: this.request.schemaName,
         role: this.request.userRole,
       };

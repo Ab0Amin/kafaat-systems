@@ -70,8 +70,8 @@ export class OwnerService {
 
       return {
         totalTenants: tenants.length,
-        successful: results.filter((r) => r.success).length,
-        failed: results.filter((r) => !r.success).length,
+        successful: results.filter(r => r.success).length,
+        failed: results.filter(r => !r.success).length,
         details: results,
       };
     } finally {
@@ -87,11 +87,10 @@ export class OwnerService {
 
       const stats = {
         totalTenants: tenants.length,
-        activeTenants: tenants.filter((t) => t.isActive).length,
-        inactiveTenants: tenants.filter((t) => !t.isActive).length,
+        activeTenants: tenants.filter(t => t.isActive).length,
+        inactiveTenants: tenants.filter(t => !t.isActive).length,
         tenantsByPlan: tenants.reduce((acc, tenant) => {
-          acc[tenant.plan || 'default'] =
-            (acc[tenant.plan || 'default'] || 0) + 1;
+          acc[tenant.plan || 'default'] = (acc[tenant.plan || 'default'] || 0) + 1;
           return acc;
         }, {} as Record<string, number>),
       };
@@ -136,10 +135,7 @@ export class OwnerService {
       await queryRunner.startTransaction();
 
       // Step 3: Clone template tables into new schema
-      await this.templateSchemaService.cloneTemplateToSchema(
-        schemaName,
-        tenantDS
-      );
+      await this.templateSchemaService.cloneTemplateToSchema(schemaName, tenantDS);
 
       // Step 4: Create admin user
       // const passwordHash = await bcrypt.hash(dto.admin.password, 10);
@@ -188,14 +184,10 @@ export class OwnerService {
     } catch (error: unknown) {
       // Step 8: Rollback if anything fails
       await queryRunner.rollbackTransaction();
-      await this.dataSource.query(
-        `DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`
-      );
+      await this.dataSource.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
 
       throw new BadRequestException(
-        `Failed to register tenant: ${
-          error instanceof Error ? error.message : 'Unknown error'
-        }`
+        `Failed to register tenant: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     } finally {
       await queryRunner.release();

@@ -1,12 +1,11 @@
 {
-    "extends": "./tsconfig.base.json",
-    "compilerOptions": {
-      "module": "CommonJS",
-      "target": "ES2021",
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "forceConsistentCasingInFileNames": true
-    },
-    "include": ["libs/**/*.ts"]
-  }
-  
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2021",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["libs/**/*.ts"]
+}
