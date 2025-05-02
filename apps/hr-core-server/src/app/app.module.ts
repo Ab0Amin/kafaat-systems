@@ -52,6 +52,7 @@ export class AppModule {
       } else {
         mw.forRoutes('*');
       }
+      // test
     }
   }
 }
