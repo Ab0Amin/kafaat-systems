@@ -16,7 +16,7 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
+    "sharedGlobals": ["{workspaceRoot}/.github/workflows/pr-quality-check.yml"]
   },
   "nxCloudId": "67ffd3f226b96e6302088467",
   "plugins": [
