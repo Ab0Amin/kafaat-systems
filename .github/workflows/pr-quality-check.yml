@@ -22,6 +22,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+      - name: Debug project graph
+        run: npx nx show project-graph --file=graph.json
 
       - name: Run Lint + Format
         run: npm run check:all
