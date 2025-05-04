@@ -1,0 +1,16 @@
+name: Full CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - dev
+
+jobs:
+  quality-check:
+    uses: ./.github/checks/pr-quality-check.yml
+
+  docker-build:
+    needs: quality-check
+    uses: ./.github/checks/docker-build.yml
