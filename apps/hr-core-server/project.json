@@ -1,0 +1,27 @@
+{
+  "name": "@kafaat-systems/hr-core-server",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/hr-core-server/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/hr-core-server",
+        "main": "apps/hr-core-server/src/main.ts",
+        "tsConfig": "apps/hr-core-server/tsconfig.app.json",
+        "assets": ["apps/hr-core-server/src/assets"],
+        "webpackConfig": "apps/hr-core-server/webpack.config.js"
+      },
+      "dependsOn": ["^build"]
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "@kafaat-systems/hr-core-server:build"
+      }
+    }
+  },
+  "tags": []
+}
