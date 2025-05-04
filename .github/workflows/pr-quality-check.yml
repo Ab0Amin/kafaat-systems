@@ -20,9 +20,8 @@ jobs:
         with:
           path: |
             ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json', 'package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json', '**/package.json') }}
+          restore-keys: ''
 
       - name: Configure npm to use cache
         run: npm config set cache ~/.npm --global
