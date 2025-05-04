@@ -9,8 +9,8 @@ on:
 
 jobs:
   quality-check:
-    uses: ./.github/checks/pr-quality-check.yml
+    uses: ./.github/workflows/pr-quality-check.yml
 
   docker-build:
     needs: quality-check
-    uses: ./.github/checks/docker-build.yml
+    uses: ./.github/workflows/docker-build.yml
