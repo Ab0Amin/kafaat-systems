@@ -1,0 +1,71 @@
+{
+  "app": {
+    "title": "Kafaat Systems - Owner Dashboard",
+    "description": "Manage your tenants and system settings"
+  },
+  "auth": {
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "forgotPassword": "Forgot Password?",
+    "invalidCredentials": "Invalid email or password",
+    "unauthorized": "Unauthorized access"
+  },
+  "dashboard": {
+    "welcome": "Welcome to the Owner Dashboard",
+    "tenants": "Tenants",
+    "stats": "System Statistics",
+    "settings": "Settings"
+  },
+  "tenants": {
+    "title": "Tenant Management",
+    "list": "Tenant List",
+    "add": "Add Tenant",
+    "edit": "Edit Tenant",
+    "delete": "Delete Tenant",
+    "deactivate": "Deactivate Tenant",
+    "activate": "Activate Tenant",
+    "name": "Name",
+    "domain": "Domain",
+    "schema": "Schema",
+    "plan": "Plan",
+    "status": "Status",
+    "contactEmail": "Contact Email",
+    "contactPhone": "Contact Phone",
+    "maxUsers": "Max Users",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "confirmDelete": "Are you sure you want to delete this tenant?",
+    "confirmDeactivate": "Are you sure you want to deactivate this tenant?",
+    "adminInfo": "Admin Information",
+    "adminFirstName": "Admin First Name",
+    "adminLastName": "Admin Last Name",
+    "adminEmail": "Admin Email"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "logout": "Logout",
+    "profile": "Profile",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}
