@@ -8,5 +8,9 @@ on:
       - dev
 
 jobs:
-  check-pipeline:
-    uses: ./.github/workflows/compine-checks.yml
+  quality-check:
+    uses: ./.github/workflows/pr-quality-check.yml
+
+  docker-build:
+    needs: quality-check
+    uses: ./.github/workflows/docker-build.yml
