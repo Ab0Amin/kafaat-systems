@@ -13,8 +13,9 @@ class MatchPasswordConstraint implements ValidatorConstraintInterface {
     return object.password === confirmPassword;
   }
 
-  defaultMessage(args: ValidationArguments) {
-    return `password does not match password.`;
+  defaultMessage(_args: ValidationArguments) {
+    const object = _args.object as { password: string };
+    return `${_args.property} does not match ${object.password}`;
   }
 }
 

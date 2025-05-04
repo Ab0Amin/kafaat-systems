@@ -5,7 +5,6 @@ import { createTenantDataSource } from '@kafaat-systems/database';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { SubdomainService } from '../common/services/subdomain.service';
 import { TemplateSchemaService } from '../common/services/template-schema.service';
-import * as bcrypt from 'bcrypt';
 import { TokenService } from '../auth/service/temp-token.service';
 import { EmailService } from '../auth/service/email.service';
 

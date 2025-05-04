@@ -110,7 +110,10 @@ export class AuthService {
 
       return this.login(user);
     } catch (error: unknown) {
-      throw new BadRequestException('something went wrong in refresh token');
+      throw new BadRequestException(
+        'something went wrong in refresh token: ' +
+          (error instanceof Error ? error.message : 'Unknown error')
+      );
     }
   }
 }
