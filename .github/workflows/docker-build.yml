@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: build client app
+        run: npm run build:frontend
+      - name: build client server
+        run: npm run build:backend
       - name: Checkout code
         uses: actions/checkout@v3
 
