@@ -1,10 +1,7 @@
 name: Docker Build
 
 on:
-  workflow_run:
-    workflows: ['PR Quality Checks']
-    types:
-      - completed
+  workflow_call:
 
 jobs:
   build-docker:
