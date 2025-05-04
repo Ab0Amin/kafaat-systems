@@ -1,0 +1,11 @@
+name: compine-checks
+
+on:
+  workflow_call:
+jobs:
+  quality-check:
+    uses: ./.github/workflows/pr-quality-check.yml
+
+  docker-build:
+    needs: quality-check
+    uses: ./.github/workflows/docker-build.yml
