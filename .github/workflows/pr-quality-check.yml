@@ -23,14 +23,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate NX Graph
-        run: npx nx graph --file=nx-graph.html
-
-      - name: Upload Graph as Artifact
-        uses: actions/upload-artifact@v2.3.1
-        with:
-          name: nx-project-graph
-          path: nx-graph.html
       - name: Run Lint + Format
         run: npm run check:all
 
