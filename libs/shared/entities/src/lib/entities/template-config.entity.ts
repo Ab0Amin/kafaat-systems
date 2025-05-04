@@ -27,7 +27,7 @@ export class TemplateConfigEntity {
   priority!: number;
 
   @Column({ type: 'jsonb', nullable: true })
-  options!: Record<string, any>;
+  options!: Record<string, unknown>;
 
   @CreateDateColumn()
   createdAt!: Date;

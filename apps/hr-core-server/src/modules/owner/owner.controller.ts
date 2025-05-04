@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { OwnerService } from './owner.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateTenantDto } from './dto/create-tenant.dto';
