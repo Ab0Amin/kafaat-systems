@@ -33,7 +33,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+      - name: Validate Webpack Config
+        run: node -e "console.log(require('./apps/hr-core-server/webpack.config.js'))"
 
+      - name: Validate Cypress Config
+        run: npx ts-node --transpile-only -e "console.log(require('./apps/hr-core-client-e2e/cypress.config.ts'))"
       - name: Clear Nx Cache
         run: npx nx reset
 
