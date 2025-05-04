@@ -1,0 +1,25 @@
+name: Docker Build
+
+on:
+  workflow_run:
+    workflows: ['PR Quality Checks']
+    types:
+      - completed
+
+jobs:
+  build-docker:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend Docker Image
+        run: npm run docker:build:server
+
+      - name: Build Frontend Docker Image
+        run: npm run docker:build:client

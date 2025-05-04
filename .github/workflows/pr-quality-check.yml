@@ -25,6 +25,11 @@ jobs:
           path: |
             ~/.npm
           key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Configure npm to use cache
+        run: npm config set cache ~/.npm --global
 
       - name: Install dependencies
         run: npm ci
