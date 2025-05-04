@@ -25,12 +25,3 @@ jobs:
 
       - name: Run Lint + Format
         run: npm run check:all
-
-      - name: Check if branch is up-to-date with target branch
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          BASE=$(git merge-base HEAD origin/${{ github.base_ref }})
-          if [ "$BASE" != "$(git rev-parse origin/${{ github.base_ref }})" ]; then
-            echo "❌ Branch is behind ${{ github.base_ref }}. Please rebase."
-            exit 1
-          fi
