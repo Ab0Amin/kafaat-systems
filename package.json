@@ -4,8 +4,10 @@
   "license": "MIT",
   "scripts": {
     "start:frontend": "nx dev hr-core-client",
+    "start:owner": "nx dev hr-owner-client --port 51770",
     "start:backend": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only --project apps/hr-core-server/tsconfig.json -r tsconfig-paths/register apps/hr-core-server/src/main.ts",
     "build:frontend": "cross-env NODE_ENV=production nx build @kafaat-systems/hr-core-client",
+    "build:owner": "cross-env NODE_ENV=production nx build @kafaat-systems/hr-owner-client",
     "build:backend": "nx build hr-core-server",
     "page": "node scripts/generate-page.js",
     "component": "node scripts/generate-component.js",
