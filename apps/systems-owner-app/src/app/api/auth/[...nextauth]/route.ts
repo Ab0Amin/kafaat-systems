@@ -1,7 +1,7 @@
 import NextAuth, { SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
-import { getApiUrl } from '../../api.config';
+import { getApiUrl } from '../../../routes';
 const schema = 'abdalla-co';
 const API_URL = getApiUrl(schema);
 export const authOptions = {
@@ -22,6 +22,7 @@ export const authOptions = {
             email: credentials.email,
             password: credentials.password,
           });
+          console.log('response', response);
 
           const { access_token, refresh_token } = response.data;
 

@@ -1,5 +1,6 @@
 'use client';
 import '../i18n/i18n';
+
 import { I18nextProvider } from 'react-i18next';
 import { useLocaleStore } from './stores';
 import { useEffect, useState } from 'react';
@@ -21,7 +22,6 @@ export default function App({ children }: { children: React.ReactNode }) {
   const locale = useLocaleStore((s) => s.locale) as I18nLocale | null;
   const [i18n, setI18n] = useState<I18nLocale['i18n']>();
 //   const { status } = useSession();
-console.log(i18n, 'i18n');
 
   useEffect(() => {
     (async () => {
@@ -33,7 +33,6 @@ console.log(i18n, 'i18n');
         const translations = data.resources[data.lng] as CustomResourceLanguage;
         storage.set(TRANSLATIONS_STORAGE_KEY, translations);
         TRANSLATIONS = translations;
-        console.log(translations, 'translations');
         
       } else {
         setI18n(locale.i18n);

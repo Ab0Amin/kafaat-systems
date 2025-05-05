@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import axios from 'axios';
-import { getApiUrl } from '../../api.config';
+import { getApiUrl } from '../../../routes';
 const schema = '';
 const API_URL = getApiUrl(schema);
 export async function GET(req: NextRequest) {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const response = await axios.get(`${API_URL}/api/owner/stats`, {
+    const response = await axios.get(`${API_URL}/owner/stats`, {
       headers: {
         Authorization: `Bearer ${token.accessToken}`,
       },

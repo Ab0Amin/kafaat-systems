@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import axios from 'axios';
-import { getApiUrl } from '../../../../api.config';
+import { getApiUrl } from '../../../../../routes';
 const schema = '';
 const API_URL = getApiUrl(schema);
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
