@@ -31,6 +31,7 @@ export async function initTranslations() {
     lng: defaultLang,
     fallbackLng: defaultLang,
     supportedLngs: supportedLngs.map(l => l.language_code),
+
     defaultNS: 'common',
     fallbackNS: 'common',
     ns: ['common', 'login', 'dashboard'],

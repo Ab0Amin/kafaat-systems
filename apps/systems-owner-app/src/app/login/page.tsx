@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
   const translationKey = 'auth';
-  const { t, i18n } = useTranslation(translationKey);
+  const { t,i18n } = useTranslation(translationKey);
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
+   
     e.preventDefault();
     setLoading(true);
     setError('');
