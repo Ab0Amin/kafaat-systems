@@ -1,5 +1,7 @@
 import { type Metadata } from 'next';
 import App from './app';
+import { AuthProvider } from '../components/providers/AuthProvider';
+import { ThemeProvider } from '../components/providers/ThemeProvider';
 
 
 // Import your global CSS
@@ -22,7 +24,13 @@ export default async function RootLayout({ children, params: { locale } }: RootL
 
     <html lang={locale}>
       <body>  
+      
+      <AuthProvider>
+            <ThemeProvider>
        <App>{children}</App>
+            
+            </ThemeProvider>
+          </AuthProvider>
       </body>
     </html>
   );

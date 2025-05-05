@@ -4,7 +4,7 @@ export function getSchema(): string {
     const parts = hostname.split('.');
     return parts.length > 1 ? parts[0] : 'default';
   }
-  return 'default';
+  return '';
 }
 
 export function getApiUrl(schema: string = getSchema()): string {
