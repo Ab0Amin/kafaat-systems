@@ -1,10 +1,9 @@
 import NextAuth, { SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
+import { getApiUrl } from '../../api.config';
 const schema = 'abdalla-co';
-const API_URL = 'http://' + schema + '.' + process.env.BE_HOST + ':' + process.env.BE_PORT + '/api';
-console.log(`API_URL: ${API_URL}`);
-
+const API_URL = getApiUrl(schema);
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -19,8 +18,6 @@ export const authOptions = {
         }
 
         try {
-          console.log(`${API_URL}/auth/login`);
-
           const response = await axios.post(`${API_URL}/auth/login`, {
             email: credentials.email,
             password: credentials.password,
