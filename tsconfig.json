@@ -28,7 +28,6 @@
     {
       "path": "./apps/hr-core-client"
     },
-
     {
       "path": "./libs/shared/entities"
     },
@@ -37,6 +36,9 @@
     },
     {
       "path": "./libs/shared/database"
+    },
+    {
+      "path": "./apps/systems-owner-app"
     }
   ]
 }
