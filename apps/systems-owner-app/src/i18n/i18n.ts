@@ -25,7 +25,7 @@ export const defaultLang = 'en';
 export async function initTranslations() {
   const i18nInstance = createInstance()
     .use(initReactI18next)
-    .use(resourcesToBackend((lng: string, ns: string) => import(`../locales/${lng}/${ns}.json`)));
+    .use(resourcesToBackend((lng: string, ns: string) => import(`./locales/${lng}/${ns}.json`)));
 
   await i18nInstance.init({
     lng: defaultLang,
@@ -33,7 +33,7 @@ export async function initTranslations() {
     supportedLngs: supportedLngs.map(l => l.language_code),
     defaultNS: 'common',
     fallbackNS: 'common',
-    ns: ['common', 'LOGIN', 'DASHBOARD'],
+    ns: ['common', 'login', 'dashboard'],
   });
 
   return {

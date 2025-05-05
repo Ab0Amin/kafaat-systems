@@ -1,6 +1,3 @@
-import LogoutIcon from '@mui/icons-material/Logout';
-
-import { createElement } from 'react';
 import { signOut } from 'next-auth/react';
 
 export type Routes = {
