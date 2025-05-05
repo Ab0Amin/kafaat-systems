@@ -1,15 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { routes } from './routes';
+import { useTranslation } from 'react-i18next';
 
-export default function Index() {
-  const router = useRouter();
+export default function HomePage() {
+  const { t, i18n } = useTranslation();
 
-  useEffect(() => {
-    router.push(routes.login.path);
-  }, [router]);
 
-  return null;
+  return (
+    <div>hi
+      <h1>{t('common.title')}</h1>
+    </div>
+  );
 }

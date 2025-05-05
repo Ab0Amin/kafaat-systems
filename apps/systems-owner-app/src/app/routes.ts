@@ -1,6 +1,6 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import { createElement, FunctionComponentElement } from 'react';
+import { createElement } from 'react';
 import { signOut } from 'next-auth/react';
 
 export type Routes = {
@@ -12,7 +12,6 @@ export type Route = {
   isNavigationItem?: boolean;
   isProtected?: boolean;
   label?: string;
-  icon?: FunctionComponentElement<any>;
   action?: (args?: any) => void;
 };
 
@@ -35,7 +34,6 @@ export const routes: Routes = {
     label: 'Log Out',
     path: '/',
     isNavigationItem: true,
-    icon: createElement(LogoutIcon),
     action: () => signOut({ callbackUrl: '/' }),
   },
 };

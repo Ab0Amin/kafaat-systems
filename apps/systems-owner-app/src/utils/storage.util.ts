@@ -5,15 +5,10 @@ export const storage = (function () {
     set: (key: string, value: any) => {
       vault[key] = value;
     },
-    get: (key: string) => {
-      return vault[key];
-    },
+    get: (key: string) => vault[key],
     remove: (key: string) => {
       delete vault[key];
     },
-    log: () => {
-      console.log('logging vault ...');
-      console.log({ vault });
-    },
+    log: () => console.log({ vault }),
   };
 })();
