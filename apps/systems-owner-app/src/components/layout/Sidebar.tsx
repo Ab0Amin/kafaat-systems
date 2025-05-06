@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import {
@@ -36,22 +36,22 @@ import {
 } from '@mui/icons-material';
 import { useTheme } from '../providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
-import { use } from 'passport';
 import { useLocales } from '../../i18n/use-locales';
+import styles from './Sidebar.module.scss';
+import { routes } from '../../app/routes';
+import { AUTH_STATUS } from '../../app/api/auth/auth.types';
 
-const drawerWidth = 240;
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
-  const {t,i18n} = useTranslation('common');
+  const { t } = useTranslation('common');
   const { allLangs } = useLocales();
   const locales = allLangs.map((lang) => lang.language_code);
-  const locale = i18n.language;
+  const locale = useLocales().currentLang;
   const localeNames = allLangs.map((lang) => lang.name);
-  const {t:dashboardT} = useTranslation('dashboard');
-  const { data: session } = useSession();
+  const { t: dashboardT,i18n } = useTranslation('dashboard');
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  // const locale = useLocale();
   const { mode, setMode } = useTheme();
   const muiTheme = useMuiTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
@@ -60,6 +60,13 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [anchorElLang, setAnchorElLang] = useState<null | HTMLElement>(null);
   const [anchorElTheme, setAnchorElTheme] = useState<null | HTMLElement>(null);
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === AUTH_STATUS.UNAUTHENTICATED) {
+      router.push(routes.login.path);
+    }
+  }, [status, router]);
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -90,18 +97,16 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: '/login' });
+    await signOut({ redirect: true, callbackUrl: routes.login.path });
   };
 
-  const handleLanguageChange = (newLocale: string) => {
-i18n
-    .changeLanguage(newLocale)
-    .then(() => {
-      handleCloseLangMenu();
-    })
-    .catch((error) => {
+  
+  const handleLanguageChange = async (newLocale: string) => {
+    try {
+      i18n.changeLanguage(newLocale);
+    } catch (error) {
       console.error('Error changing language:', error);
-    });
+    }
   };
 
   const handleThemeChange = (newMode: 'light' | 'dark' | 'system') => {
@@ -113,7 +118,7 @@ i18n
     {
       text: dashboardT('welcome'),
       icon: <DashboardIcon />,
-      path: '/dashboard',
+      path: routes.dashboard.path,
     },
     {
       text: dashboardT('tenants'),
@@ -128,26 +133,10 @@ i18n
   ];
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box className={styles.container}>
       <AppBar
         position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          transition: (theme) =>
-            theme.transitions.create(['width', 'margin'], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
-          ...(open && {
-            marginLeft: drawerWidth,
-            width: `calc(100% - ${drawerWidth}px)`,
-            transition: (theme) =>
-              theme.transitions.create(['width', 'margin'], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-              }),
-          }),
-        }}
+        className={`${styles.appBar} ${open ? styles.appBarShift : ''}`}
       >
         <Toolbar>
           <IconButton
@@ -155,22 +144,22 @@ i18n
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ marginRight: 2 }}
+            className={styles.menuButton}
           >
             {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Kafaat Systems - Owner Dashboard
+          <Typography variant="h6" noWrap component="div" className={styles.title}>
+            {t('app.title')}
           </Typography>
 
           {/* Language Selector */}
           <Tooltip title={t('language')}>
-            <IconButton onClick={handleOpenLangMenu} sx={{ p: 1, color: 'white' }}>
+            <IconButton onClick={handleOpenLangMenu} className={styles.iconButton}>
               <TranslateIcon />
             </IconButton>
           </Tooltip>
           <Menu
-            sx={{ mt: '45px' }}
+            className={styles.menu}
             id="language-menu"
             anchorEl={anchorElLang}
             anchorOrigin={{
@@ -185,11 +174,12 @@ i18n
             open={Boolean(anchorElLang)}
             onClose={handleCloseLangMenu}
           >
-            {locales.map((loc,i) => (
+            {locales.map((loc, i) => (
               <MenuItem
                 key={loc}
                 onClick={() => handleLanguageChange(loc)}
                 selected={loc === locale}
+                className={loc === locale ? styles.selected : ''}
               >
                 <Typography textAlign="center">{localeNames[i]}</Typography>
               </MenuItem>
@@ -198,7 +188,7 @@ i18n
 
           {/* Theme Selector */}
           <Tooltip title={t('theme')}>
-            <IconButton onClick={handleOpenThemeMenu} sx={{ p: 1, color: 'white' }}>
+            <IconButton onClick={handleOpenThemeMenu} className={styles.iconButton}>
               {mode === 'light' ? (
                 <LightModeIcon />
               ) : mode === 'dark' ? (
@@ -209,7 +199,7 @@ i18n
             </IconButton>
           </Tooltip>
           <Menu
-            sx={{ mt: '45px' }}
+            className={styles.menu}
             id="theme-menu"
             anchorEl={anchorElTheme}
             anchorOrigin={{
@@ -227,6 +217,7 @@ i18n
             <MenuItem
               onClick={() => handleThemeChange('light')}
               selected={mode === 'light'}
+              className={mode === 'light' ? styles.selected : ''}
             >
               <ListItemIcon>
                 <LightModeIcon fontSize="small" />
@@ -236,6 +227,7 @@ i18n
             <MenuItem
               onClick={() => handleThemeChange('dark')}
               selected={mode === 'dark'}
+              className={mode === 'dark' ? styles.selected : ''}
             >
               <ListItemIcon>
                 <DarkModeIcon fontSize="small" />
@@ -245,6 +237,7 @@ i18n
             <MenuItem
               onClick={() => handleThemeChange('system')}
               selected={mode === 'system'}
+              className={mode === 'system' ? styles.selected : ''}
             >
               <ListItemIcon>
                 <SystemModeIcon fontSize="small" />
@@ -264,7 +257,7 @@ i18n
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              className={styles.menu}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -293,13 +286,9 @@ i18n
         variant={isMobile ? 'temporary' : 'persistent'}
         open={open}
         onClose={isMobile ? handleDrawerToggle : undefined}
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
+        className={styles.drawer}
+        classes={{
+          paper: styles.drawerPaper,
         }}
       >
         <Toolbar />
@@ -310,6 +299,7 @@ i18n
                 <ListItemButton
                   selected={pathname === item.path}
                   onClick={() => router.push(item.path)}
+                  className={pathname === item.path ? styles.selected : ''}
                 >
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
@@ -322,17 +312,7 @@ i18n
       </Drawer>
       <Box
         component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${open ? drawerWidth : 0}px)` },
-          ml: { sm: open ? `${drawerWidth}px` : 0 },
-          transition: (theme) =>
-            theme.transitions.create(['margin', 'width'], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
-        }}
+        className={`${styles.content} ${open ? styles.contentShift : ''}`}
       >
         <Toolbar />
         {children}
