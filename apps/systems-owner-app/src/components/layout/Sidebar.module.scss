@@ -1,63 +1,53 @@
 .container {
   display: flex;
-}
+  width: 100%;
+  .appBar {
+    z-index: 1201;
+    transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1), margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
 
-.appBar {
-  z-index: 1201;
-  transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1), margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
-}
+    .menuButton {
+      margin: 0 16px;
+    }
+    .title {
+      flex-grow: 1;
+    }
+    .iconButton {
+      padding: 8px;
+      color: white;
+    }
 
-.appBarShift {
-  margin-left: 240px;
-  width: calc(100% - 240px);
-  transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1), margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
-}
+    .menu {
+      margin-top: 45px;
+    }
 
-.drawer {
-  width: 240px;
-  flex-shrink: 0;
-}
+    .selected {
+      background-color: rgba(0, 0, 0, 0.08);
+    }
+  }
 
-.drawerPaper {
-  width: 240px;
-  box-sizing: border-box;
-}
+  .appBarShift {
+    // margin-left: 240px;
+    // width: calc(100% - 240px);
+    transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1), margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
+  }
+  .drawer {
+    z-index: 1;
+    width: 240px;
+    flex-shrink: 0;
+  }
 
-.menuButton {
-  margin-right: 16px;
-}
+  .drawerPaper {
+    width: 240px;
+    box-sizing: border-box;
+  }
 
-.title {
-  flex-grow: 1;
-}
+  .content {
+    flex-grow: 1;
+    padding: 24px;
+    transition: margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
+  }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0 8px;
-}
-
-.content {
-  flex-grow: 1;
-  padding: 24px;
-  transition: margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-.contentShift {
-  margin-left: 240px;
-  transition: margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-.iconButton {
-  padding: 8px;
-  color: white;
-}
-
-.menu {
-  margin-top: 45px;
-}
-
-.selected {
-  background-color: rgba(0, 0, 0, 0.08);
+  .contentShift {
+    transition: margin 225ms cubic-bezier(0.4, 0, 0.6, 1);
+  }
 }

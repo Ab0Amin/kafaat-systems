@@ -41,14 +41,14 @@ import styles from './Sidebar.module.scss';
 import { routes } from '../../app/routes';
 import { AUTH_STATUS } from '../../app/api/auth/auth.types';
 
-
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation('common');
   const { allLangs } = useLocales();
-  const locales = allLangs.map((lang) => lang.language_code);
+  const locales = allLangs.map(lang => lang.language_code);
   const locale = useLocales().currentLang;
-  const localeNames = allLangs.map((lang) => lang.name);
-  const { t: dashboardT,i18n } = useTranslation('dashboard');
+  const currentDirection = useLocales().currentDirection;
+  const localeNames = allLangs.map(lang => lang.name);
+  const { t: dashboardT, i18n } = useTranslation('dashboard');
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
@@ -70,6 +70,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   const handleDrawerToggle = () => {
     setOpen(!open);
+    console.log(open);
   };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -103,7 +104,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       callbackUrl: `${baseUrl}${routes.login.path}`,
     });
   };
-  
+
   const handleLanguageChange = async (newLocale: string) => {
     try {
       i18n.changeLanguage(newLocale);
@@ -137,10 +138,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <Box className={styles.container}>
-      <AppBar
-        position="fixed"
-        className={`${styles.appBar} ${open ? styles.appBarShift : ''}`}
-      >
+      <AppBar position="fixed" className={`${styles.appBar} ${open ? styles.appBarShift : ''}`}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -253,10 +251,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           <Box sx={{ flexGrow: 0, ml: 1 }}>
             <Tooltip title={session?.user?.name || 'User'}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt={session?.user?.name || 'User'}
-                  src="/static/images/avatar/2.jpg"
-                />
+                <Avatar alt={session?.user?.name || 'User'} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -285,38 +280,39 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant={isMobile ? 'temporary' : 'persistent'}
-        open={open}
-        onClose={isMobile ? handleDrawerToggle : undefined}
-        className={styles.drawer}
-        classes={{
-          paper: styles.drawerPaper,
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto', mt: 2 }}>
-          <List>
-            {menuItems.map((item) => (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton
-                  selected={pathname === item.path}
-                  onClick={() => router.push(item.path)}
-                  className={pathname === item.path ? styles.selected : ''}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider sx={{ mt: 2 }} />
-        </Box>
-      </Drawer>
-      <Box
-        component="main"
-        className={`${styles.content} ${open ? styles.contentShift : ''}`}
-      >
+      {open && (
+        <Drawer
+          variant={isMobile ? 'temporary' : 'persistent'}
+          anchor={currentDirection === 'rtl' ? 'right' : 'left'}
+          open={open}
+          onClose={isMobile ? handleDrawerToggle : undefined}
+          className={styles.drawer}
+          classes={{
+            paper: styles.drawerPaper,
+          }}
+        >
+          <Toolbar />
+          <Box sx={{ overflow: 'auto', mt: 2 }}>
+            <List>
+              {menuItems.map(item => (
+                <ListItem key={item.text} disablePadding>
+                  <ListItemButton
+                    selected={pathname === item.path}
+                    onClick={() => router.push(item.path)}
+                    className={pathname === item.path ? styles.selected : ''}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+            <Divider sx={{ mt: 2 }} />
+          </Box>
+        </Drawer>
+      )}
+
+      <Box component="main" className={`${styles.content} ${open ? styles.contentShift : ''}`}>
         <Toolbar />
         {children}
       </Box>
