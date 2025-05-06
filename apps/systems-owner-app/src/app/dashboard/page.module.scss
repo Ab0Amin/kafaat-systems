@@ -5,20 +5,99 @@
   height: 50vh;
 }
 
-.statsCard {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  height: 140px;
+.pageHeader {
+  margin-bottom: 24px;
+  
+  .pageTitle {
+    font-weight: 700;
+    color: #212B36;
+    margin-bottom: 8px;
+  }
+  
+  .pageDescription {
+    color: #637381;
+  }
 }
 
 .statsGrid {
-  margin-top: 16px;
+  margin-top: 24px;
+}
+
+.statsCard {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 160px;
+  border-radius: 16px;
+  box-shadow: 0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 24px -4px rgba(145, 158, 171, 0.12);
+  transition: box-shadow 0.3s ease-in-out;
+  
+  &:hover {
+    box-shadow: 0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 28px -2px rgba(145, 158, 171, 0.2);
+  }
+  
+  .statsTitle {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .statsValue {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-top: auto;
+    margin-bottom: 8px;
+  }
+  
+  .statsLabel {
+    color: #637381;
+  }
 }
 
 .planCard {
-  padding: 16px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 16px;
+  box-shadow: 0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 24px -4px rgba(145, 158, 171, 0.12);
+  transition: box-shadow 0.3s ease-in-out;
+  
+  &:hover {
+    box-shadow: 0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 28px -2px rgba(145, 158, 171, 0.2);
+  }
+  
+  .planTitle {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .planValue {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .planLabel {
+    color: #637381;
+  }
+}
+
+.card {
+  border-radius: 16px;
+  box-shadow: 0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 24px -4px rgba(145, 158, 171, 0.12);
+  overflow: hidden;
+  
+  .cardHeader {
+    padding: 24px;
+    background-color: #fff;
+    
+    .cardTitle {
+      font-weight: 700;
+      color: #212B36;
+    }
+  }
+  
+  .cardContent {
+    padding: 24px;
+  }
 }

@@ -53,12 +53,15 @@ export default function LoginPage() {
   return (
     <Container component="main" maxWidth="xs">
       <Box className={styles.loginContainer}>
-        <Paper elevation={3} className={styles.paper}>
+        <Paper elevation={0} className={styles.paper}>
           <Box className={styles.iconContainer}>
             <LockOutlinedIcon className={styles.icon} />
           </Box>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h4" className={styles.title}>
             {t('login')}
+          </Typography>
+          <Typography variant="body2" className={styles.subtitle}>
+            {t('loginSubtitle', 'Enter your credentials to access the systems owner dashboard')}
           </Typography>
 
           {error && (
@@ -68,30 +71,48 @@ export default function LoginPage() {
           )}
 
           <Box component="form" onSubmit={handleSubmit} noValidate className={styles.form}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label={t('email')}
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label={t('password')}
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <Box className={styles.inputField}>
+              <Typography variant="subtitle2" className={styles.inputLabel}>
+                {t('email')}
+              </Typography>
+              <TextField
+                required
+                fullWidth
+                id="email"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t('emailPlaceholder', 'Enter your email address')}
+                variant="outlined"
+                size="medium"
+                InputProps={{
+                  sx: { borderRadius: '8px' }
+                }}
+              />
+            </Box>
+            <Box className={styles.inputField}>
+              <Typography variant="subtitle2" className={styles.inputLabel}>
+                {t('password')}
+              </Typography>
+              <TextField
+                required
+                fullWidth
+                name="password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t('passwordPlaceholder', 'Enter your password')}
+                variant="outlined"
+                size="medium"
+                InputProps={{
+                  sx: { borderRadius: '8px' }
+                }}
+              />
+            </Box>
             <Button
               type="submit"
               fullWidth

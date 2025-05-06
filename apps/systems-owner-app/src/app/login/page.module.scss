@@ -1,40 +1,76 @@
 .loginContainer {
-  margin-top: 8;
+  margin-top: 64px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .paper {
-  padding: 32px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 24px -4px rgba(145, 158, 171, 0.12);
 }
 
 .iconContainer {
   background-color: var(--primary-main);
   border-radius: 50%;
-  padding: 8px;
-  margin-bottom: 16px;
+  padding: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 16px 0 rgba(var(--primary-main-rgb), 0.24);
 }
 
 .icon {
   color: white;
+  font-size: 1.5rem;
+}
+
+.title {
+  font-weight: 700;
+  color: #212B36;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  color: #637381;
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 .form {
-  margin-top: 8px;
+  margin-top: 16px;
   width: 100%;
+  
+  .inputField {
+    margin-bottom: 16px;
+    
+    .inputLabel {
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+  }
 }
 
 .submitButton {
-  margin-top: 24px;
+  margin-top: 32px;
   margin-bottom: 16px;
+  height: 48px;
+  font-weight: 600;
+  text-transform: none;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px 0 rgba(var(--primary-main-rgb), 0.24);
+  
+  &:hover {
+    box-shadow: 0 8px 16px 0 rgba(var(--primary-main-rgb), 0.32);
+  }
 }
 
 .alert {
   margin-top: 16px;
+  margin-bottom: 16px;
   width: 100%;
+  border-radius: 8px;
 }

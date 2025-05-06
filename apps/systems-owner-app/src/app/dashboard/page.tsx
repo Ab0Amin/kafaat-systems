@@ -91,75 +91,84 @@ export default function DashboardPage() {
   }
 
   return (
-      <Box>
-        <Typography variant="h4" gutterBottom>
+    <Box>
+      <Box className={styles.pageHeader}>
+        <Typography variant="h4" className={styles.pageTitle}>
           {t('welcome')}
         </Typography>
-
-        <Grid container spacing={3} className={styles.statsGrid}>
-          <Grid size={{xs:12, sm:6, md:4}} >
-            <Paper elevation={3} className={styles.statsCard}>
-              <Typography variant="h6" color="primary" gutterBottom>
-                {t('stats')}
-              </Typography>
-              <Typography variant="h3" component="div">
-                {stats?.totalTenants || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('totalTenants')}
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid size={{xs:12, sm:6, md:4}}>
-            <Paper elevation={3} className={styles.statsCard}>
-              <Typography variant="h6" color="success.main" gutterBottom>
-                {t('active')}
-              </Typography>
-              <Typography variant="h3" component="div">
-                {stats?.activeTenants || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('activeTenants')}
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid size={{xs:12, sm:6, md:4}}>
-            <Paper elevation={3} className={styles.statsCard}>
-              <Typography variant="h6" color="error" gutterBottom>
-                {t('inactive')}
-              </Typography>
-              <Typography variant="h3" component="div">
-                {stats?.inactiveTenants || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('inactiveTenants')}
-              </Typography>
-            </Paper>
-          </Grid>
-
-          <Grid size={{xs:12}}>
-            <Card>
-              <CardHeader title={t('tenantsByPlan')} />
-              <Divider />
-              <CardContent>
-                <Grid container spacing={2}>
-                  {stats?.tenantsByPlan &&
-                    Object.entries(stats.tenantsByPlan).map(([plan, count]) => (
-                      <Grid size={{xs:6, sm:4, md:3}} key={plan}>
-                        <Paper elevation={2} className={styles.planCard}>
-                          <Typography variant="h6">{plan}</Typography>
-                          <Typography variant="h4">{count}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {t('tenants')}
-                          </Typography>
-                        </Paper>
-                      </Grid>
-                    ))}
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+        <Typography variant="body1" className={styles.pageDescription}>
+          {t('dashboardDescription', 'View your tenant statistics and management overview')}
+        </Typography>
       </Box>
+
+      <Grid container spacing={3} className={styles.statsGrid}>
+        <Grid item xs={12} sm={6} md={4}>
+          <Box className={styles.statsCard}>
+            <Typography variant="h6" color="primary" className={styles.statsTitle}>
+              {t('stats')}
+            </Typography>
+            <Typography variant="h3" component="div" className={styles.statsValue}>
+              {stats?.totalTenants || 0}
+            </Typography>
+            <Typography variant="body2" className={styles.statsLabel}>
+              {t('totalTenants')}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Box className={styles.statsCard}>
+            <Typography variant="h6" color="success.main" className={styles.statsTitle}>
+              {t('active')}
+            </Typography>
+            <Typography variant="h3" component="div" className={styles.statsValue}>
+              {stats?.activeTenants || 0}
+            </Typography>
+            <Typography variant="body2" className={styles.statsLabel}>
+              {t('activeTenants')}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Box className={styles.statsCard}>
+            <Typography variant="h6" color="error" className={styles.statsTitle}>
+              {t('inactive')}
+            </Typography>
+            <Typography variant="h3" component="div" className={styles.statsValue}>
+              {stats?.inactiveTenants || 0}
+            </Typography>
+            <Typography variant="body2" className={styles.statsLabel}>
+              {t('inactiveTenants')}
+            </Typography>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Card className={styles.card}>
+            <Box className={styles.cardHeader}>
+              <Typography variant="h6" className={styles.cardTitle}>
+                {t('tenantsByPlan')}
+              </Typography>
+            </Box>
+            <Divider />
+            <CardContent className={styles.cardContent}>
+              <Grid container spacing={3}>
+                {stats?.tenantsByPlan &&
+                  Object.entries(stats.tenantsByPlan).map(([plan, count]) => (
+                    <Grid item xs={6} sm={4} md={3} key={plan}>
+                      <Box className={styles.planCard}>
+                        <Typography variant="h6" className={styles.planTitle}>{plan}</Typography>
+                        <Typography variant="h4" className={styles.planValue}>{count}</Typography>
+                        <Typography variant="body2" className={styles.planLabel}>
+                          {t('tenants')}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  ))}
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
