@@ -44,7 +44,7 @@ export default function App({ children }: { children: React.ReactNode }) {
     <>
       <SnackbarProvider maxSnack={3} autoHideDuration={3000} />
       <I18nextProvider i18n={i18n}>
-        <div>{children}</div>
+       {children}
       </I18nextProvider>
     </>
   );

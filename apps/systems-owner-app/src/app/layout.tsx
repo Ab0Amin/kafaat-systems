@@ -2,9 +2,8 @@ import { type Metadata } from 'next';
 import App from './app';
 import { AuthProvider } from '../components/providers/AuthProvider';
 import { ThemeProvider } from '../components/providers/ThemeProvider';
+import './global.css'; 
 
-
-// Import your global CSS
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   return {
