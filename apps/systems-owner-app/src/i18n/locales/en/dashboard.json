@@ -1,0 +1,13 @@
+{
+  "welcome": "Welcome to the Owner Dashboard",
+  "tenants": "Tenants",
+  "stats": "System Statistics",
+  "settings": "Settings",
+  "active": "Active",
+  "inactive": "Inactive",
+  "totalTenants": "Total Tenants",
+  "activeTenants": "Active Tenants",
+  "inactiveTenants": "Inactive Tenants",
+  "tenantsByPlan": "Tenants by Plan",
+  "unauthorized": "You are not authorized to access this page"
+}

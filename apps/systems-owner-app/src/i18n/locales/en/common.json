@@ -3,13 +3,6 @@
     "title": "Kafaat Systems - Owner Dashboard",
     "description": "Manage your tenants and system settings"
   },
-
-  "dashboard": {
-    "welcome": "Welcome to the Owner Dashboard",
-    "tenants": "Tenants",
-    "stats": "System Statistics",
-    "settings": "Settings"
-  },
   "tenants": {
     "title": "Tenant Management",
     "list": "Tenant List",
@@ -38,26 +31,30 @@
     "adminLastName": "Admin Last Name",
     "adminEmail": "Admin Email"
   },
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "view": "View",
-    "search": "Search",
-    "filter": "Filter",
-    "loading": "Loading...",
-    "noData": "No data available",
-    "success": "Success",
-    "error": "Error",
-    "warning": "Warning",
-    "info": "Information",
-    "logout": "Logout",
-    "profile": "Profile",
-    "language": "Language",
-    "theme": "Theme",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
-  }
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "view": "View",
+  "search": "Search",
+  "filter": "Filter",
+  "loading": "Loading...",
+  "noData": "No data available",
+  "success": "Success",
+  "error": {
+    "general": "Error",
+    "failedToLoad": "Failed to load data",
+    "unauthorized": "Unauthorized access",
+    "serverError": "Server error",
+    "networkError": "Network error"
+  },
+  "warning": "Warning",
+  "info": "Information",
+  "logout": "Logout",
+  "profile": "Profile",
+  "language": "Language",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "system": "System"
 }
