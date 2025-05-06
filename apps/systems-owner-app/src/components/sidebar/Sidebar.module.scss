@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  
+  .drawer {
+    z-index: 1;
+    width: 240px;
+    flex-shrink: 0;
+    transition: width 0.2s ease-in-out;
+    
+    &.drawerCollapsed {
+      width: 72px;
+    }
+  }
+
+  .drawerPaper {
+    width: 240px;
+    box-sizing: border-box;
+    border-right: 1px dashed rgba(145, 158, 171, 0.2);
+    box-shadow: none;
+    transition: width 0.2s ease-in-out;
+    
+    &.drawerPaperCollapsed {
+      width: 72px;
+      overflow-x: hidden;
+    }
+  }
+  
+  .drawerContainer {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 64px);
+    justify-content: space-between;
+    overflow: hidden;
+    
+    .collapseButton {
+      align-self: flex-end;
+      margin: 8px;
+      color: #637381;
+      background-color: rgba(99, 115, 129, 0.08);
+      
+      &:hover {
+        background-color: rgba(99, 115, 129, 0.16);
+      }
+    }
+  }
+
+  .content {
+    flex-grow: 1;
+    transition: margin 0.2s ease-in-out, width 0.2s ease-in-out;
+    background-color: #F9FAFB;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .contentShift {
+    transition: margin 0.2s ease-in-out, width 0.2s ease-in-out;
+  }
+  
+  .contentContainer {
+    padding: 24px;
+    min-height: calc(100vh - 64px);
+  }
+}
