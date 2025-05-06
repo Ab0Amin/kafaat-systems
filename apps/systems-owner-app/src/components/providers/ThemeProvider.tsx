@@ -4,14 +4,10 @@ import { ReactNode, createContext, useContext, useState, useEffect } from 'react
 import { ThemeProvider as MUIThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useLocales } from '../../i18n/use-locales';
-// import { useLocale } from '@/app/i18n/client';
-// import { localeDirections } from '@/app/i18n/config';
+
 
 type ThemeMode = 'light' | 'dark' | 'system';
- const localeDirections = {
-  en: 'ltr',
-  ar: 'rtl',
-};
+
 interface ThemeContextType {
   mode: ThemeMode;
   setMode: (mode: ThemeMode) => void;
@@ -27,12 +23,7 @@ const ThemeContext = createContext<ThemeContextType>({
 export const useTheme = () => useContext(ThemeContext);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const locale = useLocales().currentLang;
-    let direction: 'rtl' | 'ltr' = localeDirections.en as 'ltr';
-    if (locale === 'ar') {
-      direction = localeDirections.ar as 'rtl';
-    }
- 
+  const { currentLang, currentDirection } = useLocales();
   const [mode, setMode] = useState<ThemeMode>('system');
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>('light');
 
@@ -57,8 +48,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const currentTheme = mode === 'system' ? systemTheme : mode;
 
+  // Create theme with current language direction
   const theme = createTheme({
-    direction: direction,
+    direction: currentDirection,
     palette: {
       mode: currentTheme,
       primary: {
@@ -69,13 +61,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       },
     },
     typography: {
-      fontFamily: locale === 'ar' ? 'Tajawal, Roboto, Arial, sans-serif' : 'Roboto, Arial, sans-serif',
+      fontFamily: currentLang === 'ar' ? 'Tajawal, Roboto, Arial, sans-serif' : 'Roboto, Arial, sans-serif',
     },
     components: {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
-            direction: direction,
+            direction: currentDirection,
           },
         },
       },
