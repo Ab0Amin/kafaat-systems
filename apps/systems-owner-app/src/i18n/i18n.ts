@@ -1,13 +1,5 @@
-import { createInstance } from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import resourcesToBackend from 'i18next-resources-to-backend';
+// src/i18n/i18n.ts
 
-export interface CustomResourceKey {
-  [key: string]: unknown;
-}
-export interface CustomResourceLanguage {
-  [namespace: string]: CustomResourceKey;
-}
 export interface SupportedLanguages {
   name: string;
   language_code: string;
@@ -22,30 +14,9 @@ export const supportedLngs: SupportedLanguages[] = [
 
 export const defaultLang = 'en';
 
-export async function initTranslations() {
-  const i18nInstance = createInstance()
-    .use(initReactI18next)
-    .use(resourcesToBackend((lng: string, ns: string) => import(`./locales/${lng}/${ns}.json`)));
+export const namespaces = ['common', 'auth', 'dashboard'];
 
-  await i18nInstance.init({
-    lng: defaultLang,
-    fallbackLng: defaultLang,
-    supportedLngs: supportedLngs.map(l => l.language_code),
-
-    defaultNS: 'common',
-    fallbackNS: 'common',
-    ns: ['common', 'login', 'dashboard'],
-  });
-
-  return {
-    i18n: i18nInstance,
-    supportedLngs,
-    lng: i18nInstance.language,
-    resources: i18nInstance.services.resourceStore.data,
-    t: i18nInstance.t,
-  };
-}
-
-export type I18nLocale = Awaited<ReturnType<typeof initTranslations>>;
-
-export * from './use-locales';
+export const localeDirections: Record<string, 'ltr' | 'rtl'> = {
+  en: 'ltr',
+  ar: 'rtl',
+};
