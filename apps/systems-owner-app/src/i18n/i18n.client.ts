@@ -26,11 +26,11 @@ if (!i18n.isInitialized) {
       },
     });
 
-  if (typeof document !== 'undefined') {
-    const direction = localeDirections[i18n.language] || 'ltr';
-    document.documentElement.dir = direction;
-    document.documentElement.lang = i18n.language;
-  }
+  // if (typeof document !== 'undefined') {
+  //   const direction = localeDirections[i18n.language] || 'ltr';
+  //   document.documentElement.dir = direction;
+  //   document.documentElement.lang = i18n.language;
+  // }
 }
 
 export default i18n;
