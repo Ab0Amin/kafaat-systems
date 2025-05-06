@@ -97,9 +97,12 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: routes.login.path });
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    await signOut({
+      redirect: true,
+      callbackUrl: `${baseUrl}${routes.login.path}`,
+    });
   };
-
   
   const handleLanguageChange = async (newLocale: string) => {
     try {

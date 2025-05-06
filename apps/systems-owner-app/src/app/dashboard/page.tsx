@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { Sidebar } from '../../components/layout';
 import styles from './page.module.scss';
 import { routes } from '../routes';
+import { AUTH_STATUS } from '../api/auth/auth.types';
 
 interface TenantStats {
   totalTenants: number;
@@ -36,7 +37,11 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-
+  useEffect(() => {
+    if (status === AUTH_STATUS.UNAUTHENTICATED) {
+      router.push(routes.login.path);
+    }
+  }, [status, router]);
   useEffect(() => {
     const fetchStats = async () => {
       try {
