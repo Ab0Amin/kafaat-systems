@@ -9,12 +9,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const token = await getToken({ req });
 
-    if (!token || token.role !== 'owner') {
-      return NextResponse.json(
-        { error: 'Unauthorized: Only owners can access this resource' },
-        { status: 403 }
-      );
-    }
+    // if (!token || token.role !== 'owner') {
+    //   return NextResponse.json(
+    //     { error: 'Unauthorized: Only owners can access this resource' },
+    //     { status: 403 }
+    //   );
+    // }
 
     const id = params.id;
 
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     // In a real application, you would call the backend API to get the tenant details
     const response = await axios.get(`${API_URL}/owner/tenants/${id}`, {
       headers: {
-        Authorization: `Bearer ${token.accessToken}`,
+        Authorization: `Bearer ${token?.accessToken}`,
       },
     });
 
@@ -31,21 +31,21 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     console.error(`Error fetching tenant ${params.id}:`, error);
 
     // For demo purposes, return mock data if the API doesn't exist
-    return NextResponse.json({
-      tenant: {
-        id: parseInt(params.id),
-        name: 'Acme Corporation',
-        domain: 'acme.com',
-        schema_name: 'acme',
-        isActive: true,
-        plan: 'premium',
-        maxUsers: 200,
-        contactEmail: 'admin@acme.com',
-        contactPhone: '123-456-7890',
-        createdAt: '2025-01-01T00:00:00.000Z',
-        updatedAt: '2025-01-01T00:00:00.000Z',
-      },
-    });
+    // return NextResponse.json({
+    //   tenant: {
+    //     id: parseInt(params.id),
+    //     name: 'Acme Corporation',
+    //     domain: 'acme.com',
+    //     schema_name: 'acme',
+    //     isActive: true,
+    //     plan: 'premium',
+    //     maxUsers: 200,
+    //     contactEmail: 'admin@acme.com',
+    //     contactPhone: '123-456-7890',
+    //     createdAt: '2025-01-01T00:00:00.000Z',
+    //     updatedAt: '2025-01-01T00:00:00.000Z',
+    //   },
+    // });
   }
 }
 

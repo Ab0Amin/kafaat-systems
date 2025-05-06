@@ -30,6 +30,11 @@ export class OwnerController {
     return this.ownerService.getTenantStats();
   }
 
+  @Get('tenants')
+  getTenans() {
+    return this.ownerService.getTenants();
+  }
+
   @Post(':id/deactivate')
   deactivate(@Param('id') id: string) {
     return this.ownerService.deactivateTenant(+id);

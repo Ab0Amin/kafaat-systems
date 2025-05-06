@@ -100,6 +100,18 @@ export class OwnerService {
     }
   }
 
+  async getTenants() {
+    const ownerDS = createTenantDataSource('owner');
+    await ownerDS.initialize();
+    try {
+      const tenants = await ownerDS.getRepository(TenantEntity).find();
+
+      return tenants;
+    } finally {
+      await ownerDS.destroy();
+    }
+  }
+
   async deactivateTenant(id: number) {
     const ownerDS = createTenantDataSource('owner');
     await ownerDS.initialize();

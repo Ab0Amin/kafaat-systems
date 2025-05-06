@@ -67,7 +67,7 @@ export default function TenantsPage() {
       try {
         setLoading(true);
         const response = await axios.get('/api/owner/tenants');
-        setTenants(response.data.tenants);
+        setTenants(response.data);
       } catch (err) {
         console.error('Error fetching tenants:', err);
         setError('Failed to load tenants');

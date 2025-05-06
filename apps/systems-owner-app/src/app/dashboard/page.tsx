@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { Sidebar } from '../../components/layout';
 import styles from './page.module.scss';
 import { routes } from '../routes';
 import { AUTH_STATUS } from '../api/auth/auth.types';
@@ -46,7 +45,7 @@ export default function DashboardPage() {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/owner/stats`, {
+        const response = await axios.get(`/api/owner/stats`, {
           headers: {
             Authorization: `Bearer ${session?.accessToken}`,
           },
@@ -92,7 +91,6 @@ export default function DashboardPage() {
   }
 
   return (
-    <Sidebar>
       <Box>
         <Typography variant="h4" gutterBottom>
           {t('welcome')}
@@ -163,6 +161,5 @@ export default function DashboardPage() {
           </Grid>
         </Grid>
       </Box>
-    </Sidebar>
   );
 }
