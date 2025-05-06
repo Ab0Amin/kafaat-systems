@@ -1,14 +1,29 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useSession } from 'next-auth/react';
+import { AUTH_STATUS } from './api/auth/auth.types';
+import { routes } from './routes';
+import { CircularProgress, Box } from '@mui/material';
+import styles from './page.module.scss';
 
 export default function HomePage() {
-  const { t, i18n } = useTranslation();
+  const router = useRouter();
+  const { status } = useSession();
 
+  useEffect(() => {
+    if (status === AUTH_STATUS.AUHTHENTICATED) {
+      router.push(routes.dashboard.path);
+    } else if (status === AUTH_STATUS.UNAUTHENTICATED) {
+      router.push(routes.login.path);
+    }
+  }, [router, status]);
+
+  // Show loading while checking authentication status
   return (
-    <div>hi
-      <h1>{t('title')}</h1>
-    </div>
+    <Box className={styles.loadingContainer}>
+      <CircularProgress />
+    </Box>
   );
 }
