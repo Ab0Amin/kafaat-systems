@@ -1,0 +1,24 @@
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.statsCard {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 140px;
+}
+
+.statsGrid {
+  margin-top: 16px;
+}
+
+.planCard {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

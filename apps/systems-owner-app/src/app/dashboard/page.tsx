@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-
+import { useRouter } from 'next/navigation';
+import Grid from '@mui/material/Grid';
 import {
   Box,
   Typography,
-  Grid,
   Paper,
   CircularProgress,
   Card,
@@ -16,8 +16,9 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { getApiUrl } from '../routes';
 import { Sidebar } from '../../components/layout';
+import styles from './page.module.scss';
+import { routes } from '../routes';
 
 interface TenantStats {
   totalTenants: number;
@@ -27,11 +28,14 @@ interface TenantStats {
 }
 
 export default function DashboardPage() {
-  const{ t} = useTranslation('dashboard');
-  const { data: session } = useSession();
+  const { t } = useTranslation('dashboard');
+  const { t: commonT } = useTranslation('common');
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [stats, setStats] = useState<TenantStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -43,31 +47,30 @@ export default function DashboardPage() {
           },
         });
         setStats(response.data);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching tenant stats:', err);
-        setError('Failed to load tenant statistics');
+        if (err.response?.status === 401) {
+          setError(t('unauthorized'));
+          // Redirect to login after unauthorized error
+          setTimeout(() => {
+            router.push(routes.login.path);
+          }, 2000);
+        } else {
+          setError(commonT('error.failedToLoad'));
+        }
       } finally {
         setLoading(false);
       }
     };
-  console.log("sesion ------------",session?.accessToken);
-  
-    // امنع التشغيل لحد ما session تجهز
+    
     if (session && session.accessToken) {
       fetchStats();
     }
-  }, [session?.accessToken]);
+  }, [session?.accessToken, t, commonT, router]);
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '50vh',
-        }}
-      >
+      <Box className={styles.loadingContainer}>
         <CircularProgress />
       </Box>
     );
@@ -85,110 +88,76 @@ export default function DashboardPage() {
 
   return (
     <Sidebar>
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          {t('welcome')}
+        </Typography>
 
-    <Box>
-      <Typography variant="h4" gutterBottom>
-        {t('welcome')}
-      </Typography>
+        <Grid container spacing={3} className={styles.statsGrid}>
+          <Grid size={{xs:12, sm:6, md:4}} >
+            <Paper elevation={3} className={styles.statsCard}>
+              <Typography variant="h6" color="primary" gutterBottom>
+                {t('stats')}
+              </Typography>
+              <Typography variant="h3" component="div">
+                {stats?.totalTenants || 0}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('totalTenants')}
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid size={{xs:12, sm:6, md:4}}>
+            <Paper elevation={3} className={styles.statsCard}>
+              <Typography variant="h6" color="success.main" gutterBottom>
+                {t('active')}
+              </Typography>
+              <Typography variant="h3" component="div">
+                {stats?.activeTenants || 0}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('activeTenants')}
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid size={{xs:12, sm:6, md:4}}>
+            <Paper elevation={3} className={styles.statsCard}>
+              <Typography variant="h6" color="error" gutterBottom>
+                {t('inactive')}
+              </Typography>
+              <Typography variant="h3" component="div">
+                {stats?.inactiveTenants || 0}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('inactiveTenants')}
+              </Typography>
+            </Paper>
+          </Grid>
 
-      <Grid container spacing={3} sx={{ mt: 2 }}>
-        <Grid >
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              height: 140,
-            }}
-          >
-            <Typography variant="h6" color="primary" gutterBottom>
-              {t('stats')}
-            </Typography>
-            <Typography variant="h3" component="div">
-              {stats?.totalTenants || 0}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Total Tenants
-            </Typography>
-          </Paper>
+          <Grid size={{xs:12}}>
+            <Card>
+              <CardHeader title={t('tenantsByPlan')} />
+              <Divider />
+              <CardContent>
+                <Grid container spacing={2}>
+                  {stats?.tenantsByPlan &&
+                    Object.entries(stats.tenantsByPlan).map(([plan, count]) => (
+                      <Grid size={{xs:6, sm:4, md:3}} key={plan}>
+                        <Paper elevation={2} className={styles.planCard}>
+                          <Typography variant="h6">{plan}</Typography>
+                          <Typography variant="h4">{count}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {t('tenants')}
+                          </Typography>
+                        </Paper>
+                      </Grid>
+                    ))}
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid    >
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              height: 140,
-            }}
-          >
-            <Typography variant="h6" color="success.main" gutterBottom>
-              Active
-            </Typography>
-            <Typography variant="h3" component="div">
-              {stats?.activeTenants || 0}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Active Tenants
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid >
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              height: 140,
-            }}
-          >
-            <Typography variant="h6" color="error" gutterBottom>
-              Inactive
-            </Typography>
-            <Typography variant="h3" component="div">
-              {stats?.inactiveTenants || 0}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Inactive Tenants
-            </Typography>
-          </Paper>
-        </Grid>
-
-        <Grid >
-          <Card>
-            <CardHeader title="Tenants by Plan" />
-            <Divider />
-            <CardContent>
-              <Grid container spacing={2}>
-                {stats?.tenantsByPlan &&
-                  Object.entries(stats.tenantsByPlan).map(([plan, count]) => (
-                    <Grid  key={plan}>
-                      <Paper
-                        elevation={2}
-                        sx={{
-                          p: 2,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography variant="h6">{plan}</Typography>
-                        <Typography variant="h4">{count}</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Tenants
-                        </Typography>
-                      </Paper>
-                    </Grid>
-                  ))}
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
     </Sidebar>
-
   );
 }
