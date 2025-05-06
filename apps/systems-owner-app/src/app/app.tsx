@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AUTH_STATUS } from './api/auth/auth.types';
 import { routes } from './routes';
+import { Sidebar } from '../components/layout';
 
 
 export default function App({ children }: { children: React.ReactNode }) {
@@ -56,8 +57,11 @@ export default function App({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SnackbarProvider maxSnack={3} autoHideDuration={3000} />
+
       <I18nextProvider i18n={i18n}>
+     <Sidebar>
        {children}
+     </Sidebar>
       </I18nextProvider>
     </>
   );
