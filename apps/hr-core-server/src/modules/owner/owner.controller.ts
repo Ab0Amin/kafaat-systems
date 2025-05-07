@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Param, Body, Delete, Logger, Put } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Delete, Put } from '@nestjs/common';
 import { OwnerService } from './owner.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { Public } from '../common/decorators/public.decorator';
-import { log } from 'node:console';
 
 // This would be your actual auth guard
 // import { AdminGuard } from '../../guards/admin.guard';

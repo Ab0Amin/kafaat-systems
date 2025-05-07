@@ -1,5 +1,3 @@
-import { DefaultSession } from 'next-auth';
-
 export type RoleType = 'admin' | 'user' | 'owner';
 
 export interface Tenant {
