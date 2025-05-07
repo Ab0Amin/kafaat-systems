@@ -2,7 +2,7 @@ import NextAuth, { SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 import { getApiUrl } from '../../../routes';
-const schema = 'abdalla-co';
+const schema = 'owner';
 const API_URL = getApiUrl(schema);
 export const authOptions = {
   providers: [

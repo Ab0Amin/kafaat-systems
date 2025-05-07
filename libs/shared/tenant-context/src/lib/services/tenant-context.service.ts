@@ -38,11 +38,13 @@ export class TenantContextService {
   getContext(): TenantContext | undefined {
     // First try to get from AsyncLocalStorage
     const alsContext = this.als.getStore();
+
     if (alsContext) {
       return alsContext;
     }
 
     // If not in ALS, try to get from request
+    console.log('Request schemaName:', this.request?.schemaName);
     if (this.request?.schemaName) {
       return {
         tenantId: this.request.tenantId ? String(this.request.tenantId) : undefined,

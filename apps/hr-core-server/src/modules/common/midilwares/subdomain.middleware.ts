@@ -61,8 +61,14 @@ export class SubdomainMiddleware implements NestMiddleware {
       }
       // Check if we have a subdomain
       if (subdomain) {
-        if (subdomain === 'admin') {
-          // Admin subdomain - set schema to public and role to admin
+        if (subdomain === 'owner') {
+          req.schemaName = 'owner';
+          req.userRole = RoleType.OWNER;
+          this.tenantContextService.setSchema('owner');
+          this.tenantContextService.setRole(RoleType.OWNER);
+          this.logger.debug('Using owner schema');
+          next();
+          return;
         } else {
           // Look up tenant by subdomain
 

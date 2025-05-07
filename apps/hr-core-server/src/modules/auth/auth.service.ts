@@ -56,6 +56,7 @@ export class AuthService {
     if (!email || !pass) {
       throw new BadRequestException('Invalid email or password');
     }
+
     const schema = this.tenantContextService.getSchema();
 
     const tenantDS = createTenantDataSource(schema);

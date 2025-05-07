@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt';
 import axios from 'axios';
 import { getApiUrl } from '../../../../routes';
 
-const schema = '';
+const schema = 'owner';
 const API_URL = getApiUrl(schema);
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {

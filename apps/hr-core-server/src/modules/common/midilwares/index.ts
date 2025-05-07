@@ -6,7 +6,9 @@ import { RegisterTenantMiddleware } from './register-tenant.middlewar';
 export const MIDDLEWARES = [
   {
     middleware: SubdomainMiddleware,
-    exclude: [{ path: 'owner/(.*)', method: RequestMethod.ALL }],
+    exclude: [
+      // { path: 'owner/(.*)', method: RequestMethod.ALL }
+    ],
   },
   {
     middleware: TenantMiddleware,
