@@ -104,15 +104,6 @@ export default function Header({ open, handleDrawerToggle }: HeaderProps) {
   return (
     <AppBar position="fixed" className={`${styles.appBar} ${open ? styles.appBarShift : ''}`}>
       <Toolbar className={styles.toolbar}>
-        {/* <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={handleDrawerToggle}
-          className={styles.menuButton}
-        >
-          <MenuIcon />
-        </IconButton> */}
         <Typography variant="h6" noWrap component="div" className={styles.title}>
           {t('app.title')}
         </Typography>
