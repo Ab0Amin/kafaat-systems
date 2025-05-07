@@ -1,0 +1,29 @@
+{
+  "add": "Add New Tenant",
+  "name": "Company Name",
+  "domain": "Tenant Domain",
+  "plan": "Subscription Plan",
+  "maxUsers": "Max Users",
+  "contactPhone": "Contact Phone",
+  "adminInfo": "Admin User",
+  "adminFirstName": "Admin First Name",
+  "adminLastName": "Admin Last Name",
+  "adminEmail": "Admin Email",
+  "success": {
+    "created": "Tenant created successfully!"
+  },
+  "errors": {
+    "nameRequired": "Name is required",
+    "domainRequired": "Domain is required",
+    "adminFirstNameRequired": "Admin first name is required",
+    "adminLastNameRequired": "Admin last name is required",
+    "adminEmailRequired": "Admin email is required",
+    "invalidEmail": "Invalid email format",
+    "createFailed": "Failed to create tenant"
+  },
+  "plans": {
+    "starter": "Starter",
+    "premium": "Premium",
+    "enterprise": "Enterprise"
+  }
+}

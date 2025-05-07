@@ -1,0 +1,96 @@
+.container {
+  max-width: 600px;
+  width: 100%;
+  margin: 1rem auto;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  @media (max-width: 600px) {
+    padding: 2rem 1rem;
+    margin: 2rem auto;
+  }
+  .formWrapper {
+    background-color: inherit;
+    border: none;
+    box-shadow: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    .form {
+      border: none;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      background-color: inherit;
+      margin: 1rem;
+    }
+  }
+
+  .heading {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5%;
+    color: #333;
+
+    @media (max-width: 600px) {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.inputGroup {
+  margin-bottom: 1.5rem;
+
+  .MuiInputBase-root {
+    border-radius: 10px;
+  }
+
+  .MuiFormLabel-root {
+    font-weight: 500;
+    color: #333;
+  }
+
+  .MuiFormHelperText-root {
+    font-size: 0.8rem;
+  }
+}
+
+.sectionDivider {
+  margin: 2rem 0 1rem;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #444;
+
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
+}
+
+.alert {
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+
+  button {
+    min-width: 140px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

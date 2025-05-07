@@ -1,0 +1,29 @@
+{
+  "add": "إضافة مستأجر جديد",
+  "name": "اسم الشركة",
+  "domain": "النطاق",
+  "plan": "الخطة",
+  "maxUsers": "أقصى عدد للمستخدمين",
+  "contactPhone": "رقم التواصل",
+  "adminInfo": "بيانات المسؤول",
+  "adminFirstName": "الاسم الأول للمسؤول",
+  "adminLastName": "اسم العائلة للمسؤول",
+  "adminEmail": "البريد الإلكتروني للمسؤول",
+  "success": {
+    "created": "تم إنشاء المستأجر بنجاح!"
+  },
+  "errors": {
+    "nameRequired": "اسم الشركة مطلوب",
+    "domainRequired": "النطاق مطلوب",
+    "adminFirstNameRequired": "الاسم الأول للمسؤول مطلوب",
+    "adminLastNameRequired": "اسم العائلة للمسؤول مطلوب",
+    "adminEmailRequired": "البريد الإلكتروني للمسؤول مطلوب",
+    "invalidEmail": "صيغة البريد الإلكتروني غير صحيحة",
+    "createFailed": "فشل في إنشاء المستأجر"
+  },
+  "plans": {
+    "starter": "أساسي",
+    "premium": "مميز",
+    "enterprise": "مؤسسي"
+  }
+}
