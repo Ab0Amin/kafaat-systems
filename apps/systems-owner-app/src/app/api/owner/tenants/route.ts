@@ -9,12 +9,12 @@ export async function GET(req: NextRequest) {
   try {
     const token = await getToken({ req });
 
-    // if (!token || token.role !== 'owner') {
-    //   return NextResponse.json(
-    //     { error: 'Unauthorized: Only owners can access this resource' },
-    //     { status: 403 }
-    //   );
-    // }
+    if (!token || token.role !== 'owner') {
+      return NextResponse.json(
+        { error: 'Unauthorized: Only owners can access this resource' },
+        { status: 403 }
+      );
+    }
 
     // This is a mock implementation since the actual endpoint might not exist
     // In a real application, you would call the backend API to get the list of tenants
@@ -28,51 +28,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(response.data);
   } catch (error) {
     console.error('Error fetching tenants:', error);
-
-    // For demo purposes, return mock data if the API doesn't exist
-    // return NextResponse.json({
-    //   tenants: [
-    //     {
-    //       id: 1,
-    //       name: 'Acme Corporation',
-    //       domain: 'acme.com',
-    //       schema_name: 'acme',
-    //       isActive: true,
-    //       plan: 'premium',
-    //       maxUsers: 200,
-    //       contactEmail: 'admin@acme.com',
-    //       contactPhone: '123-456-7890',
-    //       createdAt: '2025-01-01T00:00:00.000Z',
-    //       updatedAt: '2025-01-01T00:00:00.000Z',
-    //     },
-    //     {
-    //       id: 2,
-    //       name: 'Globex Corporation',
-    //       domain: 'globex.com',
-    //       schema_name: 'globex',
-    //       isActive: true,
-    //       plan: 'starter',
-    //       maxUsers: 50,
-    //       contactEmail: 'admin@globex.com',
-    //       contactPhone: '123-456-7891',
-    //       createdAt: '2025-01-02T00:00:00.000Z',
-    //       updatedAt: '2025-01-02T00:00:00.000Z',
-    //     },
-    //     {
-    //       id: 3,
-    //       name: 'Initech',
-    //       domain: 'initech.com',
-    //       schema_name: 'initech',
-    //       isActive: false,
-    //       plan: 'enterprise',
-    //       maxUsers: 500,
-    //       contactEmail: 'admin@initech.com',
-    //       contactPhone: '123-456-7892',
-    //       createdAt: '2025-01-03T00:00:00.000Z',
-    //       updatedAt: '2025-01-03T00:00:00.000Z',
-    //     },
-    //   ],
-    // });
+    return NextResponse.json({ error: 'something went wrong' });
   }
 }
 

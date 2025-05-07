@@ -67,50 +67,51 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       }}
     >
       <Header open={open} handleDrawerToggle={handleDrawerToggle} />
+      {status == AUTH_STATUS.AUHTHENTICATED && (
+        <Drawer
+          variant={isMobile ? 'temporary' : 'permanent'}
+          anchor={currentDirection === 'rtl' ? 'right' : 'left'}
+          open={open}
+          onClose={isMobile ? handleDrawerToggle : undefined}
+          className={`${styles.drawer} ${collapsed ? styles.drawerCollapsed : ''}`}
+          classes={{
+            paper: `${styles.drawerPaper} ${collapsed ? styles.drawerPaperCollapsed : ''}`,
+          }}
+          sx={{
+            width: open ? drawerWidth : 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+              borderRight: '1px dashed rgba(145, 158, 171, 0.2)',
+              boxShadow: 'none',
+              transition: 'width 0.2s ease-in-out',
+              left: currentDirection === 'rtl' ? 'auto' : 0,
+              right: currentDirection === 'rtl' ? 0 : 'auto',
+            },
+          }}
+        >
+          <Toolbar />
+          <Box className={styles.drawerContainer}>
+            <Nav collapsed={collapsed} />
 
-      <Drawer
-        variant={isMobile ? 'temporary' : 'permanent'}
-        anchor={currentDirection === 'rtl' ? 'right' : 'left'}
-        open={open}
-        onClose={isMobile ? handleDrawerToggle : undefined}
-        className={`${styles.drawer} ${collapsed ? styles.drawerCollapsed : ''}`}
-        classes={{
-          paper: `${styles.drawerPaper} ${collapsed ? styles.drawerPaperCollapsed : ''}`,
-        }}
-        sx={{
-          width: open ? drawerWidth : 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            borderRight: '1px dashed rgba(145, 158, 171, 0.2)',
-            boxShadow: 'none',
-            transition: 'width 0.2s ease-in-out',
-            left: currentDirection === 'rtl' ? 'auto' : 0,
-            right: currentDirection === 'rtl' ? 0 : 'auto',
-          },
-        }}
-      >
-        <Toolbar />
-        <Box className={styles.drawerContainer}>
-          <Nav collapsed={collapsed} />
-
-          {!isMobile && (
-            <IconButton onClick={handleCollapseToggle} className={styles.collapseButton}>
-              {currentDirection === 'rtl' ? (
-                collapsed ? (
-                  <ChevronLeftIcon />
-                ) : (
+            {!isMobile && (
+              <IconButton onClick={handleCollapseToggle} className={styles.collapseButton}>
+                {currentDirection === 'rtl' ? (
+                  collapsed ? (
+                    <ChevronLeftIcon />
+                  ) : (
+                    <ChevronRightIcon />
+                  )
+                ) : collapsed ? (
                   <ChevronRightIcon />
-                )
-              ) : collapsed ? (
-                <ChevronRightIcon />
-              ) : (
-                <ChevronLeftIcon />
-              )}
-            </IconButton>
-          )}
-        </Box>
-      </Drawer>
+                ) : (
+                  <ChevronLeftIcon />
+                )}
+              </IconButton>
+            )}
+          </Box>
+        </Drawer>
+      )}
 
       <Box
         component="main"
