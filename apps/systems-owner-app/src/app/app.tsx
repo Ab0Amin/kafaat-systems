@@ -3,29 +3,22 @@ import '../i18n/i18n';
 import i18n from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { SnackbarProvider } from 'notistack';
-import   '../i18n/i18n.client';
+import '../i18n/i18n.client';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AUTH_STATUS } from './api/auth/auth.types';
 import { routes } from './routes';
-import { Sidebar } from '../components/layout';
-
+import AppShell from '../components/app-shell/AppShell';
 
 export default function App({ children }: { children: React.ReactNode }) {
-   const { status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
-
-
-
-
-
   // Handle authentication redirection
   useEffect(() => {
-
     setMounted(true);
 
     const lang = i18n.language;
@@ -47,11 +40,15 @@ export default function App({ children }: { children: React.ReactNode }) {
   }, [status, pathname, router]);
   if (!mounted) return null; // avoid hydration mismatch
 
-  
-  if ((status === AUTH_STATUS.LOADING || status === AUTH_STATUS.AUHTHENTICATED) && pathname === routes.login.path) {
-    return <>
-      <SnackbarProvider maxSnack={3} autoHideDuration={3000} />
-      </>;
+  if (
+    (status === AUTH_STATUS.LOADING || status === AUTH_STATUS.AUHTHENTICATED) &&
+    pathname === routes.login.path
+  ) {
+    return (
+      <>
+        <SnackbarProvider maxSnack={3} autoHideDuration={3000} />
+      </>
+    );
   }
 
   return (
@@ -59,9 +56,7 @@ export default function App({ children }: { children: React.ReactNode }) {
       <SnackbarProvider maxSnack={3} autoHideDuration={3000} />
 
       <I18nextProvider i18n={i18n}>
-     <Sidebar>
-       {children}
-     </Sidebar>
+        <AppShell>{children}</AppShell>
       </I18nextProvider>
     </>
   );

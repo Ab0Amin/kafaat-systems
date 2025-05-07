@@ -1,77 +1,58 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import {
-  Box,
-  Drawer,
   AppBar,
   Toolbar,
-  List,
-  Typography,
-  Divider,
   IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
+  Typography,
   Menu,
   MenuItem,
   Avatar,
   Tooltip,
-  useMediaQuery,
-  useTheme as useMuiTheme,
+  Box,
+  Badge,
+  ListItemIcon,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  People as PeopleIcon,
-  Settings as SettingsIcon,
   Translate as TranslateIcon,
   Brightness4 as DarkModeIcon,
   Brightness7 as LightModeIcon,
   BrightnessAuto as SystemModeIcon,
-  ChevronLeft as ChevronLeftIcon,
+  Notifications as NotificationsIcon,
+  Person as PersonIcon,
+  Logout as LogoutIcon,
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { useTheme } from '../providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import { useLocales } from '../../i18n/use-locales';
-import styles from './Sidebar.module.scss';
+import styles from './Header.module.scss';
 import { routes } from '../../app/routes';
 import { AUTH_STATUS } from '../../app/api/auth/auth.types';
 
-export default function Sidebar({ children }: { children: React.ReactNode }) {
+interface HeaderProps {
+  open: boolean;
+  handleDrawerToggle: () => void;
+}
+
+export default function Header({ open, handleDrawerToggle }: HeaderProps) {
   const { t } = useTranslation('common');
   const { allLangs } = useLocales();
   const locales = allLangs.map(lang => lang.language_code);
   const locale = useLocales().currentLang;
-  const currentDirection = useLocales().currentDirection;
   const localeNames = allLangs.map(lang => lang.name);
-  const { t: dashboardT, i18n } = useTranslation('dashboard');
+  const { i18n } = useTranslation();
   const { data: session, status } = useSession();
-  const pathname = usePathname();
-  const router = useRouter();
   const { mode, setMode } = useTheme();
-  const muiTheme = useMuiTheme();
-  const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
 
-  const [open, setOpen] = useState(!isMobile);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [anchorElLang, setAnchorElLang] = useState<null | HTMLElement>(null);
   const [anchorElTheme, setAnchorElTheme] = useState<null | HTMLElement>(null);
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (status === AUTH_STATUS.UNAUTHENTICATED) {
-      router.push(routes.login.path);
-    }
-  }, [status, router]);
-
-  const handleDrawerToggle = () => {
-    setOpen(!open);
-    console.log(open);
-  };
+  const isAuthenticated = status === AUTH_STATUS.AUHTHENTICATED;
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -98,6 +79,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = async () => {
+    handleCloseUserMenu();
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
     await signOut({
       redirect: true,
@@ -108,6 +90,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const handleLanguageChange = async (newLocale: string) => {
     try {
       i18n.changeLanguage(newLocale);
+      handleCloseLangMenu();
     } catch (error) {
       console.error('Error changing language:', error);
     }
@@ -118,41 +101,23 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     handleCloseThemeMenu();
   };
 
-  const menuItems = [
-    {
-      text: dashboardT('welcome'),
-      icon: <DashboardIcon />,
-      path: routes.dashboard.path,
-    },
-    {
-      text: dashboardT('tenants'),
-      icon: <PeopleIcon />,
-      path: '/dashboard/tenants',
-    },
-    {
-      text: dashboardT('settings'),
-      icon: <SettingsIcon />,
-      path: '/dashboard/settings',
-    },
-  ];
-
   return (
-    <Box className={styles.container}>
-      <AppBar position="fixed" className={`${styles.appBar} ${open ? styles.appBarShift : ''}`}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={styles.menuButton}
-          >
-            {open ? <ChevronLeftIcon /> : <MenuIcon />}
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" className={styles.title}>
-            {t('app.title')}
-          </Typography>
+    <AppBar position="fixed" className={`${styles.appBar} ${open ? styles.appBarShift : ''}`}>
+      <Toolbar className={styles.toolbar}>
+        {/* <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          className={styles.menuButton}
+        >
+          <MenuIcon />
+        </IconButton> */}
+        <Typography variant="h6" noWrap component="div" className={styles.title}>
+          {t('app.title')}
+        </Typography>
 
+        <Box className={styles.headerActions}>
           {/* Language Selector */}
           <Tooltip title={t('language')}>
             <IconButton onClick={handleOpenLangMenu} className={styles.iconButton}>
@@ -164,7 +129,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             id="language-menu"
             anchorEl={anchorElLang}
             anchorOrigin={{
-              vertical: 'top',
+              vertical: 'bottom',
               horizontal: 'right',
             }}
             keepMounted
@@ -204,7 +169,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             id="theme-menu"
             anchorEl={anchorElTheme}
             anchorOrigin={{
-              vertical: 'top',
+              vertical: 'bottom',
               horizontal: 'right',
             }}
             keepMounted
@@ -247,75 +212,81 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             </MenuItem>
           </Menu>
 
-          {/* User Menu */}
-          <Box sx={{ flexGrow: 0, ml: 1 }}>
-            <Tooltip title={session?.user?.name || 'User'}>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={session?.user?.name || 'User'} src="/static/images/avatar/2.jpg" />
+          {/* Notifications */}
+          {isAuthenticated && (
+            <Tooltip title={t('notifications')}>
+              <IconButton className={styles.iconButton}>
+                <Badge badgeContent={0} color="error">
+                  <NotificationsIcon />
+                </Badge>
               </IconButton>
             </Tooltip>
-            <Menu
-              className={styles.menu}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{t('profile')}</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <Typography textAlign="center">{t('logout')}</Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {open && (
-        <Drawer
-          variant={isMobile ? 'temporary' : 'persistent'}
-          anchor={currentDirection === 'rtl' ? 'right' : 'left'}
-          open={open}
-          onClose={isMobile ? handleDrawerToggle : undefined}
-          className={styles.drawer}
-          classes={{
-            paper: styles.drawerPaper,
-          }}
-        >
-          <Toolbar />
-          <Box sx={{ overflow: 'auto', mt: 2 }}>
-            <List>
-              {menuItems.map(item => (
-                <ListItem key={item.text} disablePadding>
-                  <ListItemButton
-                    selected={pathname === item.path}
-                    onClick={() => router.push(item.path)}
-                    className={pathname === item.path ? styles.selected : ''}
-                  >
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-            <Divider sx={{ mt: 2 }} />
-          </Box>
-        </Drawer>
-      )}
+          )}
 
-      <Box component="main" className={`${styles.content} ${open ? styles.contentShift : ''}`}>
-        <Toolbar />
-        {children}
-      </Box>
-    </Box>
+          {/* User Menu */}
+          {isAuthenticated ? (
+            <Box className={styles.userMenu}>
+              <Tooltip title={session?.user?.name || 'User'}>
+                <IconButton
+                  onClick={handleOpenUserMenu}
+                  sx={{ p: 0 }}
+                  className={styles.avatarButton}
+                >
+                  <Avatar
+                    alt={session?.user?.name || 'User'}
+                    src={session?.user?.image || '/static/images/avatar/default.jpg'}
+                    className={styles.avatar}
+                  />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                className={styles.menu}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <ListItemIcon>
+                    <PersonIcon fontSize="small" />
+                  </ListItemIcon>
+                  <Typography textAlign="center">{t('profile')}</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <ListItemIcon>
+                    <SettingsIcon fontSize="small" />
+                  </ListItemIcon>
+                  <Typography textAlign="center">{t('settings')}</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon fontSize="small" />
+                  </ListItemIcon>
+                  <Typography textAlign="center">{t('logout')}</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          ) : (
+            <Tooltip title={t('login')}>
+              <IconButton
+                className={styles.iconButton}
+                onClick={() => (window.location.href = routes.login.path)}
+              >
+                <PersonIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }
