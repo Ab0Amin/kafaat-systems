@@ -26,6 +26,7 @@
     "inactive": "Inactive",
     "confirmDelete": "Are you sure you want to delete this tenant?",
     "confirmDeactivate": "Are you sure you want to deactivate this tenant?",
+    "confirmActivate": "Are you sure you want to activate this tenant?",
     "adminInfo": "Admin Information",
     "adminFirstName": "Admin First Name",
     "adminLastName": "Admin Last Name",

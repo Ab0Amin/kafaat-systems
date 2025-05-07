@@ -80,12 +80,12 @@ export async function POST(req: NextRequest) {
   try {
     const token = await getToken({ req });
 
-    // if (!token || token.role !== 'owner') {
-    //   return NextResponse.json(
-    //     { error: 'Unauthorized: Only owners can access this resource' },
-    //     { status: 403 }
-    //   );
-    // }
+    if (!token || token.role !== 'owner') {
+      return NextResponse.json(
+        { error: 'Unauthorized: Only owners can access this resource' },
+        { status: 403 }
+      );
+    }
 
     const body = await req.json();
 

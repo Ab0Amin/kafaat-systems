@@ -58,7 +58,10 @@ export default function NewTenantForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name.includes('.')) {
+
+    if (name === 'maxUsers') {
+      setFormData({ ...formData, maxUsers: Number(value) });
+    } else if (name.includes('.')) {
       const [parent, child] = name.split('.') as [keyof TenantFormData, string];
       setFormData({
         ...formData,
@@ -67,6 +70,7 @@ export default function NewTenantForm() {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+
     if (errors[name]) setErrors({ ...errors, [name]: '' });
   };
 
@@ -88,6 +92,8 @@ export default function NewTenantForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData);
+
     if (!validateForm()) return;
     setSubmitting(true);
     setSubmitError('');
@@ -164,7 +170,7 @@ export default function NewTenantForm() {
               type="number"
               label={t('maxUsers')}
               name="maxUsers"
-              value={formData.maxUsers}
+              value={Number(formData.maxUsers)}
               onChange={handleChange}
               className={styles.inputGroup}
             />

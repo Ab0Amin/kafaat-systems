@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Delete, Logger, Put } from '@nestjs/common';
 import { OwnerService } from './owner.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { Public } from '../common/decorators/public.decorator';
+import { log } from 'node:console';
 
 // This would be your actual auth guard
 // import { AdminGuard } from '../../guards/admin.guard';
@@ -35,8 +36,17 @@ export class OwnerController {
     return this.ownerService.getTenants();
   }
 
-  @Post(':id/deactivate')
+  @Put('tenants/:id/deactivate')
   deactivate(@Param('id') id: string) {
-    return this.ownerService.deactivateTenant(+id);
+    return this.ownerService.deactivateTenant(id);
+  }
+  @Put('tenants/:id/activate')
+  activate(@Param('id') id: string) {
+    return this.ownerService.activateTenant(id);
+  }
+
+  @Delete('tenants/:id/delete')
+  deleteTenant(@Param('id') id: string) {
+    return this.ownerService.deleteTenant(id);
   }
 }

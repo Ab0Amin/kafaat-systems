@@ -11,14 +11,13 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
 
   try {
     const token = await getToken({ req });
-    console.log('id:', id);
 
     if (!token || token.role !== 'owner') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const response = await axios.put(
-      `${API_URL}/owner/tenants/${id}/deactivate`,
+      `${API_URL}/owner/tenants/${id}/activate`,
       {},
       {
         headers: {
@@ -29,7 +28,7 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
 
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error(`Error deactivating tenant ${id}:`, error);
-    return NextResponse.json({ error: 'Failed to deactivate tenant' }, { status: 500 });
+    console.error(`Error activate tenant ${id}:`, error);
+    return NextResponse.json({ error: 'Failed to activate tenant' }, { status: 500 });
   }
 }

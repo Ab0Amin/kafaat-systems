@@ -35,7 +35,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 interface Tenant {
-  id: number;
+  id: string;
   name: string;
   domain: string;
   schema_name: string;
@@ -48,17 +48,46 @@ interface Tenant {
   updatedAt: string;
 }
 
+interface PopupDialogProps {
+  t: (key: string) => string;
+  commonT: (key: string) => string;
+  deleteDialogOpen: boolean;
+  setDeleteDialogOpen: (open: boolean) => void;
+  actionLoading: boolean;
+  handleDeleteConfirm: () => void;
+}
+
+function PopupDialog(props: PopupDialogProps) {
+  return (
+    <Dialog open={props.deleteDialogOpen} onClose={() => props.setDeleteDialogOpen(false)}>
+      <DialogTitle>{props.commonT('warning')}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{props.t('confirmDelete')}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => props.setDeleteDialogOpen(false)} disabled={props.actionLoading}>
+          {props.commonT('cancel')}
+        </Button>
+        <Button onClick={props.handleDeleteConfirm} color="error" disabled={props.actionLoading}>
+          {props.actionLoading ? <CircularProgress size={24} /> : props.commonT('delete')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 export default function TenantsPage() {
-  const {t} = useTranslation('tenants');
-  const {t:commonT} = useTranslation('common');
+  const { t } = useTranslation('tenants');
+  const { t: commonT } = useTranslation('common');
   const { data: session } = useSession();
   const router = useRouter();
-  
+
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [activateDialogOpen, setActivateDialogOpen] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -96,16 +125,22 @@ export default function TenantsPage() {
     setSelectedTenant(tenant);
     setDeactivateDialogOpen(true);
   };
-
+  const handleActivateClick = (tenant: Tenant) => {
+    setSelectedTenant(tenant);
+    setActivateDialogOpen(true);
+  };
   const handleDeleteConfirm = async () => {
     if (!selectedTenant) return;
-    
+
     setActionLoading(true);
+
     try {
-      await axios.delete(`/api/owner/tenants/${selectedTenant.id}`);
+      await axios.delete(`/api/owner/tenants/${selectedTenant.id}/delete`);
       setTenants(tenants.filter(t => t.id !== selectedTenant.id));
       setDeleteDialogOpen(false);
     } catch (err) {
+      setDeleteDialogOpen(false);
+
       console.error('Error deleting tenant:', err);
       setError('Failed to delete tenant');
     } finally {
@@ -115,18 +150,14 @@ export default function TenantsPage() {
 
   const handleDeactivateConfirm = async () => {
     if (!selectedTenant) return;
-    
+
     setActionLoading(true);
     try {
-      await axios.post(`/api/owner/tenants/${selectedTenant.id}/deactivate`);
-      
+      await axios.put(`/api/owner/tenants/${selectedTenant.id}/deactivate`);
+
       // Update the tenant status in the list
-      setTenants(
-        tenants.map(t => 
-          t.id === selectedTenant.id ? { ...t, isActive: false } : t
-        )
-      );
-      
+      setTenants(tenants.map(t => (t.id === selectedTenant.id ? { ...t, isActive: false } : t)));
+
       setDeactivateDialogOpen(false);
     } catch (err) {
       console.error('Error deactivating tenant:', err);
@@ -135,7 +166,24 @@ export default function TenantsPage() {
       setActionLoading(false);
     }
   };
+  const handleActivateConfirm = async () => {
+    if (!selectedTenant) return;
 
+    setActionLoading(true);
+    try {
+      await axios.put(`/api/owner/tenants/${selectedTenant.id}/activate`);
+
+      // Update the tenant status in the list
+      setTenants(tenants.map(t => (t.id === selectedTenant.id ? { ...t, isActive: true } : t)));
+
+      setDeactivateDialogOpen(false);
+    } catch (err) {
+      console.error('Error activating tenant:', err);
+      setError('Failed to activate tenant');
+    } finally {
+      setActionLoading(false);
+    }
+  };
   if (loading) {
     return (
       <Box
@@ -191,7 +239,7 @@ export default function TenantsPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              tenants.map((tenant) => (
+              tenants.map(tenant => (
                 <TableRow key={tenant.id}>
                   <TableCell>{tenant.name}</TableCell>
                   <TableCell>{tenant.domain}</TableCell>
@@ -213,13 +261,21 @@ export default function TenantsPage() {
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
-                    {tenant.isActive && (
+                    {tenant.isActive ? (
                       <IconButton
                         color="warning"
                         onClick={() => handleDeactivateClick(tenant)}
                         size="small"
                       >
                         <BlockIcon fontSize="small" />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        color="success"
+                        onClick={() => handleActivateClick(tenant)}
+                        size="small"
+                      >
+                        <CheckCircleIcon fontSize="small" />
                       </IconButton>
                     )}
                     <IconButton
@@ -238,54 +294,32 @@ export default function TenantsPage() {
       </TableContainer>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-      >
-        <DialogTitle>{commonT('warning')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('confirmDelete')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)} disabled={actionLoading}>
-            {commonT('cancel')}
-          </Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            color="error"
-            disabled={actionLoading}
-          >
-            {actionLoading ? <CircularProgress size={24} /> : commonT('delete')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      <PopupDialog
+        t={t}
+        commonT={commonT}
+        deleteDialogOpen={deleteDialogOpen}
+        setDeleteDialogOpen={setDeleteDialogOpen}
+        actionLoading={actionLoading}
+        handleDeleteConfirm={handleDeleteConfirm}
+      ></PopupDialog>
+      {/* activate Confirmation Dialog */}
+      <PopupDialog
+        t={t}
+        commonT={commonT}
+        deleteDialogOpen={activateDialogOpen}
+        setDeleteDialogOpen={setActivateDialogOpen}
+        actionLoading={actionLoading}
+        handleDeleteConfirm={handleActivateConfirm}
+      />
       {/* Deactivate Confirmation Dialog */}
-      <Dialog
-        open={deactivateDialogOpen}
-        onClose={() => setDeactivateDialogOpen(false)}
-      >
-        <DialogTitle>{commonT('warning')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('confirmDeactivate')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeactivateDialogOpen(false)} disabled={actionLoading}>
-            {commonT('cancel')}
-          </Button>
-          <Button
-            onClick={handleDeactivateConfirm}
-            color="warning"
-            disabled={actionLoading}
-          >
-            {actionLoading ? <CircularProgress size={24} /> : t('deactivate')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <PopupDialog
+        t={t}
+        commonT={commonT}
+        deleteDialogOpen={deactivateDialogOpen}
+        setDeleteDialogOpen={setDeactivateDialogOpen}
+        actionLoading={actionLoading}
+        handleDeleteConfirm={handleDeactivateConfirm}
+      />
     </Box>
   );
 }

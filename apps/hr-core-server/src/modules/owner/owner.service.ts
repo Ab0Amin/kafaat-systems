@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { RoleType, TenantEntity, UserEntity } from '@kafaat-systems/entities';
 import { createTenantDataSource } from '@kafaat-systems/database';
@@ -112,12 +112,24 @@ export class OwnerService {
     }
   }
 
-  async deactivateTenant(id: number) {
+  async deactivateTenant(id: string) {
     const ownerDS = createTenantDataSource('owner');
     await ownerDS.initialize();
 
     try {
       await ownerDS.getRepository(TenantEntity).update(id, { isActive: false });
+      return { success: true, message: 'Tenant deactivated successfully' };
+    } finally {
+      await ownerDS.destroy();
+    }
+  }
+
+  async activateTenant(id: string) {
+    const ownerDS = createTenantDataSource('owner');
+    await ownerDS.initialize();
+
+    try {
+      await ownerDS.getRepository(TenantEntity).update(id, { isActive: true });
       return { success: true, message: 'Tenant deactivated successfully' };
     } finally {
       await ownerDS.destroy();
@@ -233,5 +245,38 @@ export class OwnerService {
         admin1: resetToken,
       },
     };
+  }
+  async deleteTenant(id: string) {
+    const ownerDS = createTenantDataSource('owner');
+    await ownerDS.initialize();
+
+    try {
+      Logger.log('trying');
+
+      const tenant = await ownerDS.getRepository(TenantEntity).findOneBy({ id: id });
+
+      if (!tenant || !tenant?.name) {
+        throw new BadRequestException(`Tenant with ID ${id} not found`);
+      }
+
+      const schemaName = tenant.name;
+
+      await ownerDS.getRepository(TenantEntity).delete(id);
+
+      if (schemaName) {
+        await ownerDS.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+      }
+
+      return {
+        success: true,
+        message: `Tenant ${id} and schema "${schemaName}" successfully deleted.`,
+      };
+    } catch (error: unknown) {
+      throw new BadRequestException(
+        `Failed to delete tenant: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    } finally {
+      await ownerDS.destroy();
+    }
   }
 }
