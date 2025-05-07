@@ -1,4 +1,3 @@
-// File: NewTenantForm.tsx
 'use client';
 
 import { useState } from 'react';
