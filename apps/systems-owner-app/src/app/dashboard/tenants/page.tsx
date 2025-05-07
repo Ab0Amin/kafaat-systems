@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { Box, Typography, Button, Paper, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, Button, Paper, CircularProgress, Alert, Stack } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,7 @@ import axios from 'axios';
 import TenantsTable from '../../../components/tenantTable/TenantTable';
 import PopupDialog from '../../../components/PopupDialog/PopupDialog';
 import { Tenant } from '../../../types/types';
-
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 export default function TenantsPage() {
   const { t } = useTranslation('tenant');
   const { t: commonT } = useTranslation('common');
@@ -25,20 +25,19 @@ export default function TenantsPage() {
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
+  const fetchTenants = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/owner/tenants');
+      setTenants(response.data);
+    } catch (err) {
+      console.error('Error fetching tenants:', err);
+      setError('Failed to load tenants');
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchTenants = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('/api/owner/tenants');
-        setTenants(response.data);
-      } catch (err) {
-        console.error('Error fetching tenants:', err);
-        setError('Failed to load tenants');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTenants();
   }, []);
 
@@ -73,7 +72,9 @@ export default function TenantsPage() {
       setActionLoading(false);
     }
   };
-
+  async function handelRefresh() {
+    fetchTenants();
+  }
   const getDialogContent = () => {
     switch (dialogType) {
       case 'delete':
@@ -85,26 +86,21 @@ export default function TenantsPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" mb={3}>
         <Typography variant="h4">{t('title')}</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={() => router.push('/dashboard/tenants/new')}
-        >
-          {t('add')}
-        </Button>
+        <Stack flexDirection={'row'} alignItems={'center'} gap={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => router.push('/dashboard/tenants/new')}
+          >
+            {t('add')}
+          </Button>
+          <AutorenewIcon onClick={handelRefresh}></AutorenewIcon>
+        </Stack>
       </Box>
 
       {error && (
@@ -113,14 +109,22 @@ export default function TenantsPage() {
         </Alert>
       )}
 
-      <Paper>
-        <TenantsTable
-          tenants={tenants}
-          onEdit={tenant => router.push(`/dashboard/tenants/${tenant.id}`)}
-          onDelete={tenant => openDialog(tenant, 'delete')}
-          onToggleStatus={tenant => openDialog(tenant, tenant.isActive ? 'deactivate' : 'activate')}
-        />
-      </Paper>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Paper>
+          <TenantsTable
+            tenants={tenants}
+            onEdit={tenant => router.push(`/dashboard/tenants/${tenant.id}`)}
+            onDelete={tenant => openDialog(tenant, 'delete')}
+            onToggleStatus={tenant =>
+              openDialog(tenant, tenant.isActive ? 'deactivate' : 'activate')
+            }
+          />
+        </Paper>
+      )}
 
       <PopupDialog
         open={dialogOpen}
