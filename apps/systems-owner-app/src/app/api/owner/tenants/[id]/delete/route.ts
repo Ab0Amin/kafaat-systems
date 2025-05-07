@@ -1,5 +1,3 @@
-// apps/systems-owner-app/src/app/api/owner/tenants/[id]/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import axios from 'axios';

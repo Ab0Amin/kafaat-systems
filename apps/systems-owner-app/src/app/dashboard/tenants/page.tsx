@@ -2,82 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import {
-  Box,
-  Typography,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Block as BlockIcon,
-  CheckCircle as CheckCircleIcon,
-  Add as AddIcon,
-} from '@mui/icons-material';
-import axios from 'axios';
+import { Box, Typography, Button, Paper, CircularProgress, Alert } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-
-interface Tenant {
-  id: string;
-  name: string;
-  domain: string;
-  schema_name: string;
-  isActive: boolean;
-  plan: string;
-  maxUsers: number;
-  contactEmail: string;
-  contactPhone: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface PopupDialogProps {
-  t: (key: string) => string;
-  commonT: (key: string) => string;
-  deleteDialogOpen: boolean;
-  setDeleteDialogOpen: (open: boolean) => void;
-  actionLoading: boolean;
-  handleDeleteConfirm: () => void;
-}
-
-function PopupDialog(props: PopupDialogProps) {
-  return (
-    <Dialog open={props.deleteDialogOpen} onClose={() => props.setDeleteDialogOpen(false)}>
-      <DialogTitle>{props.commonT('warning')}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{props.t('confirmDelete')}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => props.setDeleteDialogOpen(false)} disabled={props.actionLoading}>
-          {props.commonT('cancel')}
-        </Button>
-        <Button onClick={props.handleDeleteConfirm} color="error" disabled={props.actionLoading}>
-          {props.actionLoading ? <CircularProgress size={24} /> : props.commonT('delete')}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
+import axios from 'axios';
+import TenantsTable from '../../../components/tenantTable/TenantTable';
+import PopupDialog from '../../../components/PopupDialog/PopupDialog';
+import { Tenant } from '../../../types/types';
 
 export default function TenantsPage() {
-  const { t } = useTranslation('tenants');
+  const { t } = useTranslation('tenant');
   const { t: commonT } = useTranslation('common');
   const { data: session } = useSession();
   const router = useRouter();
@@ -85,9 +20,8 @@ export default function TenantsPage() {
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
-  const [activateDialogOpen, setActivateDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<'delete' | 'deactivate' | 'activate'>('delete');
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -108,92 +42,52 @@ export default function TenantsPage() {
     fetchTenants();
   }, []);
 
-  const handleAddTenant = () => {
-    router.push('/dashboard/tenants/new');
+  const openDialog = (tenant: Tenant, type: typeof dialogType) => {
+    setSelectedTenant(tenant);
+    setDialogType(type);
+    setDialogOpen(true);
   };
 
-  const handleEditTenant = (tenant: Tenant) => {
-    router.push(`/dashboard/tenants/${tenant.id}`);
-  };
-
-  const handleDeleteClick = (tenant: Tenant) => {
-    setSelectedTenant(tenant);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleDeactivateClick = (tenant: Tenant) => {
-    setSelectedTenant(tenant);
-    setDeactivateDialogOpen(true);
-  };
-  const handleActivateClick = (tenant: Tenant) => {
-    setSelectedTenant(tenant);
-    setActivateDialogOpen(true);
-  };
-  const handleDeleteConfirm = async () => {
+  const handleConfirm = async () => {
     if (!selectedTenant) return;
-
     setActionLoading(true);
 
     try {
-      await axios.delete(`/api/owner/tenants/${selectedTenant.id}/delete`);
-      setTenants(tenants.filter(t => t.id !== selectedTenant.id));
-      setDeleteDialogOpen(false);
+      if (dialogType === 'delete') {
+        await axios.delete(`/api/owner/tenants/${selectedTenant.id}/delete`);
+        setTenants(tenants.filter(t => t.id !== selectedTenant.id));
+      } else {
+        const action = dialogType === 'deactivate' ? 'deactivate' : 'activate';
+        await axios.put(`/api/owner/tenants/${selectedTenant.id}/${action}`);
+        setTenants(
+          tenants.map(t =>
+            t.id === selectedTenant.id ? { ...t, isActive: dialogType === 'activate' } : t
+          )
+        );
+      }
+      setDialogOpen(false);
     } catch (err) {
-      setDeleteDialogOpen(false);
-
-      console.error('Error deleting tenant:', err);
-      setError('Failed to delete tenant');
+      console.error(`Error during ${dialogType}:`, err);
+      setError(`Failed to ${dialogType} tenant`);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleDeactivateConfirm = async () => {
-    if (!selectedTenant) return;
-
-    setActionLoading(true);
-    try {
-      await axios.put(`/api/owner/tenants/${selectedTenant.id}/deactivate`);
-
-      // Update the tenant status in the list
-      setTenants(tenants.map(t => (t.id === selectedTenant.id ? { ...t, isActive: false } : t)));
-
-      setDeactivateDialogOpen(false);
-    } catch (err) {
-      console.error('Error deactivating tenant:', err);
-      setError('Failed to deactivate tenant');
-    } finally {
-      setActionLoading(false);
+  const getDialogContent = () => {
+    switch (dialogType) {
+      case 'delete':
+        return t('confirmDelete');
+      case 'deactivate':
+        return t('confirmDeactivate');
+      case 'activate':
+        return t('confirmActivate');
     }
   };
-  const handleActivateConfirm = async () => {
-    if (!selectedTenant) return;
 
-    setActionLoading(true);
-    try {
-      await axios.put(`/api/owner/tenants/${selectedTenant.id}/activate`);
-
-      // Update the tenant status in the list
-      setTenants(tenants.map(t => (t.id === selectedTenant.id ? { ...t, isActive: true } : t)));
-
-      setDeactivateDialogOpen(false);
-    } catch (err) {
-      console.error('Error activating tenant:', err);
-      setError('Failed to activate tenant');
-    } finally {
-      setActionLoading(false);
-    }
-  };
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '50vh',
-        }}
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
         <CircularProgress />
       </Box>
     );
@@ -201,13 +95,13 @@ export default function TenantsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+      <Box display="flex" justifyContent="space-between" mb={3}>
         <Typography variant="h4">{t('title')}</Typography>
         <Button
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
-          onClick={handleAddTenant}
+          onClick={() => router.push('/dashboard/tenants/new')}
         >
           {t('add')}
         </Button>
@@ -219,106 +113,27 @@ export default function TenantsPage() {
         </Alert>
       )}
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('name')}</TableCell>
-              <TableCell>{t('domain')}</TableCell>
-              <TableCell>{t('plan')}</TableCell>
-              <TableCell>{t('status')}</TableCell>
-              <TableCell>{t('contactEmail')}</TableCell>
-              <TableCell>{t('actions')}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tenants.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  {commonT('noData')}
-                </TableCell>
-              </TableRow>
-            ) : (
-              tenants.map(tenant => (
-                <TableRow key={tenant.id}>
-                  <TableCell>{tenant.name}</TableCell>
-                  <TableCell>{tenant.domain}</TableCell>
-                  <TableCell>{tenant.plan}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={tenant.isActive ? t('active') : t('inactive')}
-                      color={tenant.isActive ? 'success' : 'error'}
-                      size="small"
-                      icon={tenant.isActive ? <CheckCircleIcon /> : <BlockIcon />}
-                    />
-                  </TableCell>
-                  <TableCell>{tenant.contactEmail}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleEditTenant(tenant)}
-                      size="small"
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                    {tenant.isActive ? (
-                      <IconButton
-                        color="warning"
-                        onClick={() => handleDeactivateClick(tenant)}
-                        size="small"
-                      >
-                        <BlockIcon fontSize="small" />
-                      </IconButton>
-                    ) : (
-                      <IconButton
-                        color="success"
-                        onClick={() => handleActivateClick(tenant)}
-                        size="small"
-                      >
-                        <CheckCircleIcon fontSize="small" />
-                      </IconButton>
-                    )}
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteClick(tenant)}
-                      size="small"
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Paper>
+        <TenantsTable
+          tenants={tenants}
+          onEdit={tenant => router.push(`/dashboard/tenants/${tenant.id}`)}
+          onDelete={tenant => openDialog(tenant, 'delete')}
+          onToggleStatus={tenant => openDialog(tenant, tenant.isActive ? 'deactivate' : 'activate')}
+        />
+      </Paper>
 
-      {/* Delete Confirmation Dialog */}
       <PopupDialog
-        t={t}
-        commonT={commonT}
-        deleteDialogOpen={deleteDialogOpen}
-        setDeleteDialogOpen={setDeleteDialogOpen}
-        actionLoading={actionLoading}
-        handleDeleteConfirm={handleDeleteConfirm}
-      ></PopupDialog>
-      {/* activate Confirmation Dialog */}
-      <PopupDialog
-        t={t}
-        commonT={commonT}
-        deleteDialogOpen={activateDialogOpen}
-        setDeleteDialogOpen={setActivateDialogOpen}
-        actionLoading={actionLoading}
-        handleDeleteConfirm={handleActivateConfirm}
-      />
-      {/* Deactivate Confirmation Dialog */}
-      <PopupDialog
-        t={t}
-        commonT={commonT}
-        deleteDialogOpen={deactivateDialogOpen}
-        setDeleteDialogOpen={setDeactivateDialogOpen}
-        actionLoading={actionLoading}
-        handleDeleteConfirm={handleDeactivateConfirm}
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={handleConfirm}
+        title={commonT('warning')}
+        content={getDialogContent()}
+        confirmLabel={commonT(dialogType)}
+        cancelLabel={commonT('cancel')}
+        loading={actionLoading}
+        confirmColor={
+          dialogType === 'delete' ? 'error' : dialogType === 'deactivate' ? 'warning' : 'success'
+        }
       />
     </Box>
   );
