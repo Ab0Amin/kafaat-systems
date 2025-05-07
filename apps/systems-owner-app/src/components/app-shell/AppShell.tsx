@@ -59,7 +59,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const drawerWidth = collapsed ? 72 : 240;
 
   return (
-    <Box className={styles.container}>
+    <Box
+      className={styles.container}
+      sx={{
+        display: 'flex',
+        flexDirection: currentDirection === 'rtl' ? 'row-reverse' : 'row',
+      }}
+    >
       <Header open={open} handleDrawerToggle={handleDrawerToggle} />
 
       <Drawer
@@ -79,6 +85,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             borderRight: '1px dashed rgba(145, 158, 171, 0.2)',
             boxShadow: 'none',
             transition: 'width 0.2s ease-in-out',
+            left: currentDirection === 'rtl' ? 'auto' : 0,
+            right: currentDirection === 'rtl' ? 0 : 'auto',
           },
         }}
       >
@@ -104,7 +112,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </Box>
       </Drawer>
 
-      <Box component="main" className={`${styles.content} ${open ? styles.contentShift : ''}`}>
+      <Box
+        component="main"
+        className={`${styles.content} ${open ? styles.contentShift : ''}`}
+        sx={{
+          backgroundColor: theme => theme.palette.background.default,
+          color: theme => theme.palette.text.primary,
+          flexGrow: 1,
+          minHeight: '100vh',
+          transition: 'background-color 0.3s ease',
+        }}
+      >
         <Toolbar />
         <Box className={styles.contentContainer}>{children}</Box>
       </Box>

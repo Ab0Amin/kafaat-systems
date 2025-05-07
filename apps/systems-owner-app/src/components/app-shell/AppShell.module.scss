@@ -38,19 +38,12 @@
     .collapseButton {
       align-self: flex-end;
       margin: 8px;
-      color: #637381;
-      background-color: rgba(99, 115, 129, 0.08);
-
-      &:hover {
-        background-color: rgba(99, 115, 129, 0.16);
-      }
     }
   }
 
   .content {
     flex-grow: 1;
     transition: margin 0.2s ease-in-out, width 0.2s ease-in-out;
-    background-color: #f9fafb;
     height: 100vh;
     overflow-y: auto;
   }
