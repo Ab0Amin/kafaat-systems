@@ -1,7 +1,31 @@
-import NextAuth, { SessionStrategy } from 'next-auth';
+import NextAuth, { User, Session, SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 import { getApiUrl } from '../../../routes';
+import { JWT } from 'next-auth/jwt';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      _id: string;
+      name?: string | null | undefined;
+      email?: string | null | undefined;
+      image?: string | null | undefined;
+    };
+    accessToken: string;
+    refreshToken: string;
+    role: string;
+  }
+
+  interface User {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    accessToken: string;
+    refreshToken: string;
+  }
+}
 const schema = 'owner';
 const API_URL = getApiUrl(schema);
 export const authOptions = {
@@ -60,7 +84,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, user }: { token: JWT; user: User }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -71,13 +95,13 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
-      session.user.id = token.id;
+    async session({ session, token }: { session: Session; token: JWT }) {
+      session.user._id = token.id as string;
       session.user.email = token.email;
       session.user.name = token.name;
-      session.user.role = token.role;
-      session.accessToken = token.accessToken;
-      session.refreshToken = token.refreshToken;
+      session.role = token.role as string;
+      session.accessToken = token.accessToken as string;
+      session.refreshToken = token.refreshToken as string;
       return session;
     },
   },

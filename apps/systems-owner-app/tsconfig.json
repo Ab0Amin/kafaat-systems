@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "typeRoots": ["./types", "./node_modules/@types"],
     "jsx": "preserve",
     "noEmit": true,
     "emitDeclarationOnly": false,
@@ -38,7 +39,7 @@
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts","next-env.d.ts"
   ],
   "exclude": [
     "out-tsc",
