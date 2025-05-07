@@ -16,7 +16,6 @@ import {
   ListItemIcon,
 } from '@mui/material';
 import {
-  Menu as MenuIcon,
   Translate as TranslateIcon,
   Brightness4 as DarkModeIcon,
   Brightness7 as LightModeIcon,

@@ -23,7 +23,7 @@ import { routes } from '../../app/routes';
 import { AUTH_STATUS } from '../../app/api/auth/auth.types';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const muiTheme = useMuiTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));

@@ -43,9 +43,10 @@ export default function LoginPage() {
       } else {
         router.push(routes.dashboard.path);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setError(t('invalidCredentials'));
-    } finally {
+      console.error('Failed to create tenant:', error);
+
       setLoading(false);
     }
   };
@@ -78,7 +79,7 @@ export default function LoginPage() {
               autoComplete="email"
               autoFocus
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -90,7 +91,7 @@ export default function LoginPage() {
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
             />
             <Button
               type="submit"

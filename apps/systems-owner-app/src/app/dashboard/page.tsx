@@ -51,9 +51,9 @@ export default function DashboardPage() {
           },
         });
         setStats(response.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching tenant stats:', err);
-        if (err.response?.status === 401) {
+        if (axios.isAxiosError(err) && err.response?.status === 401) {
           setError(t('unauthorized'));
           // Redirect to login after unauthorized error
           setTimeout(() => {
@@ -66,11 +66,11 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
-    
+
     if (session && session.accessToken) {
       fetchStats();
     }
-  }, [session?.accessToken, t, commonT, router]);
+  }, [session, session?.accessToken, t, commonT, router]);
 
   if (loading) {
     return (
@@ -91,75 +91,75 @@ export default function DashboardPage() {
   }
 
   return (
-      <Box>
-        <Typography variant="h4" gutterBottom>
-          {t('welcome')}
-        </Typography>
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        {t('welcome')}
+      </Typography>
 
-        <Grid container spacing={3} className={styles.statsGrid}>
-          <Grid size={{xs:12, sm:6, md:4}} >
-            <Paper elevation={3} className={styles.statsCard}>
-              <Typography variant="h6" color="primary" gutterBottom>
-                {t('stats')}
-              </Typography>
-              <Typography variant="h3" component="div">
-                {stats?.totalTenants || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('totalTenants')}
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid size={{xs:12, sm:6, md:4}}>
-            <Paper elevation={3} className={styles.statsCard}>
-              <Typography variant="h6" color="success.main" gutterBottom>
-                {t('active')}
-              </Typography>
-              <Typography variant="h3" component="div">
-                {stats?.activeTenants || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('activeTenants')}
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid size={{xs:12, sm:6, md:4}}>
-            <Paper elevation={3} className={styles.statsCard}>
-              <Typography variant="h6" color="error" gutterBottom>
-                {t('inactive')}
-              </Typography>
-              <Typography variant="h3" component="div">
-                {stats?.inactiveTenants || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t('inactiveTenants')}
-              </Typography>
-            </Paper>
-          </Grid>
-
-          <Grid size={{xs:12}}>
-            <Card>
-              <CardHeader title={t('tenantsByPlan')} />
-              <Divider />
-              <CardContent>
-                <Grid container spacing={2}>
-                  {stats?.tenantsByPlan &&
-                    Object.entries(stats.tenantsByPlan).map(([plan, count]) => (
-                      <Grid size={{xs:6, sm:4, md:3}} key={plan}>
-                        <Paper elevation={2} className={styles.planCard}>
-                          <Typography variant="h6">{plan}</Typography>
-                          <Typography variant="h4">{count}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {t('tenants')}
-                          </Typography>
-                        </Paper>
-                      </Grid>
-                    ))}
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
+      <Grid container spacing={3} className={styles.statsGrid}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Paper elevation={3} className={styles.statsCard}>
+            <Typography variant="h6" color="primary" gutterBottom>
+              {t('stats')}
+            </Typography>
+            <Typography variant="h3" component="div">
+              {stats?.totalTenants || 0}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('totalTenants')}
+            </Typography>
+          </Paper>
         </Grid>
-      </Box>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Paper elevation={3} className={styles.statsCard}>
+            <Typography variant="h6" color="success.main" gutterBottom>
+              {t('active')}
+            </Typography>
+            <Typography variant="h3" component="div">
+              {stats?.activeTenants || 0}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('activeTenants')}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Paper elevation={3} className={styles.statsCard}>
+            <Typography variant="h6" color="error" gutterBottom>
+              {t('inactive')}
+            </Typography>
+            <Typography variant="h3" component="div">
+              {stats?.inactiveTenants || 0}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('inactiveTenants')}
+            </Typography>
+          </Paper>
+        </Grid>
+
+        <Grid size={{ xs: 12 }}>
+          <Card>
+            <CardHeader title={t('tenantsByPlan')} />
+            <Divider />
+            <CardContent>
+              <Grid container spacing={2}>
+                {stats?.tenantsByPlan &&
+                  Object.entries(stats.tenantsByPlan).map(([plan, count]) => (
+                    <Grid size={{ xs: 6, sm: 4, md: 3 }} key={plan}>
+                      <Paper elevation={2} className={styles.planCard}>
+                        <Typography variant="h6">{plan}</Typography>
+                        <Typography variant="h4">{count}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {t('tenants')}
+                        </Typography>
+                      </Paper>
+                    </Grid>
+                  ))}
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }

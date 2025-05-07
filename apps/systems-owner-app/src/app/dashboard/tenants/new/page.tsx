@@ -102,8 +102,9 @@ export default function NewTenantForm() {
       await axios.post('/api/owner/tenants', formData);
       setSubmitSuccess(true);
       setTimeout(() => router.push('/dashboard/tenants'), 2000);
-    } catch (error: any) {
-      setSubmitError(error.response?.data?.details || t('errors.createFailed'));
+    } catch (error: unknown) {
+      console.error('Failed to create tenant:', error);
+      setSubmitError(t('errors.createFailed'));
     } finally {
       setSubmitting(false);
     }

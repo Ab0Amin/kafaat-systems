@@ -2,7 +2,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
-import { supportedLngs, defaultLang, namespaces, localeDirections } from './i18n';
+import { supportedLngs, defaultLang, namespaces } from './i18n';
 
 if (!i18n.isInitialized) {
   i18n

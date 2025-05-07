@@ -20,7 +20,7 @@ export async function DELETE(req: NextRequest, context: { params: { id: string }
     });
 
     return NextResponse.json(response.data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Error deleting tenant ${id}:`, error);
     return NextResponse.json({ error: 'Failed to delete tenant' }, { status: 500 });
   }

@@ -15,7 +15,7 @@ import {
   CircularProgress,
   Chip,
 } from '@mui/material';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 
 interface TenantFormData {
@@ -33,8 +33,8 @@ interface TenantFormData {
 }
 
 export default function EditTenantPage({ params }: { params: { id: string } }) {
-  const {t} = useTranslation('tenants');
-  const {t:commonT} = useTranslation('common');
+  const { t } = useTranslation('tenants');
+  const { t: commonT } = useTranslation('common');
   const router = useRouter();
   const { id } = params;
 
@@ -71,9 +71,9 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!formData) return;
-    
+
     const { name, value } = e.target;
-    
+
     setFormData({
       ...formData,
       [name]: value,
@@ -90,9 +90,9 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
 
   const validateForm = () => {
     if (!formData) return false;
-    
+
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name) newErrors.name = 'Name is required';
     if (!formData.domain) newErrors.domain = 'Domain is required';
     if (!formData.contactEmail) {
@@ -107,26 +107,28 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm() || !formData) return;
-    
+
     setSubmitting(true);
     setSubmitError('');
     setSubmitSuccess(false);
-    
+
     try {
       await axios.put(`/owner/tenants/${id}`, formData);
-      
+
       setSubmitSuccess(true);
-      
+
       // Redirect to tenants list after a short delay
       setTimeout(() => {
         router.push('/dashboard/tenants');
       }, 2000);
-      
-    } catch (error: any) {
-      console.error('Error updating tenant:', error);
-      setSubmitError(error.response?.data?.details || 'Failed to update tenant');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof AxiosError
+          ? error.response?.data?.message || 'Failed to update tenant'
+          : 'Failed to update tenant';
+      setSubmitError(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -193,16 +195,16 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
             Tenant updated successfully!
           </Alert>
         )}
-        
+
         {submitError && (
           <Alert severity="error" sx={{ mb: 3 }}>
             {submitError}
           </Alert>
         )}
-        
+
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
-            <Grid >
+            <Grid>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="h6">{t('title')}</Typography>
                 <Chip
@@ -211,8 +213,8 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 />
               </Box>
             </Grid>
-            
-            <Grid  >
+
+            <Grid>
               <TextField
                 fullWidth
                 label={t('name')}
@@ -225,8 +227,8 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 required
               />
             </Grid>
-            
-            <Grid  >
+
+            <Grid>
               <TextField
                 fullWidth
                 label={t('domain')}
@@ -239,8 +241,8 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 required
               />
             </Grid>
-            
-            <Grid >
+
+            <Grid>
               <TextField
                 fullWidth
                 select
@@ -250,15 +252,15 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 onChange={handleChange}
                 disabled={submitting}
               >
-                {plans.map((plan) => (
+                {plans.map(plan => (
                   <MenuItem key={plan.value} value={plan.value}>
                     {plan.label}
                   </MenuItem>
                 ))}
               </TextField>
             </Grid>
-            
-            <Grid >
+
+            <Grid>
               <TextField
                 fullWidth
                 type="number"
@@ -269,8 +271,8 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 disabled={submitting}
               />
             </Grid>
-            
-            <Grid >
+
+            <Grid>
               <TextField
                 fullWidth
                 label={t('schema')}
@@ -279,13 +281,13 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 disabled={true}
               />
             </Grid>
-            
-            <Grid >
+
+            <Grid>
               <Divider sx={{ my: 2 }} />
               <Typography variant="h6">Contact Information</Typography>
             </Grid>
-            
-            <Grid  >
+
+            <Grid>
               <TextField
                 fullWidth
                 label={t('contactEmail')}
@@ -299,8 +301,8 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 required
               />
             </Grid>
-            
-            <Grid  >
+
+            <Grid>
               <TextField
                 fullWidth
                 label={t('contactPhone')}
@@ -310,8 +312,8 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 disabled={submitting}
               />
             </Grid>
-            
-            <Grid >
+
+            <Grid>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
                 <Button
                   variant="outlined"
@@ -321,12 +323,7 @@ export default function EditTenantPage({ params }: { params: { id: string } }) {
                 >
                   {commonT('cancel')}
                 </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={submitting}
-                >
+                <Button type="submit" variant="contained" color="primary" disabled={submitting}>
                   {submitting ? <CircularProgress size={24} /> : commonT('save')}
                 </Button>
               </Box>

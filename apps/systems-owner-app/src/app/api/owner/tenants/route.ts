@@ -97,14 +97,11 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(response.data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating tenant:', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to create tenant',
-        details: error.response?.data?.message || error.message,
-      },
-      { status: error.response?.status || 500 }
-    );
+    return NextResponse.json({
+      error: 'Failed to create tenant',
+      details: error instanceof Error ? error.message : 'Unknown error occurred',
+    });
   }
 }

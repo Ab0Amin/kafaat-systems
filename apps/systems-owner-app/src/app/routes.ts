@@ -30,7 +30,7 @@ export type Route = {
   isNavigationItem?: boolean;
   isProtected?: boolean;
   label?: string;
-  action?: (args?: any) => void;
+  action?: (args?: string) => void;
 };
 
 export const routes: Routes = {

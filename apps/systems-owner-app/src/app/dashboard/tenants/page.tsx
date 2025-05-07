@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import { Box, Typography, Button, Paper, CircularProgress, Alert, Stack } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
@@ -14,7 +13,6 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 export default function TenantsPage() {
   const { t } = useTranslation('tenant');
   const { t: commonT } = useTranslation('common');
-  const { data: session } = useSession();
   const router = useRouter();
 
   const [tenants, setTenants] = useState<Tenant[]>([]);
