@@ -24,7 +24,7 @@ export default function SetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -46,7 +46,7 @@ export default function SetPasswordPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     if (!token) {
       setError(t('invalidToken'));
       setLoading(false);
@@ -66,10 +66,10 @@ export default function SetPasswordPage() {
     }
 
     try {
-      const schema = getSchema();
-      const API_URL = getApiUrl(schema);
-      
-      await axios.post(`${API_URL}/auth/set-password`, {
+      // const schema = getSchema();
+      // const API_URL = getApiUrl(schema);
+
+      await axios.post(`/api/auth/set-password`, {
         token,
         password,
         confirmPassword,

@@ -4,12 +4,29 @@ export type Routes = {
   [routeName: string]: Route;
 };
 
-export function getSchema(): string {
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    const parts = hostname.split('.');
-    return parts.length > 1 ? parts[0] : 'default';
+export function extractSubdomainFromHost(host: string): string {
+  if (!host) return '';
+
+  const parts = host.split('.');
+
+  if (parts.length >= 2) {
+    return parts[0];
   }
+
+  return '';
+}
+
+export function getSchema(): string {
+  if (typeof window === 'undefined') return 'default';
+
+  const hostname = window.location.hostname;
+
+  const parts = hostname.split('.');
+
+  if (parts.length >= 2) {
+    return parts[0]; // subdomain
+  }
+
   return '';
 }
 

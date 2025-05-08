@@ -1,7 +1,7 @@
 import NextAuth, { User, Session, SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
-import { getApiUrl, getSchema } from '../../../routes';
+import { extractSubdomainFromHost, getApiUrl, getSchema } from '../../../routes';
 import { JWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {
@@ -34,40 +34,28 @@ export const authOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        subdomain: { label: 'Subdomain', type: 'text' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
+        const subdomain = credentials?.subdomain || '';
 
         try {
-          const schema = getSchema();
-          const API_URL = getApiUrl(schema);
-          
+          const API_URL = getApiUrl(subdomain);
+
           const response = await axios.post(`${API_URL}/auth/login`, {
             email: credentials.email,
             password: credentials.password,
           });
 
-          const { access_token, refresh_token } = response.data;
-
-          // Get user profile
-          const userResponse = await axios.post(
-            `${API_URL}/auth/protected`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${access_token}`,
-              },
-            }
-          );
-
-          const user = userResponse.data;
+          const { access_token, refresh_token, user } = response.data;
 
           return {
             id: user.id,
             email: user.email,
-            name: `${user.firstName} ${user.lastName}`,
+            name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
             role: user.role,
             accessToken: access_token,
             refreshToken: refresh_token,

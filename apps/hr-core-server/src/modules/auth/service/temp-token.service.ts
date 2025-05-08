@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DataSource, MoreThan } from 'typeorm';
 import { ResetTokenEntity } from '@kafaat-systems/entities';
 import { randomBytes, createHash } from 'crypto';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class TokenService {
@@ -40,7 +41,7 @@ export class TokenService {
   async validateToken(plainToken: string, tenantDS: DataSource): Promise<ResetTokenEntity | null> {
     const resetTokenRepo = tenantDS.getRepository(ResetTokenEntity);
     const hashed = this.hashToken(plainToken);
-
+    Logger.log(`.................${hashed}........`, '__________________');
     const token = await resetTokenRepo.findOne({
       where: {
         token: hashed,

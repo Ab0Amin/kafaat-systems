@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { createTenantDataSource } from '@kafaat-systems/database';
 import { TokenService } from './service/temp-token.service';
@@ -20,36 +20,42 @@ export class AuthService {
   ) {}
 
   async setPassword(dto: SetPasswordDto) {
-    const schema = this.tenantContextService.getSchema();
-    const tenantDS = createTenantDataSource(schema);
+    try {
+      const schema = this.tenantContextService.getSchema();
+      const tenantDS = createTenantDataSource(schema);
+      if (!tenantDS.isInitialized) {
+        await tenantDS.initialize();
+      }
 
-    if (!tenantDS.isInitialized) {
-      await tenantDS.initialize();
+      const resetToken = await this.tokenService.validateToken(dto.token, tenantDS);
+      Logger.log(resetToken);
+
+      if (!resetToken) {
+        throw new BadRequestException('Invalid or expired token');
+      }
+
+      const userRepo = tenantDS.getRepository(UserEntity);
+
+      const admin = await userRepo.findOne({
+        where: { id: resetToken.adminId },
+      });
+
+      if (!admin) {
+        throw new BadRequestException('Admin not found');
+      }
+
+      const passwordHash = await bcrypt.hash(dto.password, 10);
+      admin.passwordHash = passwordHash;
+      admin.isActive = true; // Activate the user if needed
+
+      await userRepo.save(admin);
+      await this.tokenService.deleteToken(dto.token, tenantDS);
+
+      return { message: 'Password set successfully' };
+    } catch (error) {
+      Logger.log(error);
+      throw new BadRequestException('something went wrong');
     }
-
-    const resetToken = await this.tokenService.validateToken(dto.token, tenantDS);
-    if (!resetToken) {
-      throw new BadRequestException('Invalid or expired token');
-    }
-
-    const userRepo = tenantDS.getRepository(UserEntity);
-
-    const admin = await userRepo.findOne({
-      where: { id: resetToken.adminId },
-    });
-
-    if (!admin) {
-      throw new BadRequestException('Admin not found');
-    }
-
-    const passwordHash = await bcrypt.hash(dto.password, 10);
-    admin.passwordHash = passwordHash;
-    admin.isActive = true; // Activate the user if needed
-
-    await userRepo.save(admin);
-    await this.tokenService.deleteToken(dto.token, tenantDS);
-
-    return { message: 'Password set successfully' };
   }
 
   async validateUser(email: string, pass: string): Promise<UserEntity | null> {
@@ -84,6 +90,13 @@ export class AuthService {
       refresh_token: this.jwtService.sign(payload, {
         expiresIn: jwtConstants.refreshIn,
       }),
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      },
     };
   }
 

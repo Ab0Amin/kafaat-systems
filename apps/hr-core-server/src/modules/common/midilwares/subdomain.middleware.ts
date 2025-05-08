@@ -75,7 +75,7 @@ export class SubdomainMiddleware implements NestMiddleware {
           const tenant = await this.subdomainService.getTenantByDomain(subdomain);
 
           if (tenant) {
-            req.tenantId = tenant.id;
+            req.tenantId = parseInt(tenant.id);
             req.schemaName = tenant.schema_name;
 
             this.tenantContextService.setSchema(tenant.schema_name);

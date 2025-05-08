@@ -22,7 +22,7 @@ export default function HomePage() {
     return null; // Will be redirected by AppShell
   }
 
-  const userName = session?.user?.name || 'User';
+  const userName = session?.user?.name;
 
   return (
     <Box className={styles.container}>

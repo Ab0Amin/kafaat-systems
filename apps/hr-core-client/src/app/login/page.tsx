@@ -16,7 +16,7 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useTranslation } from 'react-i18next';
 import styles from './page.module.scss';
-import { routes } from '../routes';
+import { getSchema, routes } from '../routes';
 
 export default function LoginPage() {
   const translationKey = 'auth';
@@ -29,13 +29,19 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const hostname = window.location.hostname;
+
+    const subdomain = getSchema();
+    console.log(hostname, 'sssssssssssssssss');
     setLoading(true);
     setError('');
+
     try {
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
+        subdomain,
       });
 
       if (result?.error) {
