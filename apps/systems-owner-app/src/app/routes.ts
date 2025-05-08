@@ -50,8 +50,8 @@ export const routes: Routes = {
   },
   logOut: {
     label: 'Log Out',
-    path: '/',
+    path: '/login',
     isNavigationItem: true,
-    action: () => signOut({ callbackUrl: '/' }),
+    action: () => signOut({ callbackUrl: '/login' }),
   },
 };

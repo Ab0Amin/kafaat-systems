@@ -79,10 +79,9 @@ export default function Header({ open, handleDrawerToggle }: HeaderProps) {
 
   const handleLogout = async () => {
     handleCloseUserMenu();
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
     await signOut({
-      redirect: true,
-      callbackUrl: `${baseUrl}${routes.login.path}`,
+      redirect: false,
+      callbackUrl: `${routes.login.path}`,
     });
   };
 

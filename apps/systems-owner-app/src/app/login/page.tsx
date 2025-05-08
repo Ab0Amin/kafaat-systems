@@ -46,9 +46,8 @@ export default function LoginPage() {
     } catch (error: unknown) {
       setError(t('invalidCredentials'));
       console.error('Failed to create tenant:', error);
-
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (

@@ -25,15 +25,7 @@ async function addUser(email, plainPassword, firstName, lastName) {
     RETURNING "id";
   `;
 
-  const values = [
-    email,
-    hashedPassword,
-    firstName,
-    lastName,
-    true,
-    'owner', // تأكد من أنه موجود ضمن enum RoleType
-    'owner', // schemaName
-  ];
+  const values = [email, hashedPassword, firstName, lastName, true, 'owner', 'owner'];
 
   const result = await client.query(query, values);
 

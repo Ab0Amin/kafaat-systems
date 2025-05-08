@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start:frontend": "nx dev hr-core-client",
+    "start:frontend:hr-core": "nx dev hr-core-client --port=4004",
+    "start:frontend:owner": "nx dev systems-owner-app --port=4002",
     "start:backend": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only --project apps/hr-core-server/tsconfig.json -r tsconfig-paths/register apps/hr-core-server/src/main.ts",
     "build:frontend": "cross-env NODE_ENV=production nx build @kafaat-systems/hr-core-client",
     "build:frontend:owner": "cross-env NODE_ENV=production nx build @kafaat-systems/systems-owner-app",
