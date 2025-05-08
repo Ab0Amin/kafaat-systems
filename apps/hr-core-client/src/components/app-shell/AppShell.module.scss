@@ -3,6 +3,7 @@
   width: 100%;
   height: 100vh;
   overflow: hidden;
+
   .drawer {
     z-index: 1;
     width: 240px;
@@ -13,6 +14,7 @@
       width: 72px;
     }
   }
+
   .drawerPaper {
     width: 240px;
     box-sizing: border-box;
@@ -32,6 +34,7 @@
     height: calc(100% - 64px);
     justify-content: flex-end;
     overflow: hidden;
+
     .collapseButton {
       align-self: flex-end;
       margin: 8px;
@@ -46,7 +49,7 @@
   }
 
   .contentShift {
-    transition: margin-left 0.2s ease-in-out, margin-right 0.2s ease-in-out;
+    transition: margin 0.2s ease-in-out, width 0.2s ease-in-out;
   }
 
   .contentContainer {
@@ -54,27 +57,5 @@
     min-height: calc(100vh - 64px);
     height: auto;
     width: 100%;
-  }
-}
-
-@media (min-width: 600px) {
-  .contentShift {
-    margin-left: 240px;
-  }
-
-  .contentShift.drawerCollapsed {
-    margin-left: 72px;
-  }
-}
-
-[dir='rtl'] {
-  .contentShift {
-    margin-right: 240px;
-    margin-left: 0;
-  }
-
-  .contentShift.drawerCollapsed {
-    margin-right: 72px;
-    margin-left: 0;
   }
 }

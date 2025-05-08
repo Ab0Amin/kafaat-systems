@@ -67,7 +67,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       }}
     >
       <Header open={open} handleDrawerToggle={handleDrawerToggle} />
-      {status === AUTH_STATUS.AUHTHENTICATED && (
+      {status == AUTH_STATUS.AUHTHENTICATED && (
         <Drawer
           variant={isMobile ? 'temporary' : 'permanent'}
           anchor={currentDirection === 'rtl' ? 'right' : 'left'}
@@ -115,7 +115,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <Box
         component="main"
-        className={`${styles.content} `}
+        className={`${styles.content} ${open ? styles.contentShift : ''}`}
         sx={{
           backgroundColor: theme => theme.palette.background.default,
           color: theme => theme.palette.text.primary,
