@@ -1,0 +1,73 @@
+.container {
+  min-height: 100vh;
+}
+
+.drawer {
+  width: 240px;
+  flex-shrink: 0;
+  transition: width 0.2s ease-in-out;
+}
+
+.drawerCollapsed {
+  width: 72px;
+}
+
+.drawerPaper {
+  width: 240px;
+  transition: width 0.2s ease-in-out;
+}
+
+.drawerPaperCollapsed {
+  width: 72px;
+}
+
+.drawerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 64px);
+  padding: 0;
+  overflow: hidden;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 24px;
+  transition: margin-left 0.2s ease-in-out, margin-right 0.2s ease-in-out;
+}
+
+.contentShift {
+  transition: margin-left 0.2s ease-in-out, margin-right 0.2s ease-in-out;
+}
+
+.contentContainer {
+  padding: 16px;
+}
+
+.collapseButton {
+  margin: 16px auto;
+  display: flex;
+  justify-content: center;
+}
+
+@media (min-width: 600px) {
+  .contentShift {
+    margin-left: 240px;
+  }
+
+  .contentShift.drawerCollapsed {
+    margin-left: 72px;
+  }
+}
+
+[dir="rtl"] {
+  .contentShift {
+    margin-right: 240px;
+    margin-left: 0;
+  }
+
+  .contentShift.drawerCollapsed {
+    margin-right: 72px;
+    margin-left: 0;
+  }
+}

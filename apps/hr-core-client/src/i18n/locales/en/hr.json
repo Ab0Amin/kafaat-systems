@@ -1,0 +1,7 @@
+{
+  "welcome": "Dashboard",
+  "home": "Home",
+  "greeting": "Welcome, {{name}}!",
+  "employees": "Employees",
+  "settings": "Settings"
+}
