@@ -34,7 +34,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (status === AUTH_STATUS.UNAUTHENTICATED && window.location.pathname !== routes.login.path && window.location.pathname !== routes.setPassword.path) {
+    if (status === AUTH_STATUS.UNAUTHENTICATED && window.location.pathname !== routes.login.path) {
       router.push(routes.login.path);
     }
   }, [status, router]);
@@ -115,7 +115,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <Box
         component="main"
-        className={`${styles.content} ${open ? styles.contentShift : ''}`}
+        className={`${styles.content} `}
         sx={{
           backgroundColor: theme => theme.palette.background.default,
           color: theme => theme.palette.text.primary,

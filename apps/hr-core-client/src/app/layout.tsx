@@ -1,32 +1,31 @@
-'use client';
-
-import './global.css';
-import { Inter } from 'next/font/google';
-import { useEffect } from 'react';
-import { useLocales } from '../i18n/use-locales';
-import { ThemeProvider } from '../components/providers/ThemeProvider';
+import { type Metadata } from 'next';
+import App from './app';
 import { AuthProvider } from '../components/providers/AuthProvider';
-import AppShell from '../components/app-shell/AppShell';
-import '../i18n/i18n.client';
+import { ThemeProvider } from '../components/providers/ThemeProvider';
+import './global.css';
 
-const inter = Inter({ subsets: ['latin'] });
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  return {
+    title: 'owner App',
+    description: 'This is my app description',
+  };
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { currentLang, currentDirection } = useLocales();
-
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.dir = currentDirection;
-      document.documentElement.lang = currentLang;
-    }
-  }, [currentLang, currentDirection]);
-
+interface RootLayoutProps {
+  children: React.ReactNode;
+  params: { locale: string };
+}
+export default async function RootLayout({ children, params: { locale } }: RootLayoutProps) {
   return (
-    <html lang={currentLang} dir={currentDirection}>
-      <body className={inter.className}>
+    <html lang={locale}>
+      <body>
         <AuthProvider>
           <ThemeProvider>
-            <AppShell>{children}</AppShell>
+            <App>{children}</App>
           </ThemeProvider>
         </AuthProvider>
       </body>

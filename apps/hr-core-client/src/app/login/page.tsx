@@ -29,10 +29,8 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const hostname = window.location.hostname;
 
     const subdomain = getSchema();
-    console.log(hostname, 'sssssssssssssssss');
     setLoading(true);
     setError('');
 

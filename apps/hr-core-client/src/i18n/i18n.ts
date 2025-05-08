@@ -14,7 +14,7 @@ export const supportedLngs: SupportedLanguages[] = [
 
 export const defaultLang = 'en';
 
-export const namespaces = ['common', 'auth', 'hr'];
+export const namespaces = ['common', 'auth', 'dashboard'];
 
 export const localeDirections: Record<string, 'ltr' | 'rtl'> = {
   en: 'ltr',
