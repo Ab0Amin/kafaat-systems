@@ -79,10 +79,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }}
           sx={{
             width: open ? drawerWidth : 0,
+            flexShrink: 0,
+            zIndex: 1,
+            position: 'fixed',
+            top: 0,
+            bottom: 0,
+            left: currentDirection === 'rtl' ? 'auto' : 0,
+            right: currentDirection === 'rtl' ? 0 : 'auto',
             '& .MuiDrawer-paper': {
               width: drawerWidth,
               boxSizing: 'border-box',
-              borderRight: '1px dashed rgba(145, 158, 171, 0.2)',
+              borderRight:
+                currentDirection === 'rtl' ? 'none' : '1px dashed rgba(145, 158, 171, 0.2)',
+              borderLeft:
+                currentDirection === 'rtl' ? '1px dashed rgba(145, 158, 171, 0.2)' : 'none',
               boxShadow: 'none',
               transition: 'width 0.2s ease-in-out',
               left: currentDirection === 'rtl' ? 'auto' : 0,
@@ -121,7 +131,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           color: theme => theme.palette.text.primary,
           flexGrow: 1,
           minHeight: '100vh',
-          transition: 'background-color 0.3s ease',
+          transition: 'background-color 0.3s ease, margin 0.2s ease-in-out, width 0.2s ease-in-out',
+
+          marginLeft: open && currentDirection === 'ltr' ? `${drawerWidth}px` : 0,
+          marginRight: open && currentDirection === 'rtl' ? `${drawerWidth}px` : 0,
         }}
       >
         <Toolbar />
