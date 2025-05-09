@@ -22,11 +22,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
 
-      - name: Build Client App
-        run: nx build @kafaat-systems/hr-core-client
-
       - name: Build Server App
-        run: npm run build:backend
+        run: npx nx build hr-core-server
+      - name: Build Client App
+        run: npx nx build @kafaat-systems/hr-core-client
 
       - name: Build Backend Docker Image
         uses: docker/build-push-action@v5
