@@ -23,7 +23,7 @@ jobs:
             ${{ runner.os }}-docker-
 
       - name: Build Client App
-        run: npm run build:frontend
+        run: nx build @kafaat-systems/hr-core-client
 
       - name: Build Server App
         run: npm run build:backend
