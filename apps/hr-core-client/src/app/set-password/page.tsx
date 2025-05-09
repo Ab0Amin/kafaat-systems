@@ -16,7 +16,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import styles from './page.module.scss';
-import { routes, getApiUrl, getSchema } from '../routes';
+import { routes } from '../routes';
 
 export default function SetPasswordPage() {
   const translationKey = 'auth';
@@ -66,9 +66,6 @@ export default function SetPasswordPage() {
     }
 
     try {
-      // const schema = getSchema();
-      // const API_URL = getApiUrl(schema);
-
       await axios.post(`/api/auth/set-password`, {
         token,
         password,

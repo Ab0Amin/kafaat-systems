@@ -1,7 +1,7 @@
 import NextAuth, { User, Session, SessionStrategy } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
-import { extractSubdomainFromHost, getApiUrl, getSchema } from '../../../routes';
+import { getApiUrl } from '../../../routes';
 import { JWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Box,
@@ -19,12 +18,10 @@ import { useLocales } from '../../i18n/use-locales';
 import Nav from '../nav/Nav';
 import Header from '../header/Header';
 import styles from './AppShell.module.scss';
-import { routes } from '../../app/routes';
 import { AUTH_STATUS } from '../../app/api/auth/auth.types';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { status } = useSession();
-  const router = useRouter();
   const muiTheme = useMuiTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
   const currentDirection = useLocales().currentDirection;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { extractSubdomainFromHost, getApiUrl, getSchema } from '../../../routes';
+import { extractSubdomainFromHost, getApiUrl } from '../../../routes';
 import axios from 'axios';
 
 const schema = z.object({
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const response = await axios.post(
+    await axios.post(
       `${apiUrl}/auth/set-password`,
       { token, password, confirmPassword },
       { headers: { 'Content-Type': 'application/json' } }
