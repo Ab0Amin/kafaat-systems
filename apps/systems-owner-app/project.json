@@ -1,0 +1,23 @@
+{
+  "name": "@kafaat-systems/systems-owner-app",
+  "projectType": "application",
+  "sourceRoot": "apps/systems-owner-app/src",
+  "root": "apps/systems-owner-app",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/systems-owner-app",
+        "root": "apps/systems-owner-app"
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "@kafaat-systems/systems-owner-app:build"
+      }
+    }
+  },
+  "tags": []
+}

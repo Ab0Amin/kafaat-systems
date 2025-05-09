@@ -1,0 +1,24 @@
+{
+  "name": "@kafaat-systems/hr-core-client",
+  "projectType": "application",
+  "sourceRoot": "apps/hr-core-client/src",
+  "root": "apps/hr-core-client",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/hr-core-client",
+        "root": "apps/hr-core-client",
+        "fileReplacements": []
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "@kafaat-systems/hr-core-client:build"
+      }
+    }
+  },
+  "tags": []
+}
