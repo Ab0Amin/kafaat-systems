@@ -23,6 +23,8 @@
     },
     "types": ["jest", "node"],
     "outDir": "dist",
+    "rootDir": "../../",
+
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "include": [

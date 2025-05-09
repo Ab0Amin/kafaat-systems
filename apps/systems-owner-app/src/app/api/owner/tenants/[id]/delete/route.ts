@@ -6,9 +6,9 @@ import { getApiUrl } from '../../../../../routes';
 const schema = 'owner';
 const API_URL = getApiUrl(schema);
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const token = await getToken({ req });
-  const id = context.params.id;
+  const { id } = await params;
 
   if (!token || token.role !== 'owner') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });

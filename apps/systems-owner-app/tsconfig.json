@@ -21,7 +21,8 @@
       "@/*": ["./src/*"]
     },
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "../../",
+    
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "include": [

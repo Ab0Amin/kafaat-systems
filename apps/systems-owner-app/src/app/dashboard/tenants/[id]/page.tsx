@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
   Typography,
@@ -32,11 +32,12 @@ interface TenantFormData {
   updatedAt: string;
 }
 
-export default function EditTenantPage({ params }: { params: { id: string } }) {
+export default function EditTenantPage() {
+  const params = useParams();
+  const { id } = params as { id: string };
   const { t } = useTranslation('tenants');
   const { t: commonT } = useTranslation('common');
   const router = useRouter();
-  const { id } = params;
 
   const [formData, setFormData] = useState<TenantFormData | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});

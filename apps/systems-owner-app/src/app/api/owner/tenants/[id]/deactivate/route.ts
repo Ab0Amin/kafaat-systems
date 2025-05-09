@@ -6,8 +6,8 @@ import { getApiUrl } from '../../../../../routes';
 const schema = 'owner';
 const API_URL = getApiUrl(schema);
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const id = context.params.id;
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   try {
     const token = await getToken({ req });

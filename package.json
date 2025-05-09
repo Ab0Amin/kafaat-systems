@@ -78,6 +78,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "@next/eslint-plugin-next": "^15.2.4",
     "@nrwl/nest": "^19.8.4",
+    "@nrwl/next": "^19.8.4",
     "@nx/cypress": "20.8.0",
     "@nx/eslint": "20.8.0",
     "@nx/eslint-plugin": "20.8.0",
