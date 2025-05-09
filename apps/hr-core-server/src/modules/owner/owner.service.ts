@@ -222,18 +222,18 @@ export class OwnerService {
     const expiresAt = new Date();
     expiresAt.setDate(new Date().getDate() + TokenDuratuon);
 
-    // await this.emailService.sendSetPasswordEmail({
-    //   to: dto.admin.email,
+    await this.emailService.sendSetPasswordEmail({
+      to: dto.admin.email,
 
-    //   ClientName: `${dto.admin.firstName} ${dto.admin.lastName}`,
-    //   expiryDate: expiresAt.toString(),
-    //   url: `https://${dto.domain}.${process.env.BE_HOST}:${process.env.BE_PORT}/set-password?token=${resetToken.token}`,
-    //   operating_system: 'Web',
-    //   browser_name: 'Any',
-    //   button_text: 'Set Password',
-    //   support_url: 'support.kbs.sa',
-    //   product_name: 'KAFAAT SYSTEMS',
-    // });
+      ClientName: `${dto.admin.firstName} ${dto.admin.lastName}`,
+      expiryDate: expiresAt.toString(),
+      url: `https://${dto.domain}.${process.env.NEXT_PUBLIC_API_URL_HR}/set-password?token=${resetToken?.plainToken}`,
+      operating_system: 'Web',
+      browser_name: 'Any',
+      button_text: 'Set Password',
+      support_url: 'support.kbs.sa',
+      product_name: 'KAFAAT SYSTEMS',
+    });
     return {
       success: true,
       message: `Tenant ${dto.name} successfully registered with schema ${schemaName}.`,

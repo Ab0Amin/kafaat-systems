@@ -55,9 +55,11 @@ export const routes: Routes = {
   },
   login: {
     path: '/login',
+    isProtected: false,
   },
   setPassword: {
     path: '/set-password',
+    isProtected: false,
   },
   home: {
     path: '/home',
