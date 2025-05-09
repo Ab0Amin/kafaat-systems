@@ -32,13 +32,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(!isMobile);
   const [collapsed, setCollapsed] = useState(false);
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (status === AUTH_STATUS.UNAUTHENTICATED && window.location.pathname !== routes.login.path) {
-      router.push(routes.login.path);
-    }
-  }, [status, router]);
-
   // Handle responsive drawer
   useEffect(() => {
     if (isMobile) {
