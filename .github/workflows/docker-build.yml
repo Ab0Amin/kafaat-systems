@@ -8,15 +8,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: build client app
         run: npm run build:frontend
       - name: build client server
         run: npm run build:backend
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Build Backend Docker Image
         run: npm run docker:build:server
