@@ -1,0 +1,16 @@
+{
+  "name": "@kafaat-systems/hr-core-server-e2e",
+  "projectType": "application",
+  "sourceRoot": "apps/hr-core-server-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/hr-core-server-e2e/cypress.config.ts",
+        "devServerTarget": "@kafaat-systems/hr-core-server:serve",
+        "testingType": "e2e"
+      }
+    }
+  },
+  "tags": []
+}
