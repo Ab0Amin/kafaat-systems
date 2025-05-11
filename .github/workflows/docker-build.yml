@@ -41,6 +41,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Configure npm to use cache
+        run: npm config set cache ~/.npm --global
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Build Server App
         run: npx nx build @kafaat-systems/hr-core-server
 
