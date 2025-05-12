@@ -22,31 +22,34 @@ export class SubdomainMiddleware implements NestMiddleware {
   async use(req: SchemaRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       // Check for role override in headers (for testing)
-      const roleHeader = req.headers['x-user-role'] as string | undefined;
-      const schemaHeader = req.headers['x-schema-name'] as string | undefined;
 
-      if (roleHeader) {
-        req.userRole = roleHeader as RoleType;
-        if (roleHeader === 'owner') {
-          this.logger.debug(`Using role from header: ${roleHeader}`);
+      if (process.env.NODE_ENV === 'development') {
+        const roleHeader = req.headers['x-user-role'] as string | undefined;
+        const schemaHeader = req.headers['x-schema-name'] as string | undefined;
+
+        if (roleHeader) {
+          req.userRole = roleHeader as RoleType;
+          if (roleHeader === 'owner') {
+            this.logger.debug(`Using role from header: ${roleHeader}`);
+            next();
+            return;
+          }
+
+          this.logger.debug(`Using role from header1: ${roleHeader}`);
+        }
+
+        if (schemaHeader) {
+          req.schemaName = schemaHeader;
+          this.logger.debug(`Using schema from header: ${schemaHeader}`);
+
+          // Set the schema in the tenant context
+          if (req.schemaName) {
+            this.tenantContextService.setSchema(req.schemaName);
+          }
+
           next();
           return;
         }
-
-        this.logger.debug(`Using role from header1: ${roleHeader}`);
-      }
-
-      if (schemaHeader) {
-        req.schemaName = schemaHeader;
-        this.logger.debug(`Using schema from header: ${schemaHeader}`);
-
-        // Set the schema in the tenant context
-        if (req.schemaName) {
-          this.tenantContextService.setSchema(req.schemaName);
-        }
-
-        next();
-        return;
       }
 
       // Extract subdomain from host
@@ -59,6 +62,10 @@ export class SubdomainMiddleware implements NestMiddleware {
       if (subdomain?.includes('www.') || subdomain?.includes('api.')) {
         subdomain = subdomain?.replace('www.', '').replace('api.', '');
       }
+      Logger.log(subdomain);
+      Logger.log(req.baseUrl.includes('login'));
+      Logger.log(req.baseUrl.includes('login') && req.body.email);
+
       // Check if we have a subdomain
       if (subdomain) {
         if (subdomain === 'owner') {
@@ -72,8 +79,13 @@ export class SubdomainMiddleware implements NestMiddleware {
         } else {
           // Look up tenant by subdomain
 
-          const tenant = await this.subdomainService.getTenantByDomain(subdomain);
-
+          let tenant = await this.subdomainService.getTenantByDomain(subdomain);
+          // only login can check subdomain from email
+          if (!tenant && req.baseUrl.includes('login') && req.body.email) {
+            const email: string = req.body.email;
+            const domain = email.split('@')[1]?.split('.')[0];
+            tenant = await this.subdomainService.getTenantByDomain(domain);
+          }
           if (tenant) {
             req.tenantId = parseInt(tenant.id);
             req.schemaName = tenant.schema_name;

@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  Logger,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { createTenantDataSource } from '@kafaat-systems/database';
 import { TokenService } from './service/temp-token.service';
@@ -6,17 +12,14 @@ import * as bcrypt from 'bcrypt';
 import { UserEntity } from '@kafaat-systems/entities';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { JwtService } from '@nestjs/jwt';
-// import { Repository } from 'typeorm';
-// import { InjectRepository } from '@nestjs/typeorm';
 import { jwtConstants } from './strategies/jwt.constants.strategy';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly tenantContextService: TenantContextService,
     private readonly tokenService: TokenService,
-    private jwtService: JwtService // @InjectRepository(UserEntity)
-  ) // private readonly userRepo: Repository<UserEntity>
-  {}
+    private jwtService: JwtService
+  ) {}
 
   async setPassword(dto: SetPasswordDto) {
     try {
@@ -72,17 +75,22 @@ export class AuthService {
     const userRepo = tenantDS.getRepository(UserEntity);
 
     const user = await userRepo.findOne({ where: { email } });
-    tenantDS.destroy(); // Close the connection after use
-    if (user && (await bcrypt.compare(pass, user.passwordHash))) {
-      return user;
-    }
-    return null;
-  }
-
-  async login(user: UserEntity) {
     if (!user) {
       throw new BadRequestException('User not found');
     }
+
+    if (!user.isActive) {
+      throw new ForbiddenException('Account is not active');
+    }
+    tenantDS.destroy(); // Close the connection after use
+    const validatePassword = await bcrypt.compare(pass, user.passwordHash);
+    if (!validatePassword) {
+      throw new UnauthorizedException('Invalid password');
+    }
+    return user;
+  }
+
+  async login(user: UserEntity) {
     const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
@@ -95,6 +103,7 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
+        subdomain: user.schemaName,
       },
     };
   }
