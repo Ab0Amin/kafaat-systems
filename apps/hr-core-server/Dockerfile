@@ -1,41 +1,43 @@
 # ========================
-# Build stage
+# Install production deps only (no dev)
 # ========================
-FROM node:lts-alpine AS builder
+FROM node:lts-alpine as deps
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY nx.json tsconfig.base.json eslint.config.mjs ./
-COPY apps/hr-core-server ./apps/hr-core-server
-# COPY libs ./libs
+# استخدم فقط package.json الخاص بالتطبيق
+COPY apps/hr-core-server/dist/package*.json ./
+# COPY package*.json ./
+RUN npm install --omit=dev --legacy-peer-deps
 
-RUN npm install
-RUN npm run build:backend
+
 
 # ========================
-# Production stage
+# Production stage (clean)
 # ========================
-FROM node:lts-alpine AS runner
+FROM node:lts-alpine as runner
 
 WORKDIR /app
+
+# استخدام dumb-init لتحسين التعامل مع signals
+RUN apk add --no-cache dumb-init
+
 ENV NODE_ENV=production
 ENV PORT=4000
 
-RUN addgroup -g 1001 app && adduser -S -u 1001 -G app app
+# انسخ فقط اللي محتاجه وقت التشغيل
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/package.json ./package.json
+# COPY apps/hr-core-server/dist/* . 
 
-# Copy the built backend artifacts directly from the 'dist' folder
-COPY --from=builder --chown=app:app /app/apps/hr-core-server/dist ./dist
-# COPY --from=builder --chown=app:app /app/apps/hr-core-server/dist/main.js ./main.js
+# تغيير صلاحيات التشغيل
+# RUN chown -R node:node .
+COPY --chown=node:node apps/hr-core-server/dist/* .
 
-# Copy package.json and package-lock.json to the root of /app
-COPY --from=builder --chown=app:app /app/apps/hr-core-server/dist/package.json ./package.json
-COPY --from=builder --chown=app:app /app/apps/hr-core-server/dist/package-lock.json ./package-lock.json
 
-RUN npm ci --omit=dev
-
-USER app
+USER node
 
 EXPOSE 4000
 
-CMD ["node", "dist/main.js"]
+CMD ["dumb-init", "node", "main.js"]

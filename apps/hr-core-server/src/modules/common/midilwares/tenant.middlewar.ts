@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { SubdomainService } from '../services/subdomain.service';
+// import { SubdomainService } from '../services/subdomain.service';
 
 export interface TenantRequest extends Request {
   tenantId?: number;
@@ -8,7 +8,7 @@ export interface TenantRequest extends Request {
 }
 @Injectable()
 export class TenantMiddleware implements NestMiddleware {
-  constructor(private subdomainServics: SubdomainService) {}
+  // constructor(private subdomainServics: SubdomainService) {}
 
   async use(req: TenantRequest, res: Response, next: NextFunction): Promise<void | Response> {
     try {

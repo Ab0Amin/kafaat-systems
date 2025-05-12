@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware, BadRequestException, Logger } from '@nestjs
 import { Request, Response, NextFunction } from 'express';
 import { SubdomainService } from '../services/subdomain.service';
 import { DataSource } from 'typeorm';
-import { CreateTenantDto } from '../../tenant/dto/create-tenant.dto';
+import { CreateTenantDto } from '../../owner/dto/create-tenant.dto';
 
 @Injectable()
 export class RegisterTenantMiddleware implements NestMiddleware {
@@ -15,7 +15,6 @@ export class RegisterTenantMiddleware implements NestMiddleware {
     if (req.method !== 'POST') {
       return next();
     }
-    Logger.log('RegisterTenantMiddleware called1111111111111111111111111111111111111111');
     const dto = req.body as CreateTenantDto;
 
     // Validate email domain matches tenant domain

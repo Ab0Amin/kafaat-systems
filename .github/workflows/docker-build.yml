@@ -60,11 +60,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Server App
-        run: npx nx build @kafaat-systems/hr-core-server
-
       - name: Build Client App
-        run: npx nx build @kafaat-systems/hr-core-client
+        run: npm run build:build:frontend:hr-core
+
+      - name: Build Server App
+        run: npm run build:backend
 
       - name: Build Backend Docker Image
         uses: docker/build-push-action@v5

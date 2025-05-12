@@ -6,18 +6,17 @@ import * as bcrypt from 'bcrypt';
 import { UserEntity } from '@kafaat-systems/entities';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+// import { Repository } from 'typeorm';
+// import { InjectRepository } from '@nestjs/typeorm';
 import { jwtConstants } from './strategies/jwt.constants.strategy';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly tenantContextService: TenantContextService,
     private readonly tokenService: TokenService,
-    private jwtService: JwtService,
-    @InjectRepository(UserEntity)
-    private readonly userRepo: Repository<UserEntity>
-  ) {}
+    private jwtService: JwtService // @InjectRepository(UserEntity)
+  ) // private readonly userRepo: Repository<UserEntity>
+  {}
 
   async setPassword(dto: SetPasswordDto) {
     try {

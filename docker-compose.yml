@@ -15,9 +15,7 @@ services:
       - '5432:5432'
 
   backend:
-    build:
-      context: .
-      dockerfile: apps/hr-core-server/Dockerfile
+    image: ahmedabdalla95/hr-core-server:latest
     container_name: kafaat_backend
     depends_on:
       - db
@@ -27,14 +25,12 @@ services:
       - '4000:4000'
 
   frontend:
-    build:
-      context: .
-      dockerfile: apps/hr-core-client/Dockerfile
+    image: ahmedabdalla95/hr-core-client:latest
     container_name: kafaat_frontend
-    ports:
-      - '3000:3000'
     depends_on:
       - backend
+    ports:
+      - '3000:3000'
 
 volumes:
   postgres_data:

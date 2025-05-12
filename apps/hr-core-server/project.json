@@ -10,6 +10,7 @@
       "options": {
         "outputPath": "dist/apps/hr-core-server",
         "main": "apps/hr-core-server/src/main.ts",
+        "generatePackageJson": true,
         "tsConfig": "apps/hr-core-server/tsconfig.app.json",
         "assets": ["apps/hr-core-server/src/assets"],
         "webpackConfig": "apps/hr-core-server/webpack.config.js"

@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+.git
+.gitignore
+*.log
+apps/**/e2e
+libs/**/__tests__
+libs/**/*.spec.ts
+libs/**/storybook
+libs/**/.storybook
+libs/**/tests
+libs/**/dev-utils
