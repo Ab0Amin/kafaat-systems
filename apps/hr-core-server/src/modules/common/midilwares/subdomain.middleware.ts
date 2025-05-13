@@ -4,6 +4,7 @@ import { RoleType } from '@kafaat-systems/entities';
 import { SubdomainService } from '../services/subdomain.service';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { parse } from 'tldts';
+import { tenantContextStorage } from '@kafaat-systems/tenant-context';
 export interface SchemaRequest extends Request {
   tenantId?: number;
   schemaName?: string;
@@ -62,19 +63,23 @@ export class SubdomainMiddleware implements NestMiddleware {
       if (subdomain?.includes('www.') || subdomain?.includes('api.')) {
         subdomain = subdomain?.replace('www.', '').replace('api.', '');
       }
-      Logger.log(subdomain);
-      Logger.log(req.baseUrl.includes('login'));
-      Logger.log(req.baseUrl.includes('login') && req.body.email);
 
       // Check if we have a subdomain
       if (subdomain) {
         if (subdomain === 'owner') {
-          req.schemaName = 'owner';
-          req.userRole = RoleType.OWNER;
-          this.tenantContextService.setSchema('owner');
-          this.tenantContextService.setRole(RoleType.OWNER);
-          this.logger.debug('Using owner schema');
-          next();
+          const context = {
+            schema: 'owner',
+            role: RoleType.OWNER,
+            tenantId: undefined,
+          };
+
+          tenantContextStorage.run(context, () => {
+            this.tenantContextService.setSchema('owner');
+            this.tenantContextService.setRole(RoleType.OWNER);
+            this.logger.debug('Using owner schema');
+            next();
+          });
+
           return;
         } else {
           // Look up tenant by subdomain
@@ -87,13 +92,28 @@ export class SubdomainMiddleware implements NestMiddleware {
             tenant = await this.subdomainService.getTenantByDomain(domain);
           }
           if (tenant) {
+            if (!tenant?.isActive) {
+              throw new HttpException(
+                'Tenant is deactivated please contact support',
+                HttpStatus.BAD_REQUEST
+              );
+            }
+            const context = {
+              schema: tenant.schema_name,
+              role: RoleType.USER,
+              tenantId: String(tenant.id),
+            };
             req.tenantId = parseInt(tenant.id);
             req.schemaName = tenant.schema_name;
 
-            this.tenantContextService.setSchema(tenant.schema_name);
-            this.logger.debug(
-              `Tenant found for subdomain ${subdomain}, using schema: ${tenant.schema_name}`
-            );
+            tenantContextStorage.run(context, () => {
+              this.tenantContextService.setSchema(context.schema);
+              this.tenantContextService.setRole(context.role);
+              this.logger.debug(
+                `Tenant found for subdomain ${subdomain}, using schema: ${tenant.schema_name}`
+              );
+              next();
+            });
           } else {
             throw new HttpException('Tenant does not exist', HttpStatus.BAD_REQUEST);
           }
@@ -101,8 +121,6 @@ export class SubdomainMiddleware implements NestMiddleware {
       } else {
         throw new HttpException('Tenant does not exist', HttpStatus.BAD_REQUEST);
       }
-
-      next();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
 

@@ -11,6 +11,7 @@ declare module 'next-auth' {
       name?: string | null | undefined;
       email?: string | null | undefined;
       image?: string | null | undefined;
+      subdomain: string | null | undefined;
     };
     accessToken: string;
     refreshToken: string;
@@ -24,6 +25,7 @@ declare module 'next-auth' {
     role: string;
     accessToken: string;
     refreshToken: string;
+    subdomain: string;
   }
 }
 
@@ -59,6 +61,7 @@ export const authOptions = {
             role: user.role,
             accessToken: access_token,
             refreshToken: refresh_token,
+            subdomain: user.subdomain,
           };
         } catch (error) {
           console.error('Authentication error:', error);

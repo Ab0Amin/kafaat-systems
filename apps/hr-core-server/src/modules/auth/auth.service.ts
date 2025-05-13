@@ -6,7 +6,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
-import { createTenantDataSource } from '@kafaat-systems/database';
+import { createTenantDataSource, getTenantDataSource } from '@kafaat-systems/database';
 import { TokenService } from './service/temp-token.service';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from '@kafaat-systems/entities';
@@ -24,10 +24,7 @@ export class AuthService {
   async setPassword(dto: SetPasswordDto) {
     try {
       const schema = this.tenantContextService.getSchema();
-      const tenantDS = createTenantDataSource(schema);
-      if (!tenantDS.isInitialized) {
-        await tenantDS.initialize();
-      }
+      const tenantDS = await getTenantDataSource(schema);
 
       const resetToken = await this.tokenService.validateToken(dto.token, tenantDS);
       Logger.log(resetToken);
@@ -67,11 +64,7 @@ export class AuthService {
 
     const schema = this.tenantContextService.getSchema();
 
-    const tenantDS = createTenantDataSource(schema);
-
-    if (!tenantDS.isInitialized) {
-      await tenantDS.initialize();
-    }
+    const tenantDS = await getTenantDataSource(schema);
     const userRepo = tenantDS.getRepository(UserEntity);
 
     const user = await userRepo.findOne({ where: { email } });
@@ -82,7 +75,6 @@ export class AuthService {
     if (!user.isActive) {
       throw new ForbiddenException('Account is not active');
     }
-    tenantDS.destroy(); // Close the connection after use
     const validatePassword = await bcrypt.compare(pass, user.passwordHash);
     if (!validatePassword) {
       throw new UnauthorizedException('Invalid password');
@@ -119,15 +111,11 @@ export class AuthService {
 
       const schema = this.tenantContextService.getSchema();
 
-      const tenantDS = createTenantDataSource(schema);
+      const tenantDS = await getTenantDataSource(schema);
 
-      if (!tenantDS.isInitialized) {
-        await tenantDS.initialize();
-      }
       const userRepo = tenantDS.getRepository(UserEntity);
 
       const user = await userRepo.findOne({ where: { id: decoded.sub } });
-      tenantDS.destroy();
       if (!user) throw new BadRequestException('error in refresh token');
 
       return this.login(user);

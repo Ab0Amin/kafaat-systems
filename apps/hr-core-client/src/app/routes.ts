@@ -17,6 +17,7 @@ export function extractSubdomainFromHost(host: string): string {
 }
 
 export function getSchema(): string {
+  let subdomain;
   if (typeof window === 'undefined') return 'default';
 
   const hostname = window.location.hostname;
@@ -24,7 +25,8 @@ export function getSchema(): string {
   const parts = hostname.split('.');
 
   if (parts.length >= 2) {
-    return parts[0]; // subdomain
+    subdomain = parts[0];
+    return subdomain;
   }
 
   return '';

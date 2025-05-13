@@ -3,6 +3,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { RoleType } from '@kafaat-systems/entities';
+import { tenantContextStorage } from './tenant-context-storage';
 
 interface TenantContext {
   tenantId?: string;
@@ -18,7 +19,7 @@ interface SchemaRequest extends Request {
 
 @Injectable({ scope: Scope.REQUEST })
 export class TenantContextService {
-  private readonly als = new AsyncLocalStorage<TenantContext>();
+  // private readonly als = new AsyncLocalStorage<TenantContext>();
   private readonly logger = new Logger(TenantContextService.name);
   private currentSchema: string = process.env.DEFAULT_SCHEMA || 'public';
   private currentRole: RoleType = RoleType.USER;
@@ -36,29 +37,33 @@ export class TenantContextService {
   }
 
   getContext(): TenantContext | undefined {
-    // First try to get from AsyncLocalStorage
-    const alsContext = this.als.getStore();
-
-    if (alsContext) {
-      return alsContext;
-    }
-
-    // If not in ALS, try to get from request
-    console.log('Request schemaName:', this.request?.schemaName);
-    if (this.request?.schemaName) {
-      return {
-        tenantId: this.request.tenantId ? String(this.request.tenantId) : undefined,
-        schema: this.request.schemaName,
-        role: this.request.userRole,
-      };
-    }
-
-    // Return default context as fallback
-    return {
-      schema: this.currentSchema,
-      role: this.currentRole,
-    };
+    return tenantContextStorage.getStore();
   }
+
+  // getContext(): TenantContext | undefined {
+  //   // First try to get from AsyncLocalStorage
+  //   const alsContext = this.als.getStore();
+
+  //   if (alsContext) {
+  //     return alsContext;
+  //   }
+
+  //   // If not in ALS, try to get from request
+  //   console.log('Request schemaName:', this.request?.schemaName);
+  //   if (this.request?.schemaName) {
+  //     return {
+  //       tenantId: this.request.tenantId ? String(this.request.tenantId) : undefined,
+  //       schema: this.request.schemaName,
+  //       role: this.request.userRole,
+  //     };
+  //   }
+
+  //   // Return default context as fallback
+  //   return {
+  //     schema: this.currentSchema,
+  //     role: this.currentRole,
+  //   };
+  // }
 
   getTenantId(): string | undefined {
     return this.getContext()?.tenantId;

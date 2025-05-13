@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { RoleType, TenantEntity, UserEntity } from '@kafaat-systems/entities';
-import { createTenantDataSource } from '@kafaat-systems/database';
+import { getTenantDataSource, createTenantDataSource } from '@kafaat-systems/database';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { SubdomainService } from '../common/services/subdomain.service';
 import { TemplateSchemaService } from '../common/services/template-schema.service';
@@ -21,8 +21,7 @@ export class OwnerService {
   async runMigrationForAllTenants() {
     // Get all active tenants
 
-    const ownerDS = createTenantDataSource('owner');
-    await ownerDS.initialize();
+    const ownerDS = await getTenantDataSource('owner');
 
     try {
       const tenants = await ownerDS.getRepository(TenantEntity).find({
@@ -34,9 +33,7 @@ export class OwnerService {
       // Run migrations for each tenant
       for (const tenant of tenants) {
         try {
-          const tenantDS = createTenantDataSource(tenant.schema_name);
-          await tenantDS.initialize();
-
+          const tenantDS = await getTenantDataSource(tenant.schema_name);
           try {
             await tenantDS.runMigrations();
             results.push({
@@ -51,8 +48,6 @@ export class OwnerService {
               success: false,
               error: error instanceof Error ? error.message : String(error),
             });
-          } finally {
-            await tenantDS.destroy();
           }
         } catch (error: unknown) {
           results.push({
@@ -73,14 +68,16 @@ export class OwnerService {
         failed: results.filter(r => !r.success).length,
         details: results,
       };
-    } finally {
-      await ownerDS.destroy();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+      console.log(message);
+
+      return;
     }
   }
 
   async getTenantStats() {
-    const ownerDS = createTenantDataSource('owner');
-    await ownerDS.initialize();
+    const ownerDS = await getTenantDataSource('owner');
     try {
       const tenants = await ownerDS.getRepository(TenantEntity).find();
 
@@ -95,44 +92,48 @@ export class OwnerService {
       };
 
       return stats;
-    } finally {
-      await ownerDS.destroy();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.log(errorMessage);
+      return;
     }
   }
 
   async getTenants() {
-    const ownerDS = createTenantDataSource('owner');
-    await ownerDS.initialize();
+    const ownerDS = await getTenantDataSource('owner');
     try {
       const tenants = await ownerDS.getRepository(TenantEntity).find();
 
       return tenants;
-    } finally {
-      await ownerDS.destroy();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.log(errorMessage);
+      return;
     }
   }
 
   async deactivateTenant(id: string) {
-    const ownerDS = createTenantDataSource('owner');
-    await ownerDS.initialize();
-
+    const ownerDS = await getTenantDataSource('owner');
     try {
       await ownerDS.getRepository(TenantEntity).update(id, { isActive: false });
       return { success: true, message: 'Tenant deactivated successfully' };
-    } finally {
-      await ownerDS.destroy();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.log(errorMessage);
+
+      return;
     }
   }
 
   async activateTenant(id: string) {
-    const ownerDS = createTenantDataSource('owner');
-    await ownerDS.initialize();
-
+    const ownerDS = await getTenantDataSource('owner');
     try {
       await ownerDS.getRepository(TenantEntity).update(id, { isActive: true });
       return { success: true, message: 'Tenant deactivated successfully' };
-    } finally {
-      await ownerDS.destroy();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.log(errorMessage);
+      return;
     }
   }
   async createNewTenant(dto: CreateTenantDto) {
@@ -148,11 +149,11 @@ export class OwnerService {
     await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
 
     // Initialize tenantDS now
+
     const tenantDS = createTenantDataSource(schemaName);
     if (!tenantDS.isInitialized) {
       await tenantDS.initialize();
     }
-
     try {
       // Now start transaction for the rest
       await queryRunner.startTransaction();
@@ -174,10 +175,7 @@ export class OwnerService {
       });
 
       // Step 5: Save tenant info into owner schema
-      const ownerDS = createTenantDataSource('owner');
-      if (!ownerDS.isInitialized) {
-        await ownerDS.initialize();
-      }
+      const ownerDS = await getTenantDataSource('owner');
       try {
         // createdAdmin = await ownerDS.manager.transaction(async (manager) => {
         //   await manager.getRepository(TenantEntity).save({
@@ -193,6 +191,9 @@ export class OwnerService {
           createdAt: new Date(),
           updatedAt: new Date(),
         });
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.log(errorMessage);
       } finally {
         await ownerDS.destroy();
       }
@@ -214,9 +215,6 @@ export class OwnerService {
       );
     } finally {
       await queryRunner.release();
-      if (tenantDS && tenantDS.isInitialized) {
-        await tenantDS.destroy();
-      }
     }
 
     const expiresAt = new Date();
@@ -247,9 +245,7 @@ export class OwnerService {
     };
   }
   async deleteTenant(id: string) {
-    const ownerDS = createTenantDataSource('owner');
-    await ownerDS.initialize();
-
+    const ownerDS = await getTenantDataSource('owner');
     try {
       Logger.log('trying');
 
@@ -275,8 +271,6 @@ export class OwnerService {
       throw new BadRequestException(
         `Failed to delete tenant: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
-    } finally {
-      await ownerDS.destroy();
     }
   }
 }
