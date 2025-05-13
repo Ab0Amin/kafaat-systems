@@ -30,11 +30,25 @@ export default function SetPasswordPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validToken, setValidToken] = useState(true);
 
   useEffect(() => {
-    if (!token) {
-      setError(t('invalidToken'));
-    }
+    const checkToken = async () => {
+      if (!token) {
+        setError(t('invalidToken'));
+        setValidToken(false);
+        return;
+      }
+
+      try {
+        await axios.post('/api/auth/validate-reset-token', { token });
+      } catch (err) {
+        setValidToken(false);
+        setError(t('expiredOrInvalidToken'));
+      }
+    };
+
+    checkToken();
   }, [token, t]);
 
   const validatePassword = (password: string) => {
@@ -86,70 +100,74 @@ export default function SetPasswordPage() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box className={styles.container}>
-        <Paper elevation={3} className={styles.paper}>
-          <Box className={styles.iconContainer}>
-            <LockOutlinedIcon className={styles.icon} />
-          </Box>
-          <Typography component="h1" variant="h5">
-            {t('setPasswordTitle')}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" align="center" sx={{ mt: 1 }}>
-            {t('setPasswordDescription')}
-          </Typography>
+      {validToken ? (
+        <Box className={styles.container}>
+          <Paper elevation={3} className={styles.paper}>
+            <Box className={styles.iconContainer}>
+              <LockOutlinedIcon className={styles.icon} />
+            </Box>
+            <Typography component="h1" variant="h5">
+              {t('setPasswordTitle')}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" align="center" sx={{ mt: 1 }}>
+              {t('setPasswordDescription')}
+            </Typography>
 
-          {error && (
-            <Alert severity="error" className={styles.alert}>
-              {error}
-            </Alert>
-          )}
+            {error && (
+              <Alert severity="error" className={styles.alert}>
+                {error}
+              </Alert>
+            )}
 
-          {success && (
-            <Alert severity="success" className={styles.alert}>
-              {t('passwordSetSuccess')}
-            </Alert>
-          )}
+            {success && (
+              <Alert severity="success" className={styles.alert}>
+                {t('passwordSetSuccess')}
+              </Alert>
+            )}
 
-          <Box component="form" onSubmit={handleSubmit} noValidate className={styles.form}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label={t('password')}
-              type="password"
-              id="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              disabled={!token || success}
-              helperText={t('passwordRequirements')}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="confirmPassword"
-              label={t('confirmPassword')}
-              type="password"
-              id="confirmPassword"
-              autoComplete="new-password"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              disabled={!token || success}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              className={styles.submitButton}
-              disabled={loading || !token || success}
-            >
-              {loading ? <CircularProgress size={24} /> : t('submit')}
-            </Button>
-          </Box>
-        </Paper>
-      </Box>
+            <Box component="form" onSubmit={handleSubmit} noValidate className={styles.form}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label={t('password')}
+                type="password"
+                id="password"
+                autoComplete="new-password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                disabled={!token || success}
+                helperText={t('passwordRequirements')}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="confirmPassword"
+                label={t('confirmPassword')}
+                type="password"
+                id="confirmPassword"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                disabled={!token || success}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                className={styles.submitButton}
+                disabled={loading || !token || success}
+              >
+                {loading ? <CircularProgress size={24} /> : t('submit')}
+              </Button>
+            </Box>
+          </Paper>
+        </Box>
+      ) : (
+        <>this link has expired</>
+      )}
     </Container>
   );
 }

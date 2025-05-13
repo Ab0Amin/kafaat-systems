@@ -4,6 +4,7 @@ import { SetPasswordDto } from './dto/set-password.dto';
 import { Request as ExpressRequest } from 'express';
 import { Public } from '../common/decorators/public.decorator';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,6 +14,18 @@ export class AuthController {
   @Post('set-password')
   async setPassword(@Body() dto: SetPasswordDto) {
     return this.authService.setPassword(dto);
+  }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
+  }
+
+  @Post('validate-reset-token')
+  @Public()
+  async validateResetToken(@Body('token') token: string) {
+    return this.authService.validateToken(token);
   }
   @Public()
   @Post('login')

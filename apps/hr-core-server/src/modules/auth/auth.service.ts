@@ -6,25 +6,29 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
-import { createTenantDataSource, getTenantDataSource } from '@kafaat-systems/database';
+import { getTenantDataSource } from '@kafaat-systems/database';
 import { TokenService } from './service/temp-token.service';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from '@kafaat-systems/entities';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './strategies/jwt.constants.strategy';
+import { EmailService } from './service/email.service';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly tenantContextService: TenantContextService,
     private readonly tokenService: TokenService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly emailService: EmailService
   ) {}
 
   async setPassword(dto: SetPasswordDto) {
     try {
       const schema = this.tenantContextService.getSchema();
       const tenantDS = await getTenantDataSource(schema);
+      Logger.log(schema);
 
       const resetToken = await this.tokenService.validateToken(dto.token, tenantDS);
       Logger.log(resetToken);
@@ -55,6 +59,66 @@ export class AuthService {
       Logger.log(error);
       throw new BadRequestException('something went wrong');
     }
+  }
+  async validateToken(token: string) {
+    const schema = this.tenantContextService.getSchema();
+    const tenantDS = await getTenantDataSource(schema);
+    Logger.log(schema);
+
+    const resetToken = await this.tokenService.validateToken(token, tenantDS);
+    Logger.log(resetToken);
+
+    if (!resetToken) {
+      throw new BadRequestException('Invalid or expired token');
+    }
+  }
+  async resetPassword(dto: ResetPasswordDto) {
+    const userEmail = dto.email;
+    const durationPerMinutes = 15;
+    const TokenDuratuon = durationPerMinutes * 60 * 1000;
+
+    const domain = userEmail.split('@')[1].split('.')[0].toLowerCase();
+
+    const tenantDS = await getTenantDataSource(domain);
+    const userRepo = tenantDS.getRepository(UserEntity);
+
+    const user = await userRepo.findOne({
+      where: { email: userEmail },
+    });
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+    if (!user.isActive) {
+      throw new BadRequestException('user is not activate');
+    }
+    const resetToken = await this.tokenService.createResetToken(user?.id, tenantDS, TokenDuratuon);
+
+    const expiresAt = new Date();
+    expiresAt.setTime(expiresAt.getTime() + TokenDuratuon);
+
+    await this.emailService.sendSetPasswordEmail({
+      to: user.email,
+
+      ClientName: `${user.firstName} ${user.lastName}`,
+      expiryDate: expiresAt.toString(),
+      url: `https://${domain}.${process.env.NEXT_PUBLIC_API_URL_HR}/set-password?token=${resetToken?.plainToken}`,
+      operating_system: 'Web',
+      browser_name: 'Any',
+      button_text: 'Set Password',
+      support_url: 'support.kbs.sa',
+      product_name: 'KAFAAT SYSTEMS',
+    });
+    return {
+      success: true,
+      message: `reset email sent to ${userEmail} .`,
+      tenant: {
+        email: userEmail,
+        // token: resetToken,
+        expiresAt: expiresAt,
+        datanow: new Date(),
+        // date: new Date().getDate() + TokenDuratuon,
+      },
+    };
   }
 
   async validateUser(email: string, pass: string): Promise<UserEntity | null> {
