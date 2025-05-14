@@ -9,12 +9,15 @@ import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { getTenantDataSource } from '@kafaat-systems/database';
 import { TokenService } from './service/temp-token.service';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from '@kafaat-systems/entities';
+import { MobileDeviceEntity, UserEntity } from '@kafaat-systems/entities';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './strategies/jwt.constants.strategy';
 import { EmailService } from './service/email.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { RegisterDeviceDto } from './dto/register-device.dto';
+import { Request } from 'express';
+import * as base64 from 'base-64';
 @Injectable()
 export class AuthService {
   constructor(
@@ -49,7 +52,7 @@ export class AuthService {
 
       const passwordHash = await bcrypt.hash(dto.password, 10);
       admin.passwordHash = passwordHash;
-      admin.isActive = true; // Activate the user if needed
+      admin.isActive = true;
 
       await userRepo.save(admin);
       await this.tokenService.deleteToken(dto.token, tenantDS);
@@ -71,6 +74,7 @@ export class AuthService {
     if (!resetToken) {
       throw new BadRequestException('Invalid or expired token');
     }
+    return true;
   }
   async resetPassword(dto: ResetPasswordDto) {
     const userEmail = dto.email;
@@ -120,8 +124,46 @@ export class AuthService {
       },
     };
   }
+  async registeredDevice(userId: string, dto: RegisterDeviceDto) {
+    const schema = this.tenantContextService.getSchema();
+    const tenantDS = await getTenantDataSource(schema);
 
-  async validateUser(email: string, pass: string): Promise<UserEntity | null> {
+    const userRepo = tenantDS.getRepository(UserEntity);
+    const deviceRepo = tenantDS.getRepository(MobileDeviceEntity);
+
+    const user = await userRepo.findOne({ where: { id: userId }, relations: ['device'] });
+    if (!user) throw new BadRequestException('User not found');
+
+    if (user.device) {
+      if (dto.forceUpdate) {
+        // update existing device
+        user.device.deviceId = dto.deviceId;
+        user.device.model = dto.model;
+
+        await deviceRepo.save(user.device);
+        return { message: 'Device updated' };
+      } else {
+        if (user.device.deviceId == dto.deviceId) {
+          return { message: 'Device already registered', skipped: true };
+        } else {
+          throw new ForbiddenException('Not trusted device');
+        }
+      }
+    }
+    // create new device
+    dto.registeredAt = new Date();
+    const newDevice = deviceRepo.create({ ...dto, user });
+
+    try {
+      await deviceRepo.save(newDevice);
+    } catch (error) {
+      Logger.log(error);
+    }
+
+    return { message: 'Device created' };
+  }
+
+  async validateUser(email: string, pass: string, req?: Request): Promise<UserEntity | null> {
     if (!email || !pass) {
       throw new BadRequestException('Invalid email or password');
     }
@@ -138,6 +180,13 @@ export class AuthService {
 
     if (!user.isActive) {
       throw new ForbiddenException('Account is not active');
+    }
+    if (req?.headers['x-device-info']) {
+      const raw = String(req.headers['x-device-info']);
+      const json = JSON.parse(base64.decode(raw));
+      Logger.log(json, 'json');
+
+      await this.registeredDevice(user.id, json);
     }
     const validatePassword = await bcrypt.compare(pass, user.passwordHash);
     if (!validatePassword) {

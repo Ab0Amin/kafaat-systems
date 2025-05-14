@@ -23,13 +23,13 @@ export async function POST(req: NextRequest) {
   const { token } = result.data;
 
   try {
-    await axios.post(
+    const result = await axios.post(
       `${apiUrl}/auth/validate-reset-token`,
       { token },
       { headers: { 'Content-Type': 'application/json' } }
     );
 
-    return true;
+    return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.log(error);
 

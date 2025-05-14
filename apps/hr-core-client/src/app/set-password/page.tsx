@@ -30,20 +30,23 @@ export default function SetPasswordPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [validToken, setValidToken] = useState(true);
+  const [validToken, setValidToken] = useState(false);
 
   useEffect(() => {
     const checkToken = async () => {
       if (!token) {
         setError(t('invalidToken'));
-        setValidToken(false);
         return;
       }
 
       try {
-        await axios.post('/api/auth/validate-reset-token', { token });
+        const result = await axios.post('/api/auth/validate-token', { token });
+        console.log(result);
+
+        if (result) {
+          setValidToken(true);
+        }
       } catch (err) {
-        setValidToken(false);
         setError(t('expiredOrInvalidToken'));
       }
     };

@@ -6,11 +6,16 @@ export class MobileDeviceEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ nullable: true })
   deviceId!: string;
 
-  @Column()
-  deviceType!: 'android' | 'ios';
+  @Column({ nullable: true })
+  platform!: string;
+
+  @Column({ nullable: true })
+  model!: string;
+  @Column({ nullable: true })
+  version!: string;
 
   @Column()
   registeredAt!: Date;
