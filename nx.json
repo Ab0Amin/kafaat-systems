@@ -75,6 +75,16 @@
           "buildDepsName": "tsc:build-deps",
           "watchDepsName": "tsc:watch-deps"
         }
+      },
+      "exclude": ["libs/hr/core-app/*"]
+    },
+    {
+      "plugin": "@nx/js/typescript",
+      "include": ["libs/hr/core-app/*"],
+      "options": {
+        "typecheck": {
+          "targetName": "typecheck"
+        }
       }
     }
   ],

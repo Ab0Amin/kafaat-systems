@@ -39,6 +39,9 @@
     },
     {
       "path": "./apps/systems-owner-app"
+    },
+    {
+      "path": "./libs/hr/core-app"
     }
   ]
 }

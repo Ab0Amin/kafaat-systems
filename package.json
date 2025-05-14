@@ -108,8 +108,8 @@
     "@nx/eslint": "20.8.0",
     "@nx/eslint-plugin": "20.8.0",
     "@nx/jest": "20.8.0",
-    "@nx/js": "20.8.0",
-    "@nx/nest": "^20.8.0",
+    "@nx/js": "20.8.1",
+    "@nx/nest": "20.8.1",
     "@nx/next": "20.8.0",
     "@nx/node": "^20.8.0",
     "@nx/web": "20.8.0",
@@ -119,6 +119,7 @@
     "@swc/cli": "~0.6.0",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@swc/jest": "~0.2.36",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.1.0",
     "@types/bcrypt": "^5.0.2",
@@ -143,6 +144,7 @@
     "eslint-plugin-react-hooks": "5.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "jest-environment-node": "^29.7.0",
     "jsonc-eslint-parser": "^2.1.0",
     "nx": "20.8.0",
     "pg": "^8.14.1",
@@ -159,6 +161,7 @@
   },
   "workspaces": [
     "apps/*",
-    "libs/shared/*"
+    "libs/shared/*",
+    "libs/hr/*"
   ]
 }
