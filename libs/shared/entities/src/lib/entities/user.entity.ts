@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { RoleType } from './role.entity';
+import { MobileDeviceEntity } from './device.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -42,4 +44,7 @@ export class UserEntity {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToOne(() => MobileDeviceEntity, device => device.user, { nullable: true })
+  device!: MobileDeviceEntity;
 }
