@@ -1,5 +1,4 @@
 import { Injectable, Scope, Inject, Optional, Logger } from '@nestjs/common';
-import { AsyncLocalStorage } from 'async_hooks';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { RoleType } from '@kafaat-systems/entities';

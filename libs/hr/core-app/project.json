@@ -1,0 +1,18 @@
+{
+  "name": "@kafaat-systems/core-app",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/hr/core-app/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "libs/hr/core-app/dist",
+        "tsConfig": "libs/hr/core-app/tsconfig.lib.json",
+        "main": "libs/hr/core-app/src/index.ts"
+      }
+    }
+  },
+  "tags": []
+}
