@@ -6,8 +6,9 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+      "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+   
     "types": ["node"],
     "target": "es2021",
     "strictNullChecks": true,
