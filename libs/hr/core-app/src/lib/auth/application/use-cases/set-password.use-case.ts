@@ -22,7 +22,6 @@ export class SetPasswordUseCase {
       const tenantDS = await getTenantDataSource(schema);
 
       const resetToken = await this.tokenService.validateToken(dto.token, tenantDS);
-      Logger.log(resetToken);
       if (!resetToken) {
         throw new BadRequestException('Invalid or expired token');
       }

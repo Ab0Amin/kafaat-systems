@@ -9,6 +9,7 @@ import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { ValidateUserUseCase } from '../../application/use-cases/validate-user.use-case';
 import { ValidateMobileUserUseCase } from '../../application/use-cases/validate-mobile-use-case';
 import * as base64 from 'base-64';
+import { RefreshTokenUseCase } from '../../application/use-cases/refresh-token-use-case';
 
 @Controller('auth2')
 export class AuthController {
@@ -17,7 +18,8 @@ export class AuthController {
     private readonly loginUseCase: LoginUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
     private readonly validateUserUseCase: ValidateUserUseCase,
-    private readonly validateMobileUserUseCase: ValidateMobileUserUseCase
+    private readonly validateMobileUserUseCase: ValidateMobileUserUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase
   ) {}
   @Post('login')
   async login(@Request() req: ExpressRequest, @Body() loginDto: LoginDto) {
@@ -31,6 +33,10 @@ export class AuthController {
     return this.loginUseCase.execute(user);
   }
 
+  @Post('refresh-token')
+  async refreshToken(@Body() token: string) {
+    return this.refreshTokenUseCase.execute(token);
+  }
   @Post('set-password')
   async setPassword(@Body() dto: SetPasswordDto) {
     return this.SetPasswordUseCase.execute(dto);

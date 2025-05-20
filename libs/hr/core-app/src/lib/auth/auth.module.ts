@@ -13,6 +13,7 @@ import { TenantContextModule } from '@kafaat-systems/tenant-context';
 import { ResetPasswordUseCase } from './application/use-cases/reset-password.use-case';
 import { ValidateUserUseCase } from './application/use-cases/validate-user.use-case';
 import { ValidateMobileUserUseCase } from './application/use-cases/validate-mobile-use-case';
+import { RefreshTokenUseCase } from './application/use-cases/refresh-token-use-case';
 @Module({
   imports: [
     JwtModule.register({
@@ -34,6 +35,7 @@ import { ValidateMobileUserUseCase } from './application/use-cases/validate-mobi
     EmailService,
     ValidateUserUseCase,
     ValidateMobileUserUseCase,
+    RefreshTokenUseCase,
   ],
   exports: [LoginUseCase, EmailService],
 })
