@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { TokenService } from '../../infrastructure/service/temp-token.service';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { UserEntity } from '@kafaat-systems/entities';
 import { getTenantDataSource } from '@kafaat-systems/database';
 import * as bcrypt from 'bcrypt';
-import { SetPasswordDto } from '../dtos/set-password.dto';
+import { SetPasswordDto } from '../../interfaces/dtos/set-password.dto';
 @Injectable()
 export class SetPasswordUseCase {
   constructor(
@@ -22,7 +22,7 @@ export class SetPasswordUseCase {
       const tenantDS = await getTenantDataSource(schema);
 
       const resetToken = await this.tokenService.validateToken(dto.token, tenantDS);
-
+      Logger.log(resetToken);
       if (!resetToken) {
         throw new BadRequestException('Invalid or expired token');
       }
@@ -46,9 +46,7 @@ export class SetPasswordUseCase {
 
       return { message: 'Password set successfully' };
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new BadRequestException('Something went wrong', error.message);
-      }
+      if (error instanceof BadRequestException) throw error;
       throw new BadRequestException('Something went wrong');
     }
   }
