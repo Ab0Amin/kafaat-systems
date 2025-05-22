@@ -2,11 +2,11 @@ import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from '../modules/user/user.module';
-import { OwnerModule } from '../modules/owner/owner.module';
+// import { OwnerModule } from '../modules/owner/owner.module';
 
-import { CommonModule } from '../modules/common/common.module';
+// import { CommonModule } from '../modules/common/common.module';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
-import { MIDDLEWARES } from '../modules/common/midilwares';
+// import { MIDDLEWARES } from '../modules/common/midilwares';
 import { JwtModule } from '@nestjs/jwt';
 // import { AuthService } from '../modules/auth/auth.service';
 import { JwtStrategy } from '../modules/auth/strategies/jwt.strategy';
@@ -16,12 +16,12 @@ import { UserEntity } from '@kafaat-systems/entities';
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from '../modules/auth/guards/jwt-auth.guard';
 import { DatabaseWithTenantModule } from '../modules/database-with-tenant/database-with-tenant.module';
-import { AuthModule } from '@kafaat-systems/core-app';
+import { AuthModule, CommonModule, MIDDLEWARES } from '@kafaat-systems/core-app';
 @Module({
   imports: [
     DatabaseWithTenantModule.forRoot(),
     UserModule,
-    OwnerModule,
+    // OwnerModule,
     CommonModule,
     JwtModule,
     TypeOrmModule.forFeature([UserEntity]),
