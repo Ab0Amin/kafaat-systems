@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import * as compression from 'compression';
 
 import helmet from 'helmet';
@@ -9,12 +9,17 @@ import { UserModule } from './modules/user/user.module';
 import { OwnerModule } from './modules/owner/owner.module';
 import { AppModule } from './app/app.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CustomValidationPipe } from '@kafaat-systems/exceptions';
 
 // Load environment variables
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    // We don't need to register the global exception filter here
+    // as it's registered in the ExceptionsModule using APP_FILTER
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+  });
 
   // Security
   app.use(helmet());
@@ -22,14 +27,8 @@ async function bootstrap() {
   // Performance
   app.use(compression());
 
-  // Validation
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-    })
-  );
+  // Validation - Using our custom validation pipe that throws ValidationException
+  app.useGlobalPipes(new CustomValidationPipe());
 
   // CORS
   app.enableCors({

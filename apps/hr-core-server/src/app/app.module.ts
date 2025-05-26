@@ -11,8 +11,16 @@ import { APP_GUARD } from '@nestjs/core';
 import { DatabaseWithTenantModule } from '../modules/database-with-tenant/database-with-tenant.module';
 import { CommonModule, JwtAuthGuard, JwtStrategy, MIDDLEWARES } from '@kafaat-systems/core-app';
 import { AuthModule } from '../modules/auth/auth.module';
+import { ExceptionsModule } from '@kafaat-systems/exceptions';
+
 @Module({
   imports: [
+    // Register our custom exceptions module
+    ExceptionsModule.forRoot({
+      isProduction: process.env.NODE_ENV === 'production',
+      logErrors: true,
+      logStackTrace: process.env.NODE_ENV !== 'production',
+    }),
     DatabaseWithTenantModule.forRoot(),
     UserModule,
     OwnerModule,

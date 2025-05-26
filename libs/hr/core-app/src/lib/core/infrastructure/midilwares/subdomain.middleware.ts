@@ -1,10 +1,14 @@
-import { Injectable, NestMiddleware, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { RoleType } from '@kafaat-systems/entities';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { parse } from 'tldts';
 import { tenantContextStorage } from '@kafaat-systems/tenant-context';
 import { GetTenantByDomainUseCase } from '../../application/use-cases/get-tenant-by-domain.use-case';
+import { 
+  TenantNotFoundException, 
+  TenantInactiveException 
+} from '@kafaat-systems/exceptions';
 export interface SchemaRequest extends Request {
   tenantId?: number;
   schemaName?: string;
@@ -62,10 +66,12 @@ export class SubdomainMiddleware implements NestMiddleware {
           }
           if (tenant) {
             if (!tenant?.isActive) {
-              throw new HttpException(
-                'Tenant is deactivated please contact support',
-                HttpStatus.BAD_REQUEST
-              );
+              throw new TenantInactiveException('Tenant is deactivated, please contact support', {
+                details: {
+                  tenantId: tenant.id,
+                  domain: subdomain
+                }
+              });
             }
             const context = {
               schema: tenant.schema_name,
@@ -84,11 +90,19 @@ export class SubdomainMiddleware implements NestMiddleware {
               next();
             });
           } else {
-            throw new HttpException('Tenant does not exist', HttpStatus.BAD_REQUEST);
+            throw new TenantNotFoundException(`Tenant with domain '${subdomain}' does not exist`, {
+              details: {
+                requestedDomain: subdomain
+              }
+            });
           }
         }
       } else {
-        throw new HttpException('Tenant does not exist', HttpStatus.BAD_REQUEST);
+        throw new TenantNotFoundException('No tenant subdomain provided', {
+          details: {
+            host: host
+          }
+        });
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
