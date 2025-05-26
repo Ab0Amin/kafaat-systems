@@ -1,5 +1,5 @@
 {
-  "name": "exceptions",
+  "name": "@kafaat-systems/exceptions",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/exceptions/src",
   "projectType": "library",

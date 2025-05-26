@@ -20,21 +20,20 @@ export class ExceptionsModule {
   static forRoot(options: ExceptionsModuleOptions = {}): DynamicModule {
     const mergedOptions = { ...defaultOptions, ...options };
 
-    const providers: Provider[] = [
-      {
-        provide: 'EXCEPTIONS_MODULE_OPTIONS',
-        useValue: mergedOptions,
-      },
-      {
-        provide: APP_FILTER,
-        useClass: AllExceptionsFilter,
-      },
-    ];
+    const appFilterProvider: Provider = {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    };
+
+    const configProvider: Provider = {
+      provide: 'EXCEPTIONS_MODULE_OPTIONS',
+      useValue: mergedOptions,
+    };
 
     return {
       module: ExceptionsModule,
-      providers,
-      exports: providers,
+      providers: [configProvider, appFilterProvider],
+      exports: [configProvider],
     };
   }
 }

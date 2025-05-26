@@ -15,7 +15,6 @@ import { ExceptionsModule } from '@kafaat-systems/exceptions';
 
 @Module({
   imports: [
-    // Register our custom exceptions module
     ExceptionsModule.forRoot({
       isProduction: process.env.NODE_ENV === 'production',
       logErrors: true,
