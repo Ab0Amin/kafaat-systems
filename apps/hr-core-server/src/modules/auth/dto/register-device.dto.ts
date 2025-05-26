@@ -1,20 +1,3 @@
-import { IsDate, IsEmpty, IsNotEmpty, IsString } from 'class-validator';
+import { SharedRegisterDeviceDto } from '@kafaat-systems/core-app';
 
-export class RegisterDeviceDto {
-  @IsString()
-  @IsNotEmpty()
-  deviceId!: string;
-
-  @IsEmpty()
-  platform!: string;
-
-  @IsEmpty()
-  model!: string;
-  @IsEmpty()
-  version!: string;
-
-  forceUpdate = false;
-
-  @IsDate()
-  registeredAt!: Date;
-}
+export class RegisterDeviceDto extends SharedRegisterDeviceDto {}

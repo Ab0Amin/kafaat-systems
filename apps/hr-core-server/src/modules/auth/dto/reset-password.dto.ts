@@ -1,7 +1,3 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { SharedResetPasswordDto } from '@kafaat-systems/core-app';
 
-export class ResetPasswordDto {
-  @IsString()
-  @IsNotEmpty()
-  email!: string;
-}
+export class ResetPasswordDto extends SharedResetPasswordDto {}

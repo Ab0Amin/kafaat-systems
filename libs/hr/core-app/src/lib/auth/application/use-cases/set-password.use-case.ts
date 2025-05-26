@@ -4,7 +4,7 @@ import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { UserEntity } from '@kafaat-systems/entities';
 import { getTenantDataSource } from '@kafaat-systems/database';
 import * as bcrypt from 'bcrypt';
-import { SetPasswordDto } from '../../interfaces/dtos/set-password.dto';
+import { SharedSetPasswordDto } from '../../interfaces/dtos/set-password.dto';
 @Injectable()
 export class SetPasswordUseCase {
   constructor(
@@ -13,7 +13,7 @@ export class SetPasswordUseCase {
     private readonly tokenService: TokenService
   ) {}
 
-  async execute(dto: SetPasswordDto): Promise<{ message: string }> {
+  async execute(dto: SharedSetPasswordDto): Promise<{ message: string }> {
     if (dto.password && dto.password !== dto.confirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }

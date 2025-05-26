@@ -1,16 +1,3 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-
-export class LoginDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password!: string;
-}
-export class LoginResponseDto {
-  @IsString()
-  @IsNotEmpty()
-  refreshToken!: string;
-}
+import { SharedLoginDto, SharedLoginResponseDto } from '@kafaat-systems/core-app';
+export class LoginDto extends SharedLoginDto {}
+export class LoginResponseDto extends SharedLoginResponseDto {}

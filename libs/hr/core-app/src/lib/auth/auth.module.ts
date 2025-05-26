@@ -7,7 +7,7 @@ import { jwtConstants } from './infrastructure/security/strategies/jwt.constants
 import { EmailService } from './infrastructure/service/email.service';
 import { LoginUseCase } from './application/use-cases/login.use-case';
 import { TokenService } from './infrastructure/service/temp-token.service';
-import { AuthController } from './interfaces/controller/auth.controller';
+// import { AuthController } from './interfaces/controller/auth.controller';
 import { SetPasswordUseCase } from './application/use-cases/set-password.use-case';
 import { TenantContextModule } from '@kafaat-systems/tenant-context';
 import { ResetPasswordUseCase } from './application/use-cases/reset-password.use-case';
@@ -27,7 +27,7 @@ import { JwtAuthGuard } from './infrastructure/security/gaurds/jwt-auth.guard';
     TypeOrmModule.forFeature([AdminEntity]),
     TenantContextModule,
   ],
-  controllers: [AuthController],
+  // controllers: [AuthController],
   providers: [
     LoginUseCase,
     SetPasswordUseCase,
@@ -39,6 +39,16 @@ import { JwtAuthGuard } from './infrastructure/security/gaurds/jwt-auth.guard';
     RefreshTokenUseCase,
     JwtAuthGuard,
   ],
-  exports: [LoginUseCase, EmailService, JwtAuthGuard],
+  exports: [
+    LoginUseCase,
+    SetPasswordUseCase,
+    ResetPasswordUseCase,
+    TokenService,
+    EmailService,
+    ValidateUserUseCase,
+    ValidateMobileUserUseCase,
+    RefreshTokenUseCase,
+    JwtAuthGuard,
+  ],
 })
-export class AuthModule {}
+export class SharedAuthModule {}

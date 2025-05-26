@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { LoginResponseDto } from '../dtos/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '@kafaat-systems/entities';
 import { jwtConstants } from '../../infrastructure/security/strategies/jwt.constants.strategy';
+import { SharedLoginResponseDto } from '../../interfaces/dtos/login.dto';
 
 @Injectable()
 export class LoginUseCase {
   constructor(private readonly jwtService: JwtService) {}
 
-  async execute(user: UserEntity): Promise<LoginResponseDto> {
+  async execute(user: UserEntity): Promise<SharedLoginResponseDto> {
     const payload = {
       email: user.email,
       sub: user.id,

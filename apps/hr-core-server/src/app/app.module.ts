@@ -10,13 +10,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '@kafaat-systems/entities';
 import { APP_GUARD } from '@nestjs/core';
 import { DatabaseWithTenantModule } from '../modules/database-with-tenant/database-with-tenant.module';
-import {
-  AuthModule,
-  CommonModule,
-  JwtAuthGuard,
-  JwtStrategy,
-  MIDDLEWARES,
-} from '@kafaat-systems/core-app';
+import { CommonModule, JwtAuthGuard, JwtStrategy, MIDDLEWARES } from '@kafaat-systems/core-app';
+import { AuthModule } from '../modules/auth/auth.module';
 @Module({
   imports: [
     DatabaseWithTenantModule.forRoot(),

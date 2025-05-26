@@ -1,6 +1,6 @@
 import { IsDate, IsEmpty, IsNotEmpty, IsString } from 'class-validator';
 
-export class RegisterDeviceDto {
+export class SharedRegisterDeviceDto {
   @IsString()
   @IsNotEmpty()
   deviceId!: string;

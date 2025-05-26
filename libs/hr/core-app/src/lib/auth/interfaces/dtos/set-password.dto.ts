@@ -19,7 +19,7 @@ class MatchPasswordConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export class SetPasswordDto {
+export class SharedSetPasswordDto {
   @IsString()
   token!: string;
 

@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class LoginDto {
+export class SharedLoginDto {
   @IsEmail()
   @IsNotEmpty()
   email!: string;
@@ -10,7 +10,7 @@ export class LoginDto {
   password!: string;
 }
 
-export class LoginResponseDto {
+export class SharedLoginResponseDto {
   access_token!: string;
   refresh_token!: string;
   user!: {

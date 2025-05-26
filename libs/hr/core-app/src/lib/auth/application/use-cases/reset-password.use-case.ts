@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { getTenantDataSource } from '@kafaat-systems/database';
 import { UserEntity } from '@kafaat-systems/entities';
-import { ResetPasswordDto } from '../../interfaces/dtos/reset-password.dto';
+import { SharedResetPasswordDto } from '../../interfaces/dtos/reset-password.dto';
 import { TokenService } from '../../infrastructure/service/temp-token.service';
 import { EmailService } from '../../infrastructure/service/email.service';
 
@@ -12,7 +12,7 @@ export class ResetPasswordUseCase {
     private readonly emailService: EmailService
   ) {}
 
-  async execute(dto: ResetPasswordDto) {
+  async execute(dto: SharedResetPasswordDto) {
     const userEmail = dto.email;
     const durationPerMinutes = 15;
     const TokenDuration = durationPerMinutes * 60 * 1000;

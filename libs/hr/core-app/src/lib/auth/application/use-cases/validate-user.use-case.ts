@@ -3,7 +3,6 @@ import {
   BadRequestException,
   ForbiddenException,
   UnauthorizedException,
-  Logger,
 } from '@nestjs/common';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { getTenantDataSource } from '@kafaat-systems/database';

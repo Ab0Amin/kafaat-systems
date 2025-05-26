@@ -1,22 +1,14 @@
-import {
-  Injectable,
-  BadRequestException,
-  ForbiddenException,
-  UnauthorizedException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, Logger } from '@nestjs/common';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { getTenantDataSource } from '@kafaat-systems/database';
-// import * as base64 from 'base-64';
-import * as bcrypt from 'bcrypt';
 import { MobileDeviceEntity, UserEntity } from '@kafaat-systems/entities';
-import { RegisterDeviceDto } from '../../interfaces/dtos/register-device.dto';
+import { SharedRegisterDeviceDto } from '../../interfaces/dtos/register-device.dto';
 
 @Injectable()
 export class ValidateMobileUserUseCase {
   constructor(private readonly tenantContextService: TenantContextService) {}
 
-  async execute(userId: string, dto: RegisterDeviceDto) {
+  async execute(userId: string, dto: SharedRegisterDeviceDto) {
     const schema = this.tenantContextService.getSchema();
     const tenantDS = await getTenantDataSource(schema);
 
