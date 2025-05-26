@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, NestMiddleware, BadRequestException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 import { CreateTenantDto } from '../../application/dtos/create-tenant.dto';
@@ -51,7 +51,6 @@ export class RegisterTenantMiddleware implements NestMiddleware {
         'Domain must contain only letters, numbers, and hyphens, and cannot start or end with a hyphen.'
       );
     }
-    Logger.log('ssssssssssssssssssss');
     next();
   }
 }
