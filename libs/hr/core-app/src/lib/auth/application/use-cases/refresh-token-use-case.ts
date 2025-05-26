@@ -4,6 +4,7 @@ import { UserEntity } from '@kafaat-systems/entities';
 import { getTenantDataSource } from '@kafaat-systems/database';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from '../../infrastructure/security/strategies/jwt.constants.strategy';
+import { InternalServerException } from '@kafaat-systems/exceptions';
 @Injectable()
 export class RefreshTokenUseCase {
   constructor(
@@ -31,10 +32,12 @@ export class RefreshTokenUseCase {
 
       return true;
     } catch (error: unknown) {
-      throw new BadRequestException(
-        'something went wrong in refresh token: ' +
-          (error instanceof Error ? error.message : 'Unknown error')
-      );
+      throw new InternalServerException('Failed to refresh token', {
+        code: 'REFRESH_TOKEN_ERROR',
+        details: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
+      });
     }
   }
 }

@@ -1,9 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { 
-  DatabaseException, 
-  InternalServerException 
-} from '@kafaat-systems/exceptions';
+import { DatabaseException, InternalServerException } from '@kafaat-systems/exceptions';
 
 @Injectable()
 export class CloneTemplateSchemaUseCase {
@@ -15,13 +12,13 @@ export class CloneTemplateSchemaUseCase {
     try {
       if (!targetSchema) {
         throw new InternalServerException('Target schema name is required', {
-          code: 'MISSING_TARGET_SCHEMA'
+          code: 'MISSING_TARGET_SCHEMA',
         });
       }
 
       if (!dataSource || !dataSource.isInitialized) {
         throw new DatabaseException('Database connection is not initialized', {
-          code: 'DB_CONNECTION_ERROR'
+          code: 'DB_CONNECTION_ERROR',
         });
       }
 
@@ -37,14 +34,14 @@ export class CloneTemplateSchemaUseCase {
       if (error instanceof DatabaseException || error instanceof InternalServerException) {
         throw error;
       }
-      
+
       throw new DatabaseException('Failed to clone template schema', {
         code: 'SCHEMA_CLONE_ERROR',
         details: {
           targetSchema,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         },
-        originalError: error
+        originalError: error,
       });
     }
   }
@@ -139,9 +136,9 @@ export class CloneTemplateSchemaUseCase {
               details: {
                 enumType: targetEnumTypeName,
                 schema: targetSchema,
-                values: enumValues
+                values: enumValues,
               },
-              originalError: error
+              originalError: error,
             });
           }
         } else {
@@ -244,9 +241,9 @@ export class CloneTemplateSchemaUseCase {
           sourceSchema,
           targetSchema,
           tableName,
-          error: message
+          error: message,
         },
-        originalError: error
+        originalError: error,
       });
     }
   }

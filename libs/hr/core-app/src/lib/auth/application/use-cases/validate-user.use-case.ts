@@ -3,10 +3,10 @@ import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { getTenantDataSource } from '@kafaat-systems/database';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from '@kafaat-systems/entities';
-import { 
-  BadRequestException, 
-  ForbiddenException, 
-  UnauthorizedException 
+import {
+  BadRequestException,
+  ForbiddenException,
+  UnauthorizedException,
 } from '@kafaat-systems/exceptions';
 
 @Injectable()
@@ -19,8 +19,8 @@ export class ValidateUserUseCase {
         code: 'INVALID_CREDENTIALS',
         details: {
           email: email ? 'provided' : 'missing',
-          password: pass ? 'provided' : 'missing'
-        }
+          password: pass ? 'provided' : 'missing',
+        },
       });
     }
 
@@ -35,8 +35,8 @@ export class ValidateUserUseCase {
         throw new BadRequestException('User not found', {
           code: 'USER_NOT_FOUND',
           details: {
-            email: email
-          }
+            email: email,
+          },
         });
       }
 
@@ -45,37 +45,30 @@ export class ValidateUserUseCase {
           code: 'ACCOUNT_INACTIVE',
           details: {
             userId: user.id,
-            email: user.email
-          }
+            email: user.email,
+          },
         });
       }
-      
+
       const validatePassword = await bcrypt.compare(pass, user.passwordHash);
       if (!validatePassword) {
         throw new UnauthorizedException('Invalid password', {
           code: 'INVALID_PASSWORD',
           details: {
             userId: user.id,
-            email: user.email
-          }
+            email: user.email,
+          },
         });
       }
+      return user;
     } catch (error) {
-      // Re-throw custom exceptions, wrap others in BadRequestException
-      if (error instanceof BadRequestException || 
-          error instanceof ForbiddenException || 
-          error instanceof UnauthorizedException) {
-        throw error;
-      }
-      
       throw new BadRequestException('Authentication failed', {
         code: 'AUTH_ERROR',
         details: {
           error: error instanceof Error ? error.message : 'Unknown error',
-          schema: schema
-        }
+          schema: schema,
+        },
       });
     }
-    return user;
   }
 }

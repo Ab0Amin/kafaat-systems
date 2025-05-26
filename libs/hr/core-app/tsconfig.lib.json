@@ -29,6 +29,7 @@
   "references": [
     { "path": "../../shared/tenant-context" },
     { "path": "../../shared/entities" },
-    { "path": "../../shared/database" }
+    { "path": "../../shared/database" },
+    { "path": "../../shared/exceptions" }
   ]
 }
