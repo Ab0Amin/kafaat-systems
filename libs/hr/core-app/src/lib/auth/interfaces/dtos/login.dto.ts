@@ -1,6 +1,11 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class SharedLoginDto {
+  @ApiProperty({
+    example: '',
+    description: 'The email address of the user',
+  })
   @IsEmail()
   @IsNotEmpty()
   email!: string;

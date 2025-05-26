@@ -14,6 +14,7 @@ import { LoginDto } from './dto/login.dto';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RegisterDeviceDto } from './dto/register-device.dto';
+import { ApiTags } from '@nestjs/swagger';
 interface AuthenticatedRequest extends ExpressRequest {
   user: {
     userId: string;
@@ -22,6 +23,7 @@ interface AuthenticatedRequest extends ExpressRequest {
   };
 }
 
+@ApiTags('authintication')
 @Controller('authintication')
 export class AuthController {
   constructor(
