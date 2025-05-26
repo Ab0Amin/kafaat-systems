@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { 
+  DatabaseException, 
+  InternalServerException 
+} from '@kafaat-systems/exceptions';
 
 @Injectable()
 export class CloneTemplateSchemaUseCase {
@@ -8,13 +12,40 @@ export class CloneTemplateSchemaUseCase {
   private readonly defaultSchema = process.env.DB_COPY_SOURCE ?? 'public';
 
   async execute(targetSchema: string, dataSource: DataSource): Promise<void> {
-    // Clone ENUMs
-    const enums = await this.cloneEnumTypes(this.defaultSchema, targetSchema, dataSource);
-    this.logger.log(`Cloned ENUM types: ${enums.join(', ')}`);
+    try {
+      if (!targetSchema) {
+        throw new InternalServerException('Target schema name is required', {
+          code: 'MISSING_TARGET_SCHEMA'
+        });
+      }
 
-    // Clone each table
-    for (const tableName of this.tableNames) {
-      await this.cloneTable(this.defaultSchema, tableName, targetSchema, true, dataSource);
+      if (!dataSource || !dataSource.isInitialized) {
+        throw new DatabaseException('Database connection is not initialized', {
+          code: 'DB_CONNECTION_ERROR'
+        });
+      }
+
+      // Clone ENUMs
+      const enums = await this.cloneEnumTypes(this.defaultSchema, targetSchema, dataSource);
+      this.logger.log(`Cloned ENUM types: ${enums.join(', ')}`);
+
+      // Clone each table
+      for (const tableName of this.tableNames) {
+        await this.cloneTable(this.defaultSchema, tableName, targetSchema, true, dataSource);
+      }
+    } catch (error) {
+      if (error instanceof DatabaseException || error instanceof InternalServerException) {
+        throw error;
+      }
+      
+      throw new DatabaseException('Failed to clone template schema', {
+        code: 'SCHEMA_CLONE_ERROR',
+        details: {
+          targetSchema,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        },
+        originalError: error
+      });
     }
   }
 
@@ -103,6 +134,15 @@ export class CloneTemplateSchemaUseCase {
                 error instanceof Error ? error.message : 'Unknown error'
               }`
             );
+            throw new DatabaseException(`Failed to create enum type ${targetEnumTypeName}`, {
+              code: 'ENUM_CREATION_ERROR',
+              details: {
+                enumType: targetEnumTypeName,
+                schema: targetSchema,
+                values: enumValues
+              },
+              originalError: error
+            });
           }
         } else {
           this.logger.log(`Enum ${targetSchema}.${targetEnumTypeName} already exists`);
@@ -198,7 +238,16 @@ export class CloneTemplateSchemaUseCase {
       this.logger.error(
         `Error cloning table ${sourceSchema}.${tableName} to ${targetSchema}.${tableName}: ${message}`
       );
-      throw error;
+      throw new DatabaseException(`Failed to clone table ${tableName}`, {
+        code: 'TABLE_CLONE_ERROR',
+        details: {
+          sourceSchema,
+          targetSchema,
+          tableName,
+          error: message
+        },
+        originalError: error
+      });
     }
   }
 
