@@ -14,6 +14,7 @@ import { ResetPasswordUseCase } from './application/use-cases/reset-password.use
 import { ValidateUserUseCase } from './application/use-cases/validate-user.use-case';
 import { ValidateMobileUserUseCase } from './application/use-cases/validate-mobile-use-case';
 import { RefreshTokenUseCase } from './application/use-cases/refresh-token-use-case';
+import { JwtAuthGuard } from './infrastructure/security/gaurds/jwt-auth.guard';
 @Module({
   imports: [
     JwtModule.register({
@@ -36,7 +37,8 @@ import { RefreshTokenUseCase } from './application/use-cases/refresh-token-use-c
     ValidateUserUseCase,
     ValidateMobileUserUseCase,
     RefreshTokenUseCase,
+    JwtAuthGuard,
   ],
-  exports: [LoginUseCase, EmailService],
+  exports: [LoginUseCase, EmailService, JwtAuthGuard],
 })
 export class AuthModule {}
