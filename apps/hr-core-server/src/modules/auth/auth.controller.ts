@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request } from '@nestjs/common';
+import { Controller, Post, Body, Request, Put } from '@nestjs/common';
 import { Request as ExpressRequest } from 'express';
 import {
   LoginUseCase,
@@ -55,13 +55,13 @@ export class AuthController {
   }
 
   @Public()
-  @Post('set-password')
+  @Put('set-password')
   async setPassword(@Body() dto: SetPasswordDto) {
     return this.SetPasswordUseCase.execute(dto);
   }
 
   @Public()
-  @Post('reset-password')
+  @Put('reset-password')
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.resetPasswordUseCase.execute(dto);
   }

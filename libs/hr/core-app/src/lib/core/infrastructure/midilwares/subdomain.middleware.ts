@@ -24,34 +24,34 @@ export class SubdomainMiddleware implements NestMiddleware {
     try {
       // Check for role override in headers (for testing)
 
-      if (process.env.NODE_ENV === 'development') {
-        const roleHeader = req.headers['x-user-role'] as string | undefined;
-        const schemaHeader = req.headers['x-schema-name'] as string | undefined;
+      // if (process.env.NODE_ENV === 'development') {
+      //   const roleHeader = req.headers['x-user-role'] as string | undefined;
+      //   const schemaHeader = req.headers['x-schema-name'] as string | undefined;
 
-        if (roleHeader) {
-          req.userRole = roleHeader as RoleType;
-          if (roleHeader === 'owner') {
-            this.logger.debug(`Using role from header: ${roleHeader}`);
-            next();
-            return;
-          }
+      //   if (roleHeader) {
+      //     req.userRole = roleHeader as RoleType;
+      //     if (roleHeader === 'owner') {
+      //       this.logger.debug(`Using role from header: ${roleHeader}`);
+      //       next();
+      //       return;
+      //     }
 
-          this.logger.debug(`Using role from header1: ${roleHeader}`);
-        }
+      //     this.logger.debug(`Using role from header1: ${roleHeader}`);
+      //   }
 
-        if (schemaHeader) {
-          req.schemaName = schemaHeader;
-          this.logger.debug(`Using schema from header: ${schemaHeader}`);
+      //   if (schemaHeader) {
+      //     req.schemaName = schemaHeader;
+      //     this.logger.debug(`Using schema from header: ${schemaHeader}`);
 
-          // Set the schema in the tenant context
-          if (req.schemaName) {
-            this.tenantContextService.setSchema(req.schemaName);
-          }
+      //     // Set the schema in the tenant context
+      //     if (req.schemaName) {
+      //       this.tenantContextService.setSchema(req.schemaName);
+      //     }
 
-          next();
-          return;
-        }
-      }
+      //     next();
+      //     return;
+      //   }
+      // }
 
       // Extract subdomain from host
       const host = req.headers.host || '';
@@ -125,7 +125,6 @@ export class SubdomainMiddleware implements NestMiddleware {
       const message = error instanceof Error ? error.message : 'Unknown error';
 
       this.logger.error(`Error in subdomain middleware: ${message}`);
-      // Continue with default schema
       next(error);
     }
   }
