@@ -6,7 +6,7 @@ import { randomBytes, createHash } from 'crypto';
 @Injectable()
 export class TokenService {
   private generateToken(length = 32): string {
-    return randomBytes(length).toString('hex'); // 64-char token
+    return randomBytes(length).toString('hex');
   }
 
   private hashToken(token: string): string {

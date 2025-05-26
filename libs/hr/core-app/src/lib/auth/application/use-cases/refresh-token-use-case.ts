@@ -8,8 +8,6 @@ import { jwtConstants } from '../../infrastructure/security/strategies/jwt.const
 export class RefreshTokenUseCase {
   constructor(
     private readonly tenantContextService: TenantContextService,
-
-    // private readonly tokenService: TokenService,
     private readonly jwtService: JwtService
   ) {}
 

@@ -22,37 +22,6 @@ export class SubdomainMiddleware implements NestMiddleware {
 
   async use(req: SchemaRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      // Check for role override in headers (for testing)
-
-      // if (process.env.NODE_ENV === 'development') {
-      //   const roleHeader = req.headers['x-user-role'] as string | undefined;
-      //   const schemaHeader = req.headers['x-schema-name'] as string | undefined;
-
-      //   if (roleHeader) {
-      //     req.userRole = roleHeader as RoleType;
-      //     if (roleHeader === 'owner') {
-      //       this.logger.debug(`Using role from header: ${roleHeader}`);
-      //       next();
-      //       return;
-      //     }
-
-      //     this.logger.debug(`Using role from header1: ${roleHeader}`);
-      //   }
-
-      //   if (schemaHeader) {
-      //     req.schemaName = schemaHeader;
-      //     this.logger.debug(`Using schema from header: ${schemaHeader}`);
-
-      //     // Set the schema in the tenant context
-      //     if (req.schemaName) {
-      //       this.tenantContextService.setSchema(req.schemaName);
-      //     }
-
-      //     next();
-      //     return;
-      //   }
-      // }
-
       // Extract subdomain from host
       const host = req.headers.host || '';
       const parsedHost = parse(host);

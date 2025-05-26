@@ -19,12 +19,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const result = super.canActivate(context);
 
-    // Check if it's an Observable and convert it to Promise
     if (isObservable(result)) {
       return await lastValueFrom(result);
     }
 
-    // Already a boolean or Promise<boolean>
     return await result;
   }
 }

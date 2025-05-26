@@ -6,3 +6,5 @@ export * from './infrastructure/services/user-agent.service';
 export * from './application/use-cases/get-tenant-by-domain.use-case';
 export * from './application/use-cases/clone-template-schema.use-case';
 export * from './application/use-cases/slugify-name.use-case';
+export * from './infrastructure/midilwares/index';
+export * from './common.module';

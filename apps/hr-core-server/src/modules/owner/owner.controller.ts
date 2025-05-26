@@ -3,26 +3,21 @@ import { OwnerService } from './owner.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 
-// This would be your actual auth guard
-// import { AdminGuard } from '../../guards/admin.guard';
 @ApiTags('Owner')
 @Controller('owner')
 export class OwnerController {
   constructor(private readonly ownerService: OwnerService) {}
 
-  // @UseGuards(dminGuard)A // Uncomment when you have the guard
   @Post('register')
   create(@Body() createTenantDto: CreateTenantDto) {
     return this.ownerService.createNewTenant(createTenantDto);
   }
 
-  // @UseGuards(dminGuard)A // Uncomment when you have the guard
   @Post('migrations/run-all')
   runMigrationsForAllTenants() {
     return this.ownerService.runMigrationForAllTenants();
   }
 
-  // @UseGuards(AdminGuard) // Uncomment when you have the guard
   @Get('stats')
   getTenantStats() {
     return this.ownerService.getTenantStats();

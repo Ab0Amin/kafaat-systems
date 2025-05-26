@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from '../modules/user/user.module';
 import { OwnerModule } from '../modules/owner/owner.module';
-
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';

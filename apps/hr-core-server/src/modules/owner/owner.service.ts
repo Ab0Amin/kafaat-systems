@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { RoleType, TenantEntity, UserEntity } from '@kafaat-systems/entities';
 import { getTenantDataSource, createTenantDataSource } from '@kafaat-systems/database';
@@ -142,45 +142,33 @@ export class OwnerService {
     const schemaName = await this.slugify.execute(dto.domain);
     let resetToken;
     let createdTenant;
-    const TokenDuratuon = 3; // days
+    const TokenDuratuon = 3;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
-    // Create schema **without** transaction first
     await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
-
-    // Initialize tenantDS now
 
     const tenantDS = createTenantDataSource(schemaName);
     if (!tenantDS.isInitialized) {
       await tenantDS.initialize();
     }
     try {
-      // Now start transaction for the rest
       await queryRunner.startTransaction();
 
-      // Step 3: Clone template tables into new schema
       await this.templateSchemaService.execute(schemaName, tenantDS);
-
-      // Step 4: Create admin user
-      // const passwordHash = await bcrypt.hash(dto.admin.password, 10);
 
       createdTenant = await tenantDS.getRepository(UserEntity).save({
         firstName: dto.admin.firstName,
         lastName: dto.admin.lastName,
         email: dto.admin.email,
-        // passwordHash: '',
         isActive: false,
         role: RoleType.ADMIN,
         schemaName: schemaName,
       });
 
-      // Step 5: Save tenant info into owner schema
       const ownerDS = await getTenantDataSource('owner');
       try {
-        // createdAdmin = await ownerDS.manager.transaction(async (manager) => {
-        //   await manager.getRepository(TenantEntity).save({
         await ownerDS.getRepository(TenantEntity).save({
           name: dto.name,
           domain: dto.domain,
@@ -199,16 +187,13 @@ export class OwnerService {
       } finally {
         await ownerDS.destroy();
       }
-      // Step 6: If everything went fine, commit the transaction
       await queryRunner.commitTransaction();
-      // Step 7: After commit, send email (email sending should NOT be inside transaction)
       resetToken = await this.tokenService.createResetToken(
         createdTenant?.id,
         tenantDS,
         TokenDuratuon
       );
     } catch (error: unknown) {
-      // Step 8: Rollback if anything fails
       await queryRunner.rollbackTransaction();
       await this.dataSource.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
 
@@ -249,8 +234,6 @@ export class OwnerService {
   async deleteTenant(id: string) {
     const ownerDS = await getTenantDataSource('owner');
     try {
-      Logger.log('trying');
-
       const tenant = await ownerDS.getRepository(TenantEntity).findOneBy({ id: id });
 
       if (!tenant || !tenant?.name) {

@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, ForbiddenException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { getTenantDataSource } from '@kafaat-systems/database';
 import { MobileDeviceEntity, UserEntity } from '@kafaat-systems/entities';
@@ -40,8 +40,9 @@ export class ValidateMobileUserUseCase {
 
     try {
       await deviceRepo.save(newDevice);
-    } catch (error) {
-      Logger.log(error);
+    } catch (error: unknown) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException('Something went wrong');
     }
 
     return { message: 'Device created' };

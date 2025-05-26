@@ -27,7 +27,6 @@ import { JwtAuthGuard } from './infrastructure/security/gaurds/jwt-auth.guard';
     TypeOrmModule.forFeature([AdminEntity]),
     TenantContextModule,
   ],
-  // controllers: [AuthController],
   providers: [
     LoginUseCase,
     SetPasswordUseCase,
