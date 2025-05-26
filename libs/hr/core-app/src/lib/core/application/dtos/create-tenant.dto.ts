@@ -8,9 +8,9 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateUserDto } from './create-user.dto';
+import { SharedCreateUserDto } from './create-user.dto';
 
-export class CreateTenantDto {
+export class SharedCreateTenantDto {
   @ApiProperty({
     example: 'Acme Corporation',
     description: 'The name of the tenant',
@@ -52,10 +52,10 @@ export class CreateTenantDto {
   contactPhone!: string;
 
   @ApiProperty({
-    type: () => CreateUserDto,
+    type: () => SharedCreateUserDto,
     description: 'The admin user details for the tenant',
   })
   @ValidateNested()
-  @Type(() => CreateUserDto)
-  admin!: CreateUserDto;
+  @Type(() => SharedCreateUserDto)
+  admin!: SharedCreateUserDto;
 }

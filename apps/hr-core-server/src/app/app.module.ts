@@ -2,7 +2,7 @@ import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from '../modules/user/user.module';
-// import { OwnerModule } from '../modules/owner/owner.module';
+import { OwnerModule } from '../modules/owner/owner.module';
 
 import { TenantContextService } from '@kafaat-systems/tenant-context';
 import { JwtModule } from '@nestjs/jwt';
@@ -16,7 +16,7 @@ import { AuthModule } from '../modules/auth/auth.module';
   imports: [
     DatabaseWithTenantModule.forRoot(),
     UserModule,
-    // OwnerModule,
+    OwnerModule,
     CommonModule,
     JwtModule,
     TypeOrmModule.forFeature([UserEntity]),
