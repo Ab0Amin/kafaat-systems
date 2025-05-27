@@ -34,7 +34,7 @@ const nextConfig = {
   env: {
     BE_HOST: process.env.BE_HOST || 'localhost',
     BE_PORT: process.env.BE_PORT || '3000',
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'your-secret-key',
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'default',
   },
 };
 

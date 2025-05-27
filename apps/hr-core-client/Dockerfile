@@ -23,9 +23,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 
 # Copy only the necessary files from the build stage
-COPY --from=builder /apps/hr-core-client/.next/standalone/* . 
+COPY  apps/hr-core-client/.next/standalone/ ./ 
 # COPY --from=builder --chown=app:app /app/apps/hr-core-client/public ./public 
-RUN chown -R node:node .
+# RUN chown -R node:node .
 
 
 # Switch to non-root user
@@ -33,4 +33,4 @@ USER node
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "apps/hr-core-client/server.js"]

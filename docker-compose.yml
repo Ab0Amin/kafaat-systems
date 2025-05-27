@@ -30,7 +30,7 @@ services:
     depends_on:
       - backend
     ports:
-      - '3000:3000'
+      - '3000:4004'
 
 volumes:
   postgres_data:
