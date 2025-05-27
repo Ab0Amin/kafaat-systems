@@ -25,7 +25,7 @@
     {
       "path": "./apps/hr-core-client-e2e"
     },
-    {
+    { 
       "path": "./apps/hr-core-client"
     },
     {

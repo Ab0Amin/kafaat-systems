@@ -8,8 +8,8 @@
       "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "apps/hr-core-client",
-        "root": "apps/hr-core-client",
+        "outputPath": "./",
+        "root": "dist/frontend-apps/hr-core-client",
         "config": "apps/hr-core-client/next.config.js",
         "fileReplacements": []
       }
