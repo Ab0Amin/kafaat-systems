@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Logger,
   Inject,
-  ValidationError,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
@@ -68,11 +67,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     return response.status(status).json(errorResponse);
   }
 
-  private handleBaseException(
-    exception: BaseException,
-    response: Response,
-    path: string
-  ) {
+  private handleBaseException(exception: BaseException, response: Response, path: string) {
     const status = exception.getStatus();
     const errorResponse = ErrorFormatter.formatError(
       status,
@@ -89,47 +84,30 @@ export class AllExceptionsFilter implements ExceptionFilter {
     return response.status(status).json(errorResponse);
   }
 
-  private handleHttpException(
-    exception: HttpException,
-    response: Response,
-    path: string
-  ) {
+  private handleHttpException(exception: HttpException, response: Response, path: string) {
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
-    
+
     let message: string | string[] = exception.message;
     if (typeof exceptionResponse === 'object' && 'message' in exceptionResponse) {
       message = (exceptionResponse as any).message;
     }
 
-    const errorResponse = ErrorFormatter.formatError(
-      status,
-      message,
-      exception.name,
-      path,
-      {
-        stack: this.options.logStackTrace ? exception.stack : undefined,
-      }
-    );
+    const errorResponse = ErrorFormatter.formatError(status, message, exception.name, path, {
+      stack: this.options.logStackTrace ? exception.stack : undefined,
+    });
 
     return response.status(status).json(errorResponse);
   }
 
-  private handleDatabaseException(
-    exception: QueryFailedError,
-    response: Response,
-    path: string
-  ) {
-    const dbException = new DatabaseException(
-      'Database operation failed',
-      {
-        originalError: exception,
-        details: {
-          query: exception.query,
-          parameters: exception.parameters,
-        },
-      }
-    );
+  private handleDatabaseException(exception: QueryFailedError, response: Response, path: string) {
+    const dbException = new DatabaseException('Database operation failed', {
+      originalError: exception,
+      details: {
+        query: exception.query,
+        parameters: exception.parameters,
+      },
+    });
 
     const errorResponse = ErrorFormatter.formatDatabaseError(
       dbException.message,
@@ -141,22 +119,20 @@ export class AllExceptionsFilter implements ExceptionFilter {
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errorResponse);
   }
 
-  private handleUnknownException(
-    exception: any,
-    response: Response,
-    path: string
-  ) {
-    const errorMessage = exception instanceof Error 
-      ? exception.message 
-      : 'Internal server error';
-    
+  private handleUnknownException(exception: any, response: Response, path: string) {
+    const errorMessage = exception instanceof Error ? exception.message : 'Internal server error';
+
     const errorResponse = ErrorFormatter.formatError(
       HttpStatus.INTERNAL_SERVER_ERROR,
       errorMessage,
       'Internal Server Error',
       path,
       {
-        stack: this.options.logStackTrace ? (exception instanceof Error ? exception.stack : undefined) : undefined,
+        stack: this.options.logStackTrace
+          ? exception instanceof Error
+            ? exception.stack
+            : undefined
+          : undefined,
       }
     );
 
@@ -172,7 +148,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const isServerError = status >= 500;
-      
+
       if (isServerError) {
         this.logger.error(
           `[${method}] ${url} - ${status} - ${exception.message}`,

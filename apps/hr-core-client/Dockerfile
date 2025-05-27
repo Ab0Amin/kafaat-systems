@@ -1,36 +1,44 @@
-# Build stage
+# === Build Stage ===
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy only necessary files for dependency installation
-COPY apps/hr-core-client/.next/standalone/apps/hr-core-client/package*.json ./
-COPY nx.json tsconfig.base.json eslint.config.mjs ./
-
+COPY package.json package-lock.json ./
+COPY apps/hr-core-client ./apps/hr-core-client
+COPY nx.json tsconfig.base.json ./
+COPY eslint.config.mjs ./
 # Install dependencies
-RUN npm install --omit=dev --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
+# Build the Next.js app via NX
+RUN npx nx build @kafaat-systems/hr-core-client
 
-# Runner stage (using a smaller base image)
+# === Run Stage ===
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Set environment variables
+
+
+
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Copy the standalone output
+# COPY --from=builder /app/apps/hr-core-client/.next/standalone/ ./
+COPY --from=builder /app/apps/hr-core-client/.next/standalone/apps/hr-core-client ./
+COPY --from=builder /app/apps/hr-core-client/.next/standalone/node_modules ./node_modules
+COPY --from=builder /app/apps/hr-core-client/.next/standalone/package.json ./
 
-# Copy only the necessary files from the build stage
-COPY  apps/hr-core-client/.next/standalone/ ./ 
-# COPY --from=builder --chown=app:app /app/apps/hr-core-client/public ./public 
-# RUN chown -R node:node .
+# COPY --from=builder /app/apps/hr-core-client/.next/static/ /apps/hr-core-client/.next/static/
+COPY --from=builder /app/apps/hr-core-client/.next/static ./public/static
 
 
-# Switch to non-root user
+# Copy public files if needed
+# COPY --from=builder /app/apps/hr-core-client/public ./public
+
 USER node
-
 EXPOSE 3000
 
-CMD ["node", "apps/hr-core-client/server.js"]
+CMD ["node", "server.js"]

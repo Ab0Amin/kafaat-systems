@@ -19,15 +19,16 @@ const defaultOptions: ExceptionsModuleOptions = {
 export class ExceptionsModule {
   static forRoot(options: ExceptionsModuleOptions = {}): DynamicModule {
     const mergedOptions = { ...defaultOptions, ...options };
-
-    const appFilterProvider: Provider = {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
-    };
-
     const configProvider: Provider = {
       provide: 'EXCEPTIONS_MODULE_OPTIONS',
       useValue: mergedOptions,
+    };
+    const appFilterProvider: Provider = {
+      provide: APP_FILTER,
+      useFactory: (options: ExceptionsModuleOptions) => {
+        return new AllExceptionsFilter(options);
+      },
+      inject: ['EXCEPTIONS_MODULE_OPTIONS'],
     };
 
     return {

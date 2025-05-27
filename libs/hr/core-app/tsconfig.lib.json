@@ -1,35 +1,40 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "../../../",
-    "rootDir": "../../../",
-
-    "outDir": "dist",
-    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
-    
-    "module": "CommonJS",
-    "strictPropertyInitialization": false,
-    "emitDeclarationOnly": true,
-      "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-   
+    "outDir": "../../dist/out-tsc",
+    "rootDir": "src",
     "types": ["node"],
+    "baseUrl": "../../../",
+   
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "target": "es2021",
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "strictBindCallApply": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
-
-
-
+  "exclude": [
+    "out-tsc",
+    "dist",
+    "jest.config.js",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "eslint.config.js",
+    "eslint.config.cjs",
+    "eslint.config.mjs"
+  ],
   "references": [
-    { "path": "../../shared/tenant-context" },
-    { "path": "../../shared/entities" },
-    { "path": "../../shared/database" },
-    { "path": "../../shared/exceptions" }
-  ]
+    {
+    "path": "../../../libs/shared/database"
+  }, {
+    "path": "../../../libs/shared/entities"
+  }
+  , {
+    "path": "../../../libs/shared/tenant-context"
+  }, {
+    "path": "../../../libs/shared/exceptions"
+  }
+]
 }
